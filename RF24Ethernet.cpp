@@ -52,7 +52,7 @@ void RF24EthernetStack::use_device()
 {
 
   _radio.begin();
-  _network.begin(97,03);
+  _network.begin(97,01);
   _radio.setPALevel(RF24_PA_MIN);
   _radio.printDetails();
 	//::slip_device = &_network;
