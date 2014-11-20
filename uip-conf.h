@@ -97,7 +97,7 @@ typedef unsigned short uip_stats_t;
  */
 //#define UIP_CONF_BUFFER_SIZE     420
 // ORIG #define UIP_CONF_BUFFER_SIZE     128
-#define UIP_CONF_BUFFER_SIZE     1500
+#define UIP_CONF_BUFFER_SIZE     128
 
 /**
  * CPU byte order.
