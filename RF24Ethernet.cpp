@@ -118,7 +118,7 @@ void RF24EthernetStack::tick()
 	//_network.read(header,&uip_buf, uip_len);
 	if(_network.update() == EXTERNAL_DATA_TYPE){
 		RF24NetworkFrame *frame = _network.frag_ptr;
-		memcpy(&uip_buf,&frame->message_buffer,frame->message_size);
+		memcpy(&uip_buf,frame->message_buffer,frame->message_size);
 		//Serial.print("got len");
 		/*Serial.println(frame->message_size);		
 		for(int i=0; i<frame->message_size; i++){
