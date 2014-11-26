@@ -20,7 +20,7 @@
 #include "RF24Server.h"
 
 extern "C" {
-  //#include "utility/uip-conf.h"
+  #include "uip-conf.h"
 }
 
 RF24Server::RF24Server(uint16_t port) : _port(htons(port))
@@ -29,40 +29,36 @@ RF24Server::RF24Server(uint16_t port) : _port(htons(port))
 
 RF24Client RF24Server::available()
 {
-  //RF24EthernetStack::tick();
-  //for ( uip_userdata_t* data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++ )
-   // {
-      /*if (data->packets_in[0] != NOBLOCK
-          && (((data->state & RF24_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport ==_port)
-              || ((data->state & UIP_CLIENT_REMOTECLOSED) && ((uip_userdata_closed_t *)data)->lport == _port)))
-	  */
-	  //serialip_state *s = &(uip_conn->appstate);
-	  //RF24Client::all_data[0] = &Ethernet.dataCnt;
-	  uint8_t sok=1;
+
+  Ethernet.tick();
+  for ( uip_userdata_t* data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++ )
+    {
+        if (data->packets_in[0] != 0 && (((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport ==_port)
+              || ((data->state & UIP_CLIENT_REMOTECLOSED) && ((uip_userdata_closed_t *)data)->lport == _port))){
+			  
+		//Serial.println("*********OK");	  
+        return RF24Client(data);
+		}
+    }
+	
+  //Serial.println("************NOK");
+  return RF24Client();
+
+/*	  uint8_t sok=1;
 	  EthernetClient client(sok);
 	  if (client.available()) {
         // XXX: don't always pick the lowest numbered socket.
         return client;
       }
-	  //Serial.print("Sending datacnt");
-	  //Serial.println(RF24Ethernet.dataCnt);
-	//EthernetClient client(RF24Ethernet.dataCnt);
-	
-	//EthernetClient client(sock);
-	//return 0;
-//        return RF24Client(client);
-   // }
-//  return RF24Client();
+*/
   
   
 }
 
 void RF24Server::begin()
-{
-  //Serial.println("beg1");
-  //uip_listen(_port);
-  //RF24EthernetStack::tick();
-  //Serial.println("beg2");
+{  
+  uip_listen(_port);
+  RF24Ethernet.tick();  
 }
 
 size_t RF24Server::write(uint8_t c)

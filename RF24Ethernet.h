@@ -25,10 +25,11 @@
 
 
 #include <Arduino.h>
+#include "ethernet_comp.h"
 #include "IPAddress.h"
 #include "RF24Client.h"
 #include "RF24Server.h"
-#include "ethernet_comp.h"
+#include "RF24Ethernet_config.h"
 
 extern "C" {
 #include "utility/timer.h"
@@ -78,10 +79,10 @@ typedef struct {
 */
 //typedef struct psock ip_connection_t;
 
-typedef void (*fn_uip_cb_t)(uip_tcp_appstate_t *conn);
+//typedef void (*fn_uip_cb_t)(uip_tcp_appstate_t *conn);
 
-typedef void (*fn_my_cb_t)(unsigned long a);
-extern fn_my_cb_t x;
+//typedef void (*fn_my_cb_t)(unsigned long a);
+//extern fn_my_cb_t x;
 
 // Since this is a HardwareSerial class it means you can't use
 // SoftwareSerial devices with it, but this could be fixed by making both
@@ -98,25 +99,30 @@ class RF24EthernetClass {//: public Print {
 		RF24& radio;
 		RF24Network& network;
 		RF24EthernetClass(RF24& _radio,RF24Network& _network);
-		//RF24EthernetClass();
+		RF24EthernetClass();
 		
 		void use_device();
 		void begin(IP_ADDR myIP, IP_ADDR subnet);
 		void set_gateway(IP_ADDR myIP);
 		void listen(uint16_t port);
 
-		// tick() must be called at regular intervals to process the incoming serial
-		// data and issue IP events to the sketch.  It does not return until all IP
-		// events have been processed.
-		void tick();
-
 		// Set a user function to handle raw uIP events as they happen.  The
 		// callback function can only use uIP functions, but it can also use uIP's
 		// protosockets.
 		//void set_uip_callback(fn_uip_cb_t fn);
 
-
-
+		/* Sets the MAC address of the RF24 module, which is an RF24Network address
+		* Specify an Octal address to assign to this node, which will be used as the ethernet mac address
+		* If setting up only a few nodes, use 01 to 05
+		* Please reference the RF24Network documentation for information on setting up a static network
+		* RF24Mesh will be integrated to provide this automatically
+		*/
+		void setMac(uint16_t address);
+		
+		/* Sets the Radio channel/frequency to use
+		*/
+		void setChannel(uint8_t channel);
+		
 		// Returns the number of bytes left in the send buffer.  When this reaches
 		// zero all write/print data will be discarded.  Call queue() and return
 		// from handle_ip_event() to send the data.  handle_ip_event() will be
@@ -150,6 +156,13 @@ class RF24EthernetClass {//: public Print {
 	private:
 		//RF24& radio;
 		//RF24Network& network;
+		
+		// tick() must be called at regular intervals to process the incoming serial
+		// data and issue IP events to the sketch.  It does not return until all IP
+		// events have been processed.
+		static void tick();
+		
+		uint8_t RF24_Channel;
 		int handle_connection(uip_tcp_appstate_t *s);
 		struct timer periodic_timer;
 		struct timer arp_timer;

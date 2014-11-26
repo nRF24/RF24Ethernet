@@ -4,9 +4,6 @@
 #define RF24CLIENT_H
 
 
-#include "Print.h"
-#import "Client.h"
-
 #include "ethernet_comp.h"
 #include "Print.h"
 #import "Client.h"
@@ -29,6 +26,14 @@ extern "C" {
 #define UIP_CLIENT_STATEFLAGS (UIP_CLIENT_CONNECTED | UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED | UIP_CLIENT_RESTART)
 #define UIP_CLIENT_SOCKETS ~UIP_CLIENT_STATEFLAGS
 
+
+
+typedef struct {
+  uint8_t state;
+  uint8_t packets_in[UIP_SOCKET_NUMPACKETS];
+  uint16_t lport;        /**< The local TCP port, in network byte order. */
+} uip_userdata_closed_t;
+
 /*
 typedef struct {
   uint8_t state;
@@ -40,6 +45,8 @@ typedef struct {
 #endif
 } uip_userdata_t;
 */
+
+
 typedef struct {
   uint8_t state;
   uint8_t packets_in[UIP_SOCKET_NUMPACKETS];
@@ -48,6 +55,7 @@ typedef struct {
 #if UIP_CLIENT_TIMER >= 0
   unsigned long timer;
 #endif
+ uint8_t connected;
 } uip_userdata_t;
 
 
@@ -58,7 +66,7 @@ class RF24Client : public Client {
 public:
 	RF24Client();
 	//RF24Client(int len);
-	RF24Client(uint8_t sock);
+	//RF24Client(uint8_t sock);
 	int connect(IPAddress ip, uint16_t port);
     int connect(const char *host, uint16_t port);
     int read(uint8_t *buf, size_t size);
@@ -86,20 +94,32 @@ private:
 	uint8_t _sock;
 	uint16_t _dataLen;
 	
+	static bool isConnected;
+	static bool clientClose;
+	static bool readData;
+	
+	static int handle_connection(uip_tcp_appstate_t *s);
     //This is referenced by UIPServer.cpp in available()
     //RF24Client(serialip_state* conn_data);
 	//RF24Client(uint8_t sock);
-	RF24Client(size_t tmp);
-    /*RF24Client(struct uip_conn *_conn);
-    RF24Client(uip_userdata_t* conn_data);*/
+	//RF24Client(size_t tmp);
+    RF24Client(struct uip_conn *_conn);
+    RF24Client(uip_userdata_t* conn_data);
+	//RF24Client(serialip_state* conn_data);
 
+	
     uip_userdata_t* data;
+	
+	static int _available(uip_userdata_t *);
+	
     static uip_userdata_t all_data[UIP_CONNS];
+	static uip_userdata_t* _allocateData();
 	 
 	friend class RF24EthernetClass;
 	friend class RF24Server;
 	
 	friend void uipclient_appcall(void);	
+	friend void serialip_appcall(void);
 	
 };
 

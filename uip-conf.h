@@ -72,6 +72,37 @@ typedef uint16_t u16_t;
  */
 typedef unsigned short uip_stats_t;
 
+
+
+
+/* for TCP */
+#define UIP_SOCKET_NUMPACKETS    1
+//#define UIP_CONF_MAX_CONNECTIONS 2
+
+/* for UDP
+ * set UIP_CONF_UDP to 0 to disable UDP (saves aprox. 5kb flash) */
+//#define UIP_CONF_UDP             0
+//#define UIP_CONF_BROADCAST       1
+//#define UIP_CONF_UDP_CONNS       4
+
+/* number of attempts on write before returning number of bytes sent so far
+ * set to -1 to block until connection is closed by timeout */
+#define UIP_ATTEMPTS_ON_WRITE    -1
+
+/* timeout after which UIPClient::connect gives up. The timeout is specified in seconds.
+ * if set to a number <= 0 connect will timeout when uIP does (which might be longer than you expect...) */
+#define UIP_CONNECT_TIMEOUT      -1
+
+/* periodic timer for uip (in ms) */
+#define UIP_PERIODIC_TIMER       250
+
+/* timer to poll client for data after last write (in ms)
+ * set to -1 to disable fast polling and rely on periodic only (saves 100 bytes flash) */
+#define UIP_CLIENT_TIMER         10
+
+
+
+
 /**
  * Maximum number of TCP connections.
  *
@@ -79,7 +110,7 @@ typedef unsigned short uip_stats_t;
  */
 //#define UIP_CONF_MAX_CONNECTIONS 40
 //#define UIP_CONF_MAX_CONNECTIONS 12
-#define UIP_CONF_MAX_CONNECTIONS 1
+#define UIP_CONF_MAX_CONNECTIONS 2
 
 /**
  * Maximum number of listening TCP ports.
@@ -88,7 +119,7 @@ typedef unsigned short uip_stats_t;
  */
 //#define UIP_CONF_MAX_LISTENPORTS 40
 //#define UIP_CONF_MAX_LISTENPORTS 4
-#define UIP_CONF_MAX_LISTENPORTS 1
+#define UIP_CONF_MAX_LISTENPORTS 2
 
 /**
  * uIP buffer size.
@@ -156,13 +187,20 @@ typedef unsigned short uip_stats_t;
 #define IP_INPUT_BUFFER_LENGTH 16
 #define IP_OUTPUT_BUFFER_LENGTH 16
 
+typedef void* uip_tcp_appstate_t;
+
+/*
 #include "utility/psock.h"
 typedef struct serialip_state {
   struct psock p;
   char inputBuffer[IP_INPUT_BUFFER_LENGTH];
   char outputBuffer[IP_INPUT_BUFFER_LENGTH];
   //void *user;
+  char packets_in[1];
+  char packets_out[1];
+  char connected;
 } uip_tcp_appstate_t;
+*/
 
 void serialip_appcall(void);
 #define UIP_APPCALL serialip_appcall

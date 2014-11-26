@@ -28,35 +28,50 @@ extern "C" {
 #include "uip-conf.h"
 #include "uip.h"
 #include "uip_arp.h"
-//#include "slipdev.h"
 #include "timer.h"
 }  
 
 #include <RF24.h>
 #include <RF24Network.h>
-//RF24 _radio(48,49);                // nRF24L01(+) radio attached using Getting Started board 
-//RF24Network network(_radio);
-// Because uIP isn't encapsulated within a class we have to use global
-// variables, so we can only have one TCP/IP stack per program.  But at least
-// we can set which serial port to use, for those boards with more than one.
-//SerialDevice *slip_device;
 
 //RF24EthernetClass::RF24EthernetClass(){}//:fn_uip_cb(NULL){}
 
 RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network): radio(_radio),network(_network)
 	//fn_uip_cb(NULL)
 {
+
 }
 
 void RF24EthernetClass::use_device()
 {
-
   radio.begin();
-  network.begin(97,01);
-
-	//::slip_device = &_network;
-	//network = _network;
+  RF24_Channel = RF24_Channel ? RF24_Channel : 97;
+  //network.begin(Ethernet.RF24_Channel,04444);
 }
+
+/*******************************************************/
+
+void RF24EthernetClass::setMac(uint16_t address){
+	
+	uint8_t mac[6] = {0x00,0x00,0x52,0x46,0x32,0x34};
+	mac[0] = address;
+	mac[1] = address >> 8;
+	printf("MAC: %o %d\n",address,mac[0]);
+	uip_seteth_addr(mac);
+	
+	RF24_Channel = RF24_Channel ? RF24_Channel : 97;
+	network.begin(RF24_Channel, address);
+}
+
+/*******************************************************/
+
+void RF24EthernetClass::setChannel(uint8_t channel){
+	
+	RF24_Channel = channel;
+	radio.setChannel(RF24_Channel);
+}
+
+/*******************************************************/
 
 void RF24EthernetClass::begin(IP_ADDR myIP, IP_ADDR subnet)
 {
@@ -70,8 +85,8 @@ void RF24EthernetClass::begin(IP_ADDR myIP, IP_ADDR subnet)
 		
 		//uip_seteth_addr(mac);
 		//52 46 32 34
-		uint8_t mac[6] = {0x01,0x00,0x52,0x46,0x32,0x34};
-		uip_seteth_addr(mac);
+		//uint8_t mac[6] = {0x01,0x00,0x52,0x46,0x32,0x34};
+		//uip_seteth_addr(mac);
 		uip_init();
 		uip_arp_init();
 		
@@ -89,12 +104,16 @@ void RF24EthernetClass::begin(IP_ADDR myIP, IP_ADDR subnet)
 
 }
 
+/*******************************************************/
+
 void RF24EthernetClass::set_gateway(IP_ADDR myIP)
 {
   uip_ipaddr_t ipaddr;
   uip_ipaddr(ipaddr, myIP.a, myIP.b, myIP.c, myIP.d);
   uip_setdraddr(ipaddr);
 }
+
+/*******************************************************/
 
 void RF24EthernetClass::listen(uint16_t port)
 {
@@ -108,13 +127,17 @@ void RF24EthernetClass::listen(uint16_t port)
       hwsend(uip_appdata, uip_len - UIP_TCPIP_HLEN - UIP_LLH_LEN);
 	  
 	 */ 
+	 
+
+/*******************************************************/
+
 void RF24EthernetClass::tick()
 {
 
 
-	if(network.update() == EXTERNAL_DATA_TYPE){
+	if(RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE){
 
-		RF24NetworkFrame *frame = network.frag_ptr;
+		RF24NetworkFrame *frame = RF24Ethernet.network.frag_ptr;
 		memcpy(&uip_buf,frame->message_buffer,frame->message_size);
     	#if defined (ETH_DEBUG_L1)
 		Serial.print("got len");
@@ -160,7 +183,7 @@ void RF24EthernetClass::tick()
 			bool ook = 0;
 			//while(!ook){
 			    RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
-				ook = network.write(headerOut,&uip_buf,uip_len);
+				ook = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
 			//}
 			#if defined (ETH_DEBUG_L1)
 			printf("data out %d\n",ook);
@@ -187,7 +210,7 @@ void RF24EthernetClass::tick()
 			bool ook = 0;
 			//while(!ook){
 				RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
-				ook = network.write(headerOut,&uip_buf,uip_len);
+				ook = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
 			//}
 		   #if defined (ETH_DEBUG_L1)
 		   printf("data out %d\n",ook);
@@ -198,8 +221,8 @@ void RF24EthernetClass::tick()
 	#endif
 	
 	
-	 }else if (timer_expired(&periodic_timer)) {
-		timer_reset(&periodic_timer);
+	 }else if (timer_expired(&RF24Ethernet.periodic_timer)) {
+		timer_reset(&RF24Ethernet.periodic_timer);
 		for (int i = 0; i < UIP_CONNS; i++) {
 			uip_periodic(i);
 			// If the above function invocation resulted in data that
@@ -213,7 +236,7 @@ void RF24EthernetClass::tick()
 			bool ook = 0;
 			//while(!ook){
 				RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
-				ook = network.write(headerOut,&uip_buf,uip_len);
+				ook = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
 			//}
 			#if defined (ETH_DEBUG_L1)
 			printf("data out %d\n",ook);
@@ -236,15 +259,15 @@ void RF24EthernetClass::tick()
 			bool ook = 0;
 			while(!ook){
 				RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
-				ook = network.write(headerOut,&uip_buf,uip_len);
+				ook = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
 			}
 			//printf("data out %d",ook);
 			}
 		}
 #endif /* UIP_UDP */
        /* Call the ARP timer function every 10 seconds. */
-       if(timer_expired(&arp_timer)) {
-         timer_reset(&arp_timer);
+       if(timer_expired(&RF24Ethernet.arp_timer)) {
+         timer_reset(&RF24Ethernet.arp_timer);
          uip_arp_timer();
        }
 	}
@@ -257,66 +280,14 @@ void RF24EthernetClass::set_uip_callback(fn_uip_cb_t fn)
 }
 */
 
-
+/*******************************************************/
 
 void uipudp_appcall(){
 
 }
 
-void serialip_appcall(void)
-{
-	struct serialip_state *s = &(uip_conn->appstate);
-	//uip_listen(HTONS(port));
-	//struct serialip_state *t = &(uip_conn->appstate);
-	
-	
-	if (uip_connected()) {
-		//Serial.print("Conn on port: ");
-		//Serial.println(HTONS(uip_conn->lport));
-		PSOCK_INIT(&s->p, s->inputBuffer, sizeof(s->inputBuffer));	
-	}
-	
-	if(uip_newdata()){
-		RF24Ethernet.dataCnt = min(UIP_BUFSIZE-42,uip_datalen());
-		memcpy(&RF24Ethernet.myData,uip_appdata,RF24Ethernet.dataCnt);		
-		//if(PSOCK_NEWDATA(&s->p)) {
-			//If data is available, put it into the input buffer
-			//PSOCK_READTO(&s->p, '\n');
-			//memcpy(s->outputBuffer,s->inputBuffer,PSOCK_DATALEN(s));
-	//	}
-	}
-	
-	if (uip_closed() || uip_aborted() || uip_timedout() || uip_rexmit() ) {
-		uip_close();
-		#if defined (ETH_DEBUG_L1)
-		Serial.println("*****CLOSE *********");
-		#endif
-		//PSOCK_CLOSE(&s->p);
-		//PSOCK_END(&s->p);
-	}
-	
-	//handle_connection(s);
-}
+/*******************************************************/
 
- int RF24EthernetClass::handle_connection(uip_tcp_appstate_t *s){
-		PSOCK_BEGIN(&s->p);
-		
-	//Serial.println("psock connection begin");		
-		
-  PSOCK_SEND_STR(&s->p, "HTTP/1.1 200 OK\n");
-  PSOCK_SEND_STR(&s->p, "Content-Type: text/html\n");
-  //PSOCK_SEND_STR(&s->p, "Connection: close\n");
-  PSOCK_SEND_STR(&s->p, "Refresh: 5\n");
-  PSOCK_SEND_STR(&s->p, "\n");
-  PSOCK_SEND_STR(&s->p, "<!DOCTYPE HTML>\n");
-  PSOCK_SEND_STR(&s->p, "<html>\n");
-  PSOCK_SEND_STR(&s->p, "HELLO FROM ARDUINO!\n");
-  PSOCK_SEND_STR(&s->p, "</html>\n");
-  PSOCK_READTO(&s->p, '\n');
-  
-  PSOCK_CLOSE(&s->p);
-  PSOCK_END(&s->p);
-}
 
 
 	
