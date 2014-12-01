@@ -74,7 +74,7 @@ typedef unsigned short uip_stats_t;
 
 
 
-
+//********** TMRh20: These options are mostly invalid and should be configured elsewhere **********//
 /* for TCP */
 #define UIP_SOCKET_NUMPACKETS    1
 //#define UIP_CONF_MAX_CONNECTIONS 2
@@ -87,20 +87,22 @@ typedef unsigned short uip_stats_t;
 
 /* number of attempts on write before returning number of bytes sent so far
  * set to -1 to block until connection is closed by timeout */
-#define UIP_ATTEMPTS_ON_WRITE    -1
+//#define UIP_ATTEMPTS_ON_WRITE    -1
 
 /* timeout after which UIPClient::connect gives up. The timeout is specified in seconds.
  * if set to a number <= 0 connect will timeout when uIP does (which might be longer than you expect...) */
-#define UIP_CONNECT_TIMEOUT      -1
+//#define UIP_CONNECT_TIMEOUT      -1
 
 /* periodic timer for uip (in ms) */
-#define UIP_PERIODIC_TIMER       250
+//#define UIP_PERIODIC_TIMER       250
 
 /* timer to poll client for data after last write (in ms)
  * set to -1 to disable fast polling and rely on periodic only (saves 100 bytes flash) */
-#define UIP_CLIENT_TIMER         10
+//#define UIP_CLIENT_TIMER         10
 
 
+
+/************* TMRh20: User Configuration *******************/
 
 
 /**
@@ -110,7 +112,7 @@ typedef unsigned short uip_stats_t;
  */
 //#define UIP_CONF_MAX_CONNECTIONS 40
 //#define UIP_CONF_MAX_CONNECTIONS 12
-#define UIP_CONF_MAX_CONNECTIONS 2
+#define UIP_CONF_MAX_CONNECTIONS 1
 
 /**
  * Maximum number of listening TCP ports.
@@ -119,7 +121,7 @@ typedef unsigned short uip_stats_t;
  */
 //#define UIP_CONF_MAX_LISTENPORTS 40
 //#define UIP_CONF_MAX_LISTENPORTS 4
-#define UIP_CONF_MAX_LISTENPORTS 2
+#define UIP_CONF_MAX_LISTENPORTS 1
 
 /**
  * uIP buffer size.
@@ -128,9 +130,9 @@ typedef unsigned short uip_stats_t;
  */
 //#define UIP_CONF_BUFFER_SIZE     420
 // ORIG #define UIP_CONF_BUFFER_SIZE     128
-#define UIP_CONF_BUFFER_SIZE     128
+#define UIP_CONF_BUFFER_SIZE     120
 
-#define UIP_REASSEMBLY
+//#define UIP_REASSEMBLY
 
 /**
  * The TCP maximum segment size.
@@ -138,7 +140,7 @@ typedef unsigned short uip_stats_t;
  * This is should not be to set to more than
  * UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN.
  */
-#define UIP_CONF_TCP_MSS 170
+//#define UIP_CONF_RECEIVE_WINDOW 60
 /**
  * CPU byte order.
  *
@@ -184,8 +186,8 @@ typedef unsigned short uip_stats_t;
 
 //#define IP_INPUT_BUFFER_LENGTH 16
 //#define IP_OUTPUT_BUFFER_LENGTH 16
-#define IP_INPUT_BUFFER_LENGTH 16
-#define IP_OUTPUT_BUFFER_LENGTH 16
+//#define IP_INPUT_BUFFER_LENGTH 16
+//#define IP_OUTPUT_BUFFER_LENGTH 16
 
 typedef void* uip_tcp_appstate_t;
 

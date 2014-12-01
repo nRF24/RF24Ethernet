@@ -36,6 +36,10 @@ extern "C" {
 #include "utility/uip.h"
 }
 
+
+#define UIPETHERNET_FREEPACKET 1
+#define UIPETHERNET_SENDPACKET 2
+
 //#define TUN  // Use only the tcp protocol, no ethernet headers or arps
 #define TAP  // Include ethernet headers
 
@@ -149,26 +153,29 @@ class RF24EthernetClass {//: public Print {
 		//virtual void write(uint8_t ch);
 		/*virtual void write(const char *str);
 		virtual void write(const uint8_t *buffer, size_t size);*/
-	uint8_t myData[UIP_BUFSIZE];
+	uint8_t myData[UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN];
+	
 	size_t dataCnt;
 	int available();
+	uint8_t packetstate;
+	uint8_t uip_hdrlen;
+	
+	
 	
 	private:
-		//RF24& radio;
-		//RF24Network& network;
-		
+
+		uint8_t in_packet;
 		// tick() must be called at regular intervals to process the incoming serial
 		// data and issue IP events to the sketch.  It does not return until all IP
 		// events have been processed.
 		static void tick();
+		static boolean network_send();		
 		
 		uint8_t RF24_Channel;
 		int handle_connection(uip_tcp_appstate_t *s);
 		struct timer periodic_timer;
+		
 		struct timer arp_timer;
-		//, arp_timer;
-		struct serialip_state *cur_conn; // current connection (for print etc.)
-		//fn_uip_cb_t fn_uip_cb;
 		void uip_callback();
 
 	//friend void serialip_appcall(void);

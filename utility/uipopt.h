@@ -302,7 +302,11 @@
  * This is should not be to set to more than
  * UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN.
  */
+#ifndef UIP_CONF_TCP_MSS
 #define UIP_TCP_MSS     (UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN)
+#else
+#define UIP_TCP_MSS UIP_CONF_TCP_MSS
+#endif
 
 /**
  * The size of the advertised receiver's window.
@@ -419,10 +423,10 @@
  * \hideinitializer
  *
  */
-#ifndef UIP_CONF_BROADCAST
-#define UIP_BROADCAST 0
-#else /* UIP_CONF_BROADCAST */
+#if UIP_UDP && UIP_CONF_BROADCAST
 #define UIP_BROADCAST UIP_CONF_BROADCAST
+#else /* UIP_CONF_BROADCAST */
+#define UIP_BROADCAST 0
 #endif /* UIP_CONF_BROADCAST */
 
 /**
