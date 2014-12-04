@@ -9,6 +9,7 @@ extern "C"
 
 #include "RF24Ethernet.h"
 #include "RF24Client.h"
+//#include "Dns.h"
 #include "RF24Network.h"
 
 #define UIP_TCP_PHYH_LEN UIP_LLH_LEN+UIP_IPTCPH_LEN
@@ -81,17 +82,23 @@ int
 RF24Client::connect(const char *host, uint16_t port)
 {
   // Look up the host first
-  int ret = 1;
-/*#if UIP_UDP
+  int ret = 0;
+  //Serial.println("conn dns");
+#if UIP_UDP
   DNSClient dns;
   IPAddress remote_addr;
 
-  dns.begin(UIPEthernetClass::_dnsServerAddress);
+   //Serial.println(RF24EthernetClass::_dnsServerAddress[0]);
+  dns.begin(RF24EthernetClass::_dnsServerAddress);
   ret = dns.getHostByName(host, remote_addr);
+  
   if (ret == 1) {
+	//Serial.println("got dns");
     return connect(remote_addr, port);
   }
-#endif*/
+#endif
+  //Serial.println("return");
+  //Serial.println(ret,DEC);
   return ret;
 }
 

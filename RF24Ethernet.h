@@ -30,6 +30,7 @@
 #include "RF24Client.h"
 #include "RF24Server.h"
 #include "RF24Ethernet_config.h"
+//#include "RF24Udp.h"
 
 extern "C" {
 #include "utility/timer.h"
@@ -100,71 +101,82 @@ class RF24Network;
 
 class RF24EthernetClass {//: public Print {
 	public:
-		RF24& radio;
-		RF24Network& network;
+	
+		/*
+		* Constructor to set up the Ethernet layer. Requires the radio and network to be configured by the user
+		* this allows users to set custom settings at the radio or network level
+		*/
 		RF24EthernetClass(RF24& _radio,RF24Network& _network);
+		
+		/*
+		* Basic constructor
+		*/
 		RF24EthernetClass();
 		
+		/*
+		* use_device() must be called to enable the radio with basic settings before calling any other functions
+		*/
 		void use_device();
+		
+		/*
+		* Configure the IP address and subnet mask of the node. This is independent of the RF24Network layer, so the IP 
+		* and subnet only have to conform to standard IP routing rules within your network
+		*/
 		void begin(IP_ADDR myIP, IP_ADDR subnet);
-		void set_gateway(IP_ADDR myIP);
+
+		void begin(IPAddress ip);
+		void begin(IPAddress ip, IPAddress dns);
+		void begin(IPAddress ip, IPAddress dns, IPAddress gateway);
+		void begin(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);		
+		
+		
+		/*
+		* Configure the gateway IP address. This is generally going to be your master node with RF24Network address 00.
+		*/
+		void set_gateway(IPAddress myIP);
+		
+		/*
+		* Listen to a specified port - This will likely be changed to closer match the Arduino Ethernet API with server.begin();
+		*/
 		void listen(uint16_t port);
 
-		// Set a user function to handle raw uIP events as they happen.  The
-		// callback function can only use uIP functions, but it can also use uIP's
-		// protosockets.
-		//void set_uip_callback(fn_uip_cb_t fn);
-
-		/* Sets the MAC address of the RF24 module, which is an RF24Network address
-		* Specify an Octal address to assign to this node, which will be used as the ethernet mac address
+		/* 
+		* Sets the MAC address of the RF24 module, which is an RF24Network address
+		* Specify an Octal address to assign to this node, which will be used as the Ethernet mac address
 		* If setting up only a few nodes, use 01 to 05
 		* Please reference the RF24Network documentation for information on setting up a static network
 		* RF24Mesh will be integrated to provide this automatically
 		*/
 		void setMac(uint16_t address);
 		
-		/* Sets the Radio channel/frequency to use
+		/* Sets the Radio channel/frequency to use (0-127)
 		*/
 		void setChannel(uint8_t channel);
 		
-		// Returns the number of bytes left in the send buffer.  When this reaches
-		// zero all write/print data will be discarded.  Call queue() and return
-		// from handle_ip_event() to send the data.  handle_ip_event() will be
-		// called with IP_SEND_NEXT_PACKET when the packet has been received by the
-		// remote host and you can send more data.
-		//int sendbuffer_space();
 
-		// Returns true when the sendbuffer is empty and ready for another packet.
-		// Not necessary to use if you only send packets in response to
-		// handle_ip_event(IP_SEND_NEXT_PACKET) and you use queue() when you're
-		// done.
-		//int sendbuffer_ready();
-
-		// Don't mix this with write() in the same IP_SEND_NEXT_PACKET call.
-		// This is *way* more efficient than using write() and queue() anyway.
-		//void queueBuffer(uint8_t buf, int len);
-		//void queueString(const char *buf);
-
-		// Queue up the current sendbuffer.  It will be sent and flushed at the
-		// next available opportunity.
-		//void queue();
-
-		// Print methods
-		//virtual void write(uint8_t ch);
-		/*virtual void write(const char *str);
-		virtual void write(const uint8_t *buffer, size_t size);*/
 	uint8_t myData[UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN];
+/*	uint8_t myData2[512];
+	size_t myData2Cnt;
+	uint8_t udpDataOut[512];
+	size_t udpDataOutCnt;*/
 	
 	size_t dataCnt;
 	int available();
 	uint8_t packetstate;
 	uint8_t uip_hdrlen;
 	
-	
+	IPAddress localIP();
+	IPAddress subnetMask();
+	IPAddress gatewayIP();
+	IPAddress dnsServerIP();
 	
 	private:
-
+		RF24& radio;
+		RF24Network& network;
 		uint8_t in_packet;
+		
+		static IPAddress _dnsServerAddress;
+		void configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
 		// tick() must be called at regular intervals to process the incoming serial
 		// data and issue IP events to the sketch.  It does not return until all IP
 		// events have been processed.
@@ -183,7 +195,7 @@ class RF24EthernetClass {//: public Print {
     
 	friend class RF24Server;
     friend class RF24Client;
-
+	friend class RF24UDP;
 };
 
 //void handle_ip_event(uint8_t type, ip_connection_t *conn, void **user);

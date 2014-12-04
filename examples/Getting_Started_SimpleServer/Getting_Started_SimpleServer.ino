@@ -75,18 +75,17 @@ void setup() {
   // Set the IP address we'll be using.  Make sure this doesn't conflict with
   // any IP addresses or subnets on your LAN or you won't be able to connect to
   // either the Arduino or your LAN...
-  IP_ADDR myIP = {10,10,2,3};
-  IP_ADDR subnet = {255,255,255,0};
-  Ethernet.begin(myIP, subnet);
+  IPAddress myIP(10,10,2,3);
+  Ethernet.begin(myIP);
   
   // If you'll be making outgoing connections from the Arduino to the rest of
   // the world, you'll need a gateway set up.
-  IP_ADDR gwIP = {10,10,2,2};
+  IPAddress gwIP(10,10,2,2);
   Ethernet.set_gateway(gwIP);
 
   // Listen for incoming connections on TCP port 1000.  Each incoming
   // connection will result in the uip_callback() function being called.
-  Ethernet.listen(1000);
+  server.begin();
 }
 
 uint16_t testTimer = 0;
@@ -131,5 +130,4 @@ void loop() {
   // We can do other things in the loop, but be aware that the loop will
   // briefly pause while IP data is being processed.
 }
-
 

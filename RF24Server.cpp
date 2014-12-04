@@ -69,11 +69,11 @@ size_t RF24Server::write(uint8_t c)
 size_t RF24Server::write(const uint8_t *buf, size_t size)
 {
   size_t ret = 0;
- /* for ( uip_userdata_t* data = &UIPClient::all_data[0]; data < &UIPClient::all_data[UIP_CONNS]; data++ )
+  for ( uip_userdata_t* data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++ )
     {
       if ((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport ==_port)
-        ret += UIPClient::_write(data,buf,size);
-    }*/
+        ret += RF24Client::_write(data,buf,size);
+    }
   return ret;
 }
 

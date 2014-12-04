@@ -47,6 +47,9 @@ typedef struct {
 */
 
 
+/*
+* Data structure for holding per connection data
+*/
 typedef struct {
   uint8_t state;
   uint8_t packets_in[UIP_SOCKET_NUMPACKETS];
@@ -58,7 +61,7 @@ typedef struct {
  uint8_t connected;
  bool restarted;
  uint32_t restartTime;
- uint8_t myDataOut[64];
+ uint8_t myDataOut[45];
 } uip_userdata_t;
 
 
@@ -67,22 +70,69 @@ typedef struct {
 class RF24Client : public Client {
 
 public:
+
+	/*
+	* Basic constructor
+	*/	
 	RF24Client();
+	
+	/*
+	* Establish a connection to a specified IP address and port
+	*/
 	int connect(IPAddress ip, uint16_t port);
-    int connect(const char *host, uint16_t port);
-    int read(uint8_t *buf, size_t size);
-    void stop();
+    
+	/*
+	* Establish a connection to a given hostname and port
+	*/
+	int connect(const char *host, uint16_t port);
+    
+	/*
+	* Read available data into a buffer
+	* @code
+	* uint8_t buf[size];
+    * client.read(buf,size);
+	* @endcode
+	*/
+	int read(uint8_t *buf, size_t size);
+	
+	/*
+	* Read data one byte at a time
+	* @code
+	* char c = client.read();
+	* @endcode
+	*/
+	int read();
+	
+	/*
+	* Disconnects from the current active connection
+	*/
+    void stop();  
   
-  
+	/*
+	* Indicates whether the client is connected or not
+	*/
 	uint8_t connected();
 	
+	/*
+	* Write a single byte of data to the stream
+	* @note This will write an entire TCP payload with only 1 byte in it
+	*/
     size_t write(uint8_t);
+	
+	/*
+	* Write a buffer of data to the stream, to be sent in a single TCP packet
+	*/
     size_t write(const uint8_t *buf, size_t size);
-    int available();
-    int read();
-    int peek();
+    
+	/*
+	* Indicates whether data is available to be read by the client.
+	* Returns the number of bytes available to be read
+	*/
+	int available();
+    
+    
+	int peek();
     void flush();
-
     using Print::write;	
 		
     operator bool();

@@ -162,8 +162,8 @@ typedef unsigned short uip_stats_t;
  * \hideinitializer
  */
 #define UIP_CONF_UDP             0
-//#define UIP_CONF_BROADCAST       1
-//#define UIP_CONF_UDP_CONNS       4
+//#define UIP_CONF_BROADCAST       0
+//#define UIP_CONF_UDP_CONNS       1
 /**
  * UDP checksums on or off
  *
@@ -206,6 +206,11 @@ typedef struct serialip_state {
 
 void serialip_appcall(void);
 #define UIP_APPCALL serialip_appcall
+
+typedef void* uip_udp_appstate_t;
+void uipudp_appcall(void);
+#define UIP_UDP_APPCALL uipudp_appcall
+
 
 #endif /* __UIP_CONF_H__ */
 
