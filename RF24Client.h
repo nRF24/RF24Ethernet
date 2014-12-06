@@ -58,8 +58,6 @@ typedef struct {
 #if UIP_CLIENT_TIMER >= 0
   unsigned long timer;
 #endif
- uint8_t connected;
- bool restarted;
  uint32_t restartTime;
  uint8_t myDataOut[45];
 } uip_userdata_t;
@@ -71,22 +69,22 @@ class RF24Client : public Client {
 
 public:
 
-	/*
+	/**
 	* Basic constructor
 	*/	
 	RF24Client();
 	
-	/*
+	/**
 	* Establish a connection to a specified IP address and port
 	*/
 	int connect(IPAddress ip, uint16_t port);
     
-	/*
+	/**
 	* Establish a connection to a given hostname and port
 	*/
 	int connect(const char *host, uint16_t port);
     
-	/*
+	/**
 	* Read available data into a buffer
 	* @code
 	* uint8_t buf[size];
@@ -95,7 +93,7 @@ public:
 	*/
 	int read(uint8_t *buf, size_t size);
 	
-	/*
+	/**
 	* Read data one byte at a time
 	* @code
 	* char c = client.read();
@@ -103,28 +101,28 @@ public:
 	*/
 	int read();
 	
-	/*
+	/**
 	* Disconnects from the current active connection
 	*/
     void stop();  
   
-	/*
+	/**
 	* Indicates whether the client is connected or not
 	*/
 	uint8_t connected();
 	
-	/*
+	/**
 	* Write a single byte of data to the stream
 	* @note This will write an entire TCP payload with only 1 byte in it
 	*/
     size_t write(uint8_t);
 	
-	/*
-	* Write a buffer of data to the stream, to be sent in a single TCP packet
+	/**
+	* Write a buffer of data, to be sent in a single TCP packet
 	*/
     size_t write(const uint8_t *buf, size_t size);
     
-	/*
+	/**
 	* Indicates whether data is available to be read by the client.
 	* Returns the number of bytes available to be read
 	*/

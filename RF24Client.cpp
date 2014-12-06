@@ -279,7 +279,8 @@ void serialip_appcall(void)
           Serial.print(F("UIPClient uip_newdata, uip_len:"));
           Serial.println(uip_len);
 #endif
-		u->restarted = 0;
+		u->state &= ~UIP_CLIENT_RESTART;
+		u->restartTime = millis();
         if (uip_len && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
             uip_stop();
 			RF24Ethernet.dataCnt = uip_datalen();
@@ -290,30 +291,24 @@ void serialip_appcall(void)
 	}
 	
 finish_newdata:
-    if (u->state & UIP_CLIENT_RESTART )
-    {
-	
-	  
-      u->state &= ~UIP_CLIENT_RESTART;
+    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 2500)
+    {	  
+      
 	  if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
-		uip_restart();
-		//Serial.print("rst");
+		
+		/*if(!uip_stopped(uip_conn)){
+			Serial.print("not stopped");
+		}*/
+			uip_restart();
+
 	  // Workaround to prevent the connection from stalling when a restart packet fails to get through
 	  // If data has not been received by the next time round, call restart again
-	  u->restarted = 1;
-	  u->restartTime = millis();
+		u->restartTime = millis();
+		//Serial.print("rst");
+		
 	  }
 	  
-    }else
-	if(u->restarted && millis() - u->restartTime > 5000){
-		if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
-			uip_restart();
-			u->restarted = 1;
-			u->restartTime = millis();
-			Serial.print("man rst");
-		}
-	}
-	
+    }
 	
 	
 	      // If the connection has been closed, save received but unread data.
@@ -517,6 +512,7 @@ int RF24Client::read(uint8_t *buf, size_t size)
               //_eatBlock(&data->packets_in[0]);
               if (uip_stopped(&uip_conns[data->state & UIP_CLIENT_SOCKETS]) && !(data->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
                 data->state |= UIP_CLIENT_RESTART;
+				data->restartTime = 0;
               if (data->packets_in[0] == 0)
                 {
                   if (data->state & UIP_CLIENT_REMOTECLOSED)

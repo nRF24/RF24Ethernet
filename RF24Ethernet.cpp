@@ -64,6 +64,7 @@ void RF24EthernetClass::setMac(uint16_t address){
 	
 	RF24_Channel = RF24_Channel ? RF24_Channel : 97;
 	network.begin(RF24_Channel, address);
+	network.multicastRelay = 1;
 }
 
 /*******************************************************/
@@ -151,10 +152,10 @@ _dnsServerAddress = dns;
 
 /*******************************************************/
 
-void RF24EthernetClass::set_gateway(IPAddress myIP)
+void RF24EthernetClass::set_gateway(IPAddress gwIP)
 {
   uip_ipaddr_t ipaddr;
-  uip_ip_addr(ipaddr, myIP);
+  uip_ip_addr(ipaddr, gwIP);
   uip_setdraddr(ipaddr);  
 }
 
