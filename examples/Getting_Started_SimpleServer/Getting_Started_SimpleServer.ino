@@ -1,25 +1,9 @@
 /*
  * RF24Ethernet Hello World example, lib initially based on SerialIP
  *
- * SerialIP is a TCP/IP stack that can be used over a serial port (a bit
- * like a dial-up Internet connection, but without the modem.)  It works with
- * stock Arduinos (no shields required.)  When attached to a PC supporting
- * SLIP, the Arduino can host network servers and access the Internet (if the
- * PC is configured to share its Internet connection of course!)
- *
  * RF24Ethernet uses the fine uIP stack by Adam Dunkels <adam@sics.se>
  *
- * For more information see the SerialIP page on the Arduino wiki:
- *   <http://www.arduino.cc/playground/Code/SerialIP>
- *
- *      -----------------
- *
- * This Hello World example sets up a server at 192.168.5.2 on port 1000.
- * Telnet here to access the service.  The uIP stack will also respond to
- * pings to test.
- *
- * This version also can be easily configured to send out an HTTP response to a browser
- *
+ * This example demonstrates how to send out an HTTP response to a browser
  *
  * This example was based upon uIP hello-world by Adam Dunkels <adam@sics.se>
  * Ported to the Arduino IDE by Adam Nielsen <malvineous@shikadi.net>
@@ -33,25 +17,20 @@
  #include <RF24Ethernet.h>
 
 
-/**** NOTE: Radio CE,CS pins must be configured in RF24Ethernet.cpp */
-// This code is experimental, so not user friendly
-//This sketch will communicate with an RF24Network master node (00)
-
-// The connection_data struct needs to be defined in an external file.
-//#include "HelloWorldData.h"
-
+/** Configure the radio CE & CS pins **/
 RF24 radio(7,8);
 RF24Network network(radio);
 RF24EthernetClass RF24Ethernet(radio,network);
 
 
+// Set up the server to listen on port 1000
 EthernetServer server = EthernetServer(1000);
-//EthernetServer server2 = EthernetServer(80);
+
 void setup() {
   // Set up the speed of our serial link.
   Serial.begin(115200);
   printf_begin();
-  Serial.println("start");
+  Serial.println(F("start"));
 
   // This initializes the radio with basic settings.
   // Needs to be called at the beginning of every sketch
@@ -75,7 +54,7 @@ void setup() {
   // Set the IP address we'll be using.  Make sure this doesn't conflict with
   // any IP addresses or subnets on your LAN or you won't be able to connect to
   // either the Arduino or your LAN...
-  IPAddress myIP(10,10,2,3);
+  IPAddress myIP(10,10,2,4);
   Ethernet.begin(myIP);
   
   // If you'll be making outgoing connections from the Arduino to the rest of
@@ -92,8 +71,6 @@ uint16_t testTimer = 0;
 
 void loop() {
 
-  uint8_t c=0;
-  
   size_t size;
 
   if(EthernetClient client = server.available())  
@@ -101,15 +78,11 @@ void loop() {
 
       while((size = client.available()) > 0)
       {                 
-        uint8_t msg[45];
-        //size = client.read(msg,size);
-        char c;
-        //while(c = client.read() > 0){
-          Serial.print((char)client.read());
-        //}
+        // Read any incoming data from the client
+        Serial.print((char)client.read());
         Serial.println("");
-        //Serial.write(msg,size);
        }
+        // Send an HTML response to the client. Note: PSTR puts the strings in program memory to save SRAM
 	client.write( "HTTP/1.1 200 OK\n");
         client.write( "Content-Type: text/html\n");
         client.write( "Connection: close\n");
@@ -120,14 +93,10 @@ void loop() {
         client.write( "HELLO FROM ARDUINO!\n");
         client.write( "</html>\n");
 	   
-       testTimer = millis();
        client.stop(); 
-       Serial.println("********");
-       delay(100);
-           
+       Serial.println(F("********"));       
     }
  
   // We can do other things in the loop, but be aware that the loop will
   // briefly pause while IP data is being processed.
 }
-

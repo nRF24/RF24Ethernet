@@ -1,28 +1,12 @@
 /*
- * RF24Ethernet Hello World example, lib initially based on SerialIP
- *
- * SerialIP is a TCP/IP stack that can be used over a serial port (a bit
- * like a dial-up Internet connection, but without the modem.)  It works with
- * stock Arduinos (no shields required.)  When attached to a PC supporting
- * SLIP, the Arduino can host network servers and access the Internet (if the
- * PC is configured to share its Internet connection of course!)
+ * TMRh20 2014
+ * 
+ * RF24Ethernet simple web client example
  *
  * RF24Ethernet uses the fine uIP stack by Adam Dunkels <adam@sics.se>
  *
- * For more information see the SerialIP page on the Arduino wiki:
- *   <http://www.arduino.cc/playground/Code/SerialIP>
  *
- *      -----------------
- *
- * This Hello World example sets up a server at 192.168.5.2 on port 1000.
- * Telnet here to access the service.  The uIP stack will also respond to
- * pings to test.
- *
- * This version also can be easily configured to send out an HTTP response to a browser
- *
- *
- * This example was based upon uIP hello-world by Adam Dunkels <adam@sics.se>
- * Ported to the Arduino IDE by Adam Nielsen <malvineous@shikadi.net>
+ * This example connects to google and downloads the index page
  */
 
 
@@ -30,20 +14,12 @@
 #include <RF24.h>
 #include <SPI.h>
 #include <printf.h>
- #include <RF24Ethernet.h>
+#include <RF24Ethernet.h>
 
-
-/**** NOTE: Radio CE,CS pins must be configured in RF24Ethernet.cpp */
-// This code is experimental, so not user friendly
-//This sketch will communicate with an RF24Network master node (00)
-
-// The connection_data struct needs to be defined in an external file.
-//#include "HelloWorldData.h"
-
+/*** Configure the radio CE & CS pins ***/
 RF24 radio(7,8);
 RF24Network network(radio);
 RF24EthernetClass RF24Ethernet(radio,network);
-
 
 
 EthernetClient client;
@@ -52,6 +28,7 @@ void setup() {
   
   Serial.begin(115200);
   printf_begin();
+  
   // This initializes the radio with basic settings.
   // Needs to be called at the beginning of every sketch
   Ethernet.use_device();  
@@ -64,7 +41,7 @@ void setup() {
   // on the radio and in the UIP layer
   // This is the RF24Network address and needs to be configured accordingly if
   // using more than 4 nodes with the master node. Otherwise, 01-04 can be used.
-  uint16_t myRF24NetworkAddress = 023;
+  uint16_t myRF24NetworkAddress = 01;
   Ethernet.setMac(myRF24NetworkAddress);
   
   //Optional
@@ -74,7 +51,7 @@ void setup() {
   // Set the IP address we'll be using.  Make sure this doesn't conflict with
   // any IP addresses or subnets on your LAN or you won't be able to connect to
   // either the Arduino or your LAN...
-  IPAddress myIP(10,10,2,3);
+  IPAddress myIP(10,10,2,4);
   Ethernet.begin(myIP);
   
   // If you'll be making outgoing connections from the Arduino to the rest of
@@ -83,11 +60,9 @@ void setup() {
   Ethernet.set_gateway(gwIP);  
 }
 
-uint32_t testTimer = 0;
 uint32_t counter = 0;
 uint32_t reqTimer = 0;
-uint32_t restartTimer = 0;
-bool first = 1;
+
 void loop() {
 
 //  if(millis() - testTimer > 5000){
@@ -124,40 +99,26 @@ if(size = client.available() > 0){
 
 void connect(){
     Serial.println(F("connecting"));
-    IPAddress goog(142,165,12,212);
-    IPAddress loc(10,10,1,49);
-    IPAddress art(80,237,132,189);
+    IPAddress goog(74,125,224,87);
     IPAddress pizza(94,199,58,243);
-    //IPAddress reddit(198,41,209,137);
     if (client.connect(goog, 80)) {
       Serial.println(F("connected"));
       // Make a HTTP request:
-      //client.println(F("GET /search?q=arduino HTTP/1.1"));
-      //delay(100);
-      //client.println(F("GET / HTTP/1.1"));
-      //client.println(F("Host: www.google.ca"));
-      //client.println(F("Connection: close"));
-      
+  
       uint8_t buffr[39] = {"GET / HTTP/1.1\n"};
-      //uint8_t buffr[39] = {"GET /asciiart/pizza.txt HTTP/1.1\n"}; //Length is 15 bytes
-      //uint8_t buffr[32] = {"GET /ascii/c/cat.txt HTTP/1.1\n"}; //Length is 30 bytes
-      //uint8_t buffr[33] = {"GET /taiji/ascii.txt HTTP/1.1\n"};
-      
+      //uint8_t buffr[39] = {"GET /asciiart/pizza.txt HTTP/1.1\n"}; //Length is 33 bytes
       client.write(buffr,15);
+      
       memcpy(buffr,"Host: www.google.ca\n",20);
-      //memcpy(buffr,"Host: hakank.org\n",17);
       //memcpy(buffr,"Host: fiikus.net\n",17);
-      //client.println(F("GET /r/funny/.rss HTTP/1.1"));
       client.write(buffr,20);
+      
       memcpy(buffr,"Connection: close\n",18);
-      //buffr = "Connection: close\n";
       client.write(buffr,18);
       client.println();    
-      //delay(100);
     
     }else{
       // if you didn't get a connection to the server:
       Serial.println(F("connection failed"));
     }
 }
-
