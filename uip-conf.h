@@ -86,7 +86,7 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-#define UIP_CONF_MAX_CONNECTIONS 1
+#define UIP_CONF_MAX_CONNECTIONS 2
 
 /**
  * Maximum number of listening TCP ports.
@@ -109,7 +109,8 @@ typedef unsigned short uip_stats_t;
 * length of strings that can be sent by the user
 * Must be <=   UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN
 */
-#define OUTPUT_BUFFER_SIZE 45
+//#define OUTPUT_BUFFER_SIZE 45
+#define OUTPUT_BUFFER_SIZE UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN
 
 /******************** END USER CONFIG ***********************************/
 
