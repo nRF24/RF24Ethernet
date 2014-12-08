@@ -291,7 +291,7 @@ void serialip_appcall(void)
 	}
 	
 finish_newdata:
-    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 2500)
+    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 5500)
     {	  
       
 	  if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
@@ -510,9 +510,10 @@ int RF24Client::read(uint8_t *buf, size_t size)
 			 remain = 0;
 			  data->packets_in[0] = 0;
               //_eatBlock(&data->packets_in[0]);
-              if (uip_stopped(&uip_conns[data->state & UIP_CLIENT_SOCKETS]) && !(data->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
+              if (uip_stopped(&uip_conns[data->state & UIP_CLIENT_SOCKETS]) && !(data->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
                 data->state |= UIP_CLIENT_RESTART;
 				data->restartTime = 0;
+			  }
               if (data->packets_in[0] == 0)
                 {
                   if (data->state & UIP_CLIENT_REMOTECLOSED)

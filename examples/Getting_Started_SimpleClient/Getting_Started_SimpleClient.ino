@@ -13,7 +13,7 @@
 #include <RF24Network.h>
 #include <RF24.h>
 #include <SPI.h>
-#include <printf.h>
+//#include <printf.h>
 #include <RF24Ethernet.h>
 
 /*** Configure the radio CE & CS pins ***/
@@ -27,7 +27,7 @@ EthernetClient client;
 void setup() {
   
   Serial.begin(115200);
-  printf_begin();
+ // printf_begin();
   
   // This initializes the radio with basic settings.
   // Needs to be called at the beginning of every sketch
@@ -46,7 +46,7 @@ void setup() {
   
   //Optional
   radio.setPALevel(RF24_PA_HIGH);
-  radio.printDetails();
+  //radio.printDetails();
   
   // Set the IP address we'll be using.  Make sure this doesn't conflict with
   // any IP addresses or subnets on your LAN or you won't be able to connect to
@@ -103,18 +103,15 @@ void connect(){
     IPAddress pizza(94,199,58,243);
     if (client.connect(goog, 80)) {
       Serial.println(F("connected"));
-      // Make a HTTP request:
-  
-      uint8_t buffr[39] = {"GET / HTTP/1.1\n"};
-      //uint8_t buffr[39] = {"GET /asciiart/pizza.txt HTTP/1.1\n"}; //Length is 33 bytes
-      client.write(buffr,15);
       
-      memcpy(buffr,"Host: www.google.ca\n",20);
-      //memcpy(buffr,"Host: fiikus.net\n",17);
-      client.write(buffr,20);
+      // Make an HTTP request:
+      //client.write("GET /asciiart/pizza.txt HTTP/1.1\n");
+      client.write("GET / HTTP/1.1\n");
       
-      memcpy(buffr,"Connection: close\n",18);
-      client.write(buffr,18);
+      //client.write("Host: fiikus.net\n");
+      client.write("Host: www.google.ca\n");
+      
+      client.write("Connection: close\n");
       client.println();    
     
     }else{

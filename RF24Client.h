@@ -59,7 +59,7 @@ typedef struct {
   unsigned long timer;
 #endif
  uint32_t restartTime;
- uint8_t myDataOut[45];
+ uint8_t myDataOut[OUTPUT_BUFFER_SIZE];
 } uip_userdata_t;
 
 

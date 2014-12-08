@@ -270,7 +270,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section Config Configuration and Setup
  * 
- * RF24Ethernet requires the RF24 and RF24Network libraries found on my github repository at https://github.com/TMRh20  <br>
+ * RF24Ethernet requires the RF24 and RF24Network_DEV libraries found on my github repository at https://github.com/TMRh20  <br>
  *  <br>
  *  <b> RPi </b>
  * 1. On the Raspberry Pi, a companion program, RF24toTUN must be installed along with the RF24 and RF24Network libraries
@@ -282,18 +282,35 @@ extern RF24EthernetClass RF24Ethernet;
  *<b> Arduino </b>
  * 1. For Arduino devices, the RF24, RF24Network and RF24Ethernet libraries need to be installed.
  * 2. Open the included Getting_Started_SimpleServer or Getting_Started_SimpleClient example
- * 3. Configure the RF24Network address (see http://tmrh20.github.io/RF24Network/ for more info)
+ * 3. Configure the RF24Network address (see http://tmrh20.github.io/RF24Network_Dev/ for more info)
  * 4. Configure the IP address according to your preferences, with the gateway set to the chosen IP of the RPi.
  * 5. Connect into your nodes web-server at http://ip-of-your-node:1000 from the RPi or configure the client sketch to connect to a server
  * running on the Raspberry Pi.
- *  
+ * Note: To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment #define DISABLE_USER_PAYLOADS. This
+ * will disable standard RF24Network messages, and only allow external data, such as TCP/IP information. 
+ *
  * <b>Accessing External Systems: Forwarding and Routing</b>
  *
  * In order to give your network or nodes access to your network or the internet beyond the RPi, it needs to be configured to route traffic
  * between the networks.
  * 1. Run @code sudo sysctl -w net.ipv4.ip_forward=1 @endcode to allow the RPi to forward requests between the network interfaces
- * 2. @code sudo iptables -t nat -A POSTROUTING -j MASQUERADE @endcode to allow the RPi to perform NAT between the network interfaces
- * @warn Users are responsible to manage further routing rules along with their IP traffic in order to prevent unauthorized access. 
+ * 2. @code sudo iptables -t nat -A POSTROUTING -j MASQUERADE @endcode to allow the RPi to perform NAT between the network interfaces <br>
+ * <b>Note:</b> Users are responsible to manage further routing rules along with their IP traffic in order to prevent unauthorized access. 
+ * Users may also need to add a static route to their PC or router to connect in to or ping the sensor nodes.
+ * @section Advanced Advanced Configuration and Info
+ *
+ * Additional settings are available by editing the uip-conf.h file included with the library. The main option available is the 
+ * #define UIP_CONF_BUFFER_SIZE setting, which will define the maximum available size of TCP payloads. The default is 120 bytes, but
+ * large values can speed up data transfers, since more data can be included in every payload. Very large values are untested.
+ * When modifying the UIP_CONF_BUFFER_SIZE setting, the #define MAX_PAYLOAD_SIZE must also be adjusted in the RF24Network_config.h file, to
+ * allow the network to pass the same size of payloads as RF24Ethernet accepts.
+ * RF24Ethernet provides an interface for TCP/IP, but does not really understand the concept of sockets, ports, etc. so all data received
+ * goes into the same incoming buffer currently. This behaviour may be modified in the future.
+ *
+ * @section Limitations Limitations
+ *
+ * The library is currently limited to TCP communications only, with statically assigned IP addresses. UDP frames can be up to 512 bytes in length, so additional
+ * functionality (DHCP/DNS) is limited by available memory. At this time, there are no immediate plans to develop UDP functionality.
  *
  * @section MAC_Addys MAC address formatting:
  * RF24Ethernet uses a simple method of formatting the MAC addresses, using the first two bytes to store the RF24Network address, and the remaining

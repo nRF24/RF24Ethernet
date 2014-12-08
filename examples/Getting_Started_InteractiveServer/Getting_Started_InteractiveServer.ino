@@ -71,6 +71,7 @@ void setup() {
 
 
 bool led_state = 0;
+uint32_t timer = 0;
 
 void loop() {
 
@@ -78,13 +79,11 @@ void loop() {
 
   if(EthernetClient client = server.available())  
   {
-
       while((size = client.available()) > 0)
       {       
         // If a request is received with enough characters, search for the / character
         if(size >= 7){
-            Serial.print(F("Find: "));
-            Serial.println(client.findUntil("/","/"));
+            client.findUntil("/","/");
             char buf[3] = {"  "};
             buf[0] = client.read();  // Read in the first two characters from the request
             buf[1] = client.read();
@@ -105,30 +104,25 @@ void loop() {
            client.read(); 
         }
        }
-       
+
         char stateLine[24];
-        int len = sprintf(stateLine, "The LED state is %d\n<br>",led_state);
-	
-        // PSTR puts the strings into flash memory to save SRAM
-        client.write( "HTTP/1.1 200 OK\n");
-        client.write( "Content-Type: text/html\n");
-        client.write( "Connection: close\n");
-        client.write( "\n");
-        client.write( "<!DOCTYPE HTML>\n");
-        client.write( "<html>\n");
+        int len = sprintf(stateLine, "The LED state is %d\n<br>",led_state);	
+        
+        client.write( "HTTP/1.1 200 OK\nContent-Type: text/html\n");
+        client.write( "Connection: close\n\n<!DOCTYPE HTML>\n<html>\n");
         client.write( "Hello From Arduino!<br>\n");
         client.write( stateLine );
         client.write( "<a href='/ON'>Turn LED On</a><br>\n");
         client.write( "<a href='/OF'>Turn LED Off</a><br>\n");
         client.write( "</html>\n");
-	   
+
        client.stop(); 
        Serial.println(F("********"));
-       delay(100);
-           
+          
     }
  
   // We can do other things in the loop, but be aware that the loop will
   // briefly pause while IP data is being processed.
 }
+
 

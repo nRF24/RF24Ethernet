@@ -82,7 +82,7 @@ void loop() {
         Serial.print((char)client.read());
         Serial.println("");
        }
-        // Send an HTML response to the client. Note: PSTR puts the strings in program memory to save SRAM
+        // Send an HTML response to the client.
 	client.write( "HTTP/1.1 200 OK\n");
         client.write( "Content-Type: text/html\n");
         client.write( "Connection: close\n");
