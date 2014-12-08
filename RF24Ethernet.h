@@ -243,6 +243,23 @@ extern RF24EthernetClass RF24Ethernet;
  */
  
  /**
+ * @example Getting_Started_InteractiveServer.ino
+ *
+ * This is an example of how to create a simple interactive web server.
+ */
+ 
+ /**
+ * @example InteractiveServer.ino
+ *
+ * This is an example of how to create a more advanced interactive web server.
+ */
+  /**
+ * @example HTML.h
+ *
+ * This file is included with the Interactive Server example
+ */
+ 
+ /**
  * @mainpage RF24Ethernet library: TCP/IP over RF24Network
  *
  * @section Overview Overview

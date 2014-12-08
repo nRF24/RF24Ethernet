@@ -188,7 +188,7 @@ test:
   uint16_t attempts = UIP_ATTEMPTS_ON_WRITE;
 #endif
   repeat:
-  
+  u->state &= ~UIP_CLIENT_RESTART;
   RF24EthernetClass::tick();
   if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
     {	
