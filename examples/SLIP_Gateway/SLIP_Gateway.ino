@@ -16,12 +16,12 @@
  * 1. On RPi, cd /dev
  * 2. Type 'ls' , note the ttyUSB<X> devices
  * 3. Connect your Arduino
- * 3. Type 'ls' and look for a new device ttyUSB<X> where <X> is a number
- * 4. Run   sudo slattach -L -s 115200 -p slip /dev/ttyUSB<X> &
- * 5. Run ifconfig , note the sl<X> device
- * 6. Run   sudo modprobe slip
- * 6. Run   sudo ifconfig sl<X> 10.10.3.1
- * 7. Run   sudo route add -net 10.10.3.0/24 gw 10.10.3.1
+ * 4. Type 'ls' and look for a new device ttyUSB<X> where <X> is a number
+ * 5. Run   sudo modprobe slip
+ * 6. Run   sudo slattach -L -s 115200 -p slip /dev/ttyUSB<X> &
+ * 7. Run ifconfig , note the sl<X> device
+ * 8. Run   sudo ifconfig sl<X> 10.10.3.1
+ * 9. Run   sudo route add -net 10.10.3.0/24 gw 10.10.3.1
  
  Note: If using an ip of 192.168.3.1 for the gateway, the commands are very similar:
         ie: sudo route add -net 192.168.3.0/24 gw 192.168.3.1
