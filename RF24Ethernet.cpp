@@ -60,8 +60,10 @@ void RF24EthernetClass::setMac(uint16_t address){
 	mac[0] = address;
 	mac[1] = address >> 8;
 	//printf("MAC: %o %d\n",address,mac[0]);
-	uip_seteth_addr(mac);
 	
+	#if defined (RF24_TAP)
+	  uip_seteth_addr(mac);
+	#endif
 	RF24_Channel = RF24_Channel ? RF24_Channel : 97;
 	network.begin(RF24_Channel, address);
 	network.multicastRelay = 1;
@@ -142,9 +144,9 @@ _dnsServerAddress = dns;
 	timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
 	//timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
 	
-	//#if defined (TAP)
+	#if defined (RF24_TAP)
 	timer_set(&this->arp_timer, CLOCK_SECOND * 10);
-	//#endif
+	#endif
 	
 	uip_init();
 	uip_arp_init();	
@@ -206,16 +208,34 @@ void RF24EthernetClass::tick() {
 	if(RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE){
 		RF24NetworkFrame *frame = RF24Ethernet.network.frag_ptr;	
 		uip_len = frame->message_size;
-		memcpy(&uip_buf,frame->message_buffer,frame->message_size);		
+		memcpy(&uip_buf,frame->message_buffer,frame->message_size);	
 	}else{
 		uip_len = 0;
 	}
 
-
+    #if !defined (RF24_TAP)
+	if(uip_len > 0) {
+	  uip_input();
+	  if(uip_len > 0) {
+	    network_send();	
+	  }
+	} else if(timer_expired(&Ethernet.periodic_timer)) {
+      timer_reset(&Ethernet.periodic_timer);
+      for(int i = 0; i < UIP_CONNS; i++) {
+	    uip_periodic(i);
+	    /* If the above function invocation resulted in data that
+	    should be sent out on the network, the global variable
+	    uip_len is set to a value > 0. */
+	    if(uip_len > 0) {
+	      network_send();
+	    }
+      }
+	}
+	#else
     if(uip_len > 0) {
       if(BUF->type == htons(UIP_ETHTYPE_IP)) {
-	uip_arp_ipin();
-	uip_input();
+	  uip_arp_ipin();
+	  uip_input();
 	/* If the above function invocation resulted in data that
 	   should be sent out on the network, the global variable
 	   uip_len is set to a value > 0. */
@@ -224,7 +244,7 @@ void RF24EthernetClass::tick() {
 	  network_send();
 	}
       } else if(BUF->type == htons(UIP_ETHTYPE_ARP)) {
-	uip_arp_arpin();
+	    uip_arp_arpin();
 	/* If the above function invocation resulted in data that
 	   should be sent out on the network, the global variable
 	   uip_len is set to a value > 0. */
@@ -236,15 +256,15 @@ void RF24EthernetClass::tick() {
     } else if(timer_expired(&Ethernet.periodic_timer)) {
       timer_reset(&Ethernet.periodic_timer);
       for(int i = 0; i < UIP_CONNS; i++) {
-	uip_periodic(i);
-	/* If the above function invocation resulted in data that
+	    uip_periodic(i);
+	   /* If the above function invocation resulted in data that
 	   should be sent out on the network, the global variable
 	   uip_len is set to a value > 0. */
-	if(uip_len > 0) {
-	  uip_arp_out();
-	  network_send();
-	}
-      }
+	   if(uip_len > 0) {
+	     uip_arp_out();
+	     network_send();
+	  }
+    }
 
 #if UIP_UDP
       for(int i = 0; i < UIP_UDP_CONNS; i++) {
@@ -261,11 +281,14 @@ void RF24EthernetClass::tick() {
 #endif /* UIP_UDP */
       
       /* Call the ARP timer function every 10 seconds. */
-      if(timer_expired(&Ethernet.arp_timer)) {
-	timer_reset(&Ethernet.arp_timer);
-	uip_arp_timer();
-      }
+
+	if(timer_expired(&Ethernet.arp_timer)) {
+	  timer_reset(&Ethernet.arp_timer);
+	  uip_arp_timer();
     }
+
+  }
+#endif //RF24_TAP
 }
 
 

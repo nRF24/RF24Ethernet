@@ -86,7 +86,7 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-#define UIP_CONF_MAX_CONNECTIONS 2
+#define UIP_CONF_MAX_CONNECTIONS 1
 
 /**
  * Maximum number of listening TCP ports.
@@ -161,13 +161,12 @@ typedef unsigned short uip_stats_t;
 // SLIP/TUN - 14 for Ethernet/TAP & 0 for TUN
 #define UIP_CONF_LLH_LEN 14
 
-//TMRh
-//#define UIP_REASSEMBLY
 
-//#define IP_INPUT_BUFFER_LENGTH 16
-//#define IP_OUTPUT_BUFFER_LENGTH 16
-//#define IP_INPUT_BUFFER_LENGTH 16
-//#define IP_OUTPUT_BUFFER_LENGTH 16
+// Define config for TAP or TUN based on Link-layer header length
+#if UIP_CONF_LLH_LEN > 0
+  #define RF24_TAP
+#endif
+
 
 typedef void* uip_tcp_appstate_t;
 
