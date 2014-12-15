@@ -59,7 +59,7 @@
 #define SLIP_ESC_END 0334
 #define SLIP_ESC_ESC 0335
 
-uint8_t slip_buf[UIP_BUFFER_SIZE]; // MSS + TCP Header Length
+
 static uint16_t len, tmplen;
 static uint8_t lastc;
 HardwareSerial *slip_device;
@@ -149,10 +149,7 @@ uint16_t slipdev_poll(void)
 
 
  // Create a new RF24Network header if there is data available, and possibly ready to send
- if(slip_device->available()){
-  RF24NetworkHeader header(01,EXTERNAL_DATA_TYPE);
-  uint8_t lastOctet; 
-  uint8_t meshAddr;
+ if(slip_device->available()){  
   
   while((uint8_t)slipdev_char_poll(&c)) {
     switch(c) {
@@ -167,40 +164,7 @@ uint16_t slipdev_poll(void)
 
       // Ensure the data is no longer than the configured UIP buffer size
       len = min(len,UIP_BUFFER_SIZE);
-      if(len){
-        
-        // Get the last octet of the destination IP address
-        lastOctet = slip_buf[19];
-        
-        //Convert the IP into an RF24Network Mac address
-        if( (meshAddr = mesh.getAddress(lastOctet)) > 0){
-          // Set the RF24Network address in the header 
-          header.to_node = meshAddr;
-          #if defined (LED_TXRX)
-          digitalWrite(DEBUG_LED_PIN,HIGH);
-          #endif
-          network.write(header, &slip_buf,len);
-          #if defined (LED_TXRX)
-          digitalWrite(DEBUG_LED_PIN,LOW);
-          #endif
-        }else{
-          #if defined (SLIP_DEBUG)
-          digitalWrite(DEBUG_LED_PIN,HIGH);
-          delay(200);
-          digitalWrite(DEBUG_LED_PIN,LOW);
-          delay(200);
-          digitalWrite(DEBUG_LED_PIN,HIGH);
-          delay(200);
-          digitalWrite(DEBUG_LED_PIN,LOW);
-          delay(200);
-          digitalWrite(DEBUG_LED_PIN,HIGH);
-          delay(200);
-          digitalWrite(DEBUG_LED_PIN,LOW);
-          delay(200);
-          #endif
-        }
-        
-      }
+      
       tmplen = len;
       len = 0;
       return tmplen;
@@ -251,3 +215,4 @@ void slipdev_init(HardwareSerial &dev){
 
 /** @} */
 /** @} */
+

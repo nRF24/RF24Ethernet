@@ -22,10 +22,10 @@
  * 7. Run ifconfig , note the sl<X> device
  * 8. Run   sudo ifconfig sl<X> 10.10.3.1
  * 9. Run   sudo route add -net 10.10.3.0/24 gw 10.10.3.1
- 
+
  Note: If using an ip of 192.168.3.1 for the gateway, the commands are very similar:
         ie: sudo route add -net 192.168.3.0/24 gw 192.168.3.1
- 
+
  * RF24Ethernet uses the uIP stack by Adam Dunkels <adam@sics.se>
  *
  * This example demonstrates how to configure a sensor node to act as a webserver and
@@ -40,9 +40,9 @@
 #include <RF24Mesh.h>
 #include "EEPROM.h"
 
-RF24 radio(7,8);
+RF24 radio(7, 8);
 RF24Network network(radio);
-RF24Mesh mesh(radio,network);
+RF24Mesh mesh(radio, network);
 
 #define LED_TXRX          // Flash LED on SLIP device TX or RX 
 #define SLIP_DEBUG        // Will delay and flash LEDs if unable to find a node by IP address ( node needs to reconnect via RF24Mesh ) 
@@ -50,57 +50,104 @@ RF24Mesh mesh(radio,network);
 // Define the LED pin for the above two options
 #define DEBUG_LED_PIN A3
 
-// NOTE: IMPORTANT this should be set to the same value as the UIP_BUFSIZE and 
+// NOTE: IMPORTANT this should be set to the same value as the UIP_BUFSIZE and
 // the MAX_PAYLOAD_SIZE in RF24Network. The default is 120 bytes
 #define UIP_BUFFER_SIZE 120
+
+uint8_t slip_buf[UIP_BUFFER_SIZE]; // MSS + TCP Header Length
 
 void setup() {
 
   Serial.begin(115200);
-  
+
   // Set this to the master node (nodeID 0)
   mesh.setNodeID(0);
   mesh.begin();
 
   // Use the serial port as the SLIP device
   slipdev_init(Serial);
-  
+
   // LED stuff
-  pinMode(DEBUG_LED_PIN,OUTPUT);
-  #if defined (SLIP_DEBUG)  
-  digitalWrite(DEBUG_LED_PIN,HIGH);
+  pinMode(DEBUG_LED_PIN, OUTPUT);
+#if defined (SLIP_DEBUG)
+  digitalWrite(DEBUG_LED_PIN, HIGH);
   delay(200);
-  digitalWrite(DEBUG_LED_PIN,LOW);
-  #endif
+  digitalWrite(DEBUG_LED_PIN, LOW);
+#endif
 }
 
 
 
-void loop() {    
+void loop() {
+
+  // Poll the network and mesh for incoming data or address requests
+  uint8_t headerType = mesh.update();
+
+  // Provide RF24Network addresses to connecting & reconnecting nodes
+  mesh.DHCP();
+
+  // Handle external (TCP) data
+  // Note: If not utilizing RF24Network payloads directly, users can edit the RF24Network_config.h file
+  // and uncomment #define DISABLE_USER_PAYLOADS. This can save a few hundred bytes of RAM.
+
+  if (headerType == EXTERNAL_DATA_TYPE) {
+    RF24NetworkFrame *frame = network.frag_ptr;
+    size_t size = frame->message_size;
+    uint8_t *pointer = frame->message_buffer;
+    slipdev_send(pointer, size);
+  }
+
+  // Poll the SLIP device for incoming data
+  uint16_t len = slipdev_poll();
+
+  if (len) {
+   
+    RF24NetworkHeader header(01, EXTERNAL_DATA_TYPE);    
+    uint8_t meshAddr;
     
-    // Poll the network and mesh for incoming data or address requests
-    uint8_t headerType = mesh.update();
-    
-    // Provide RF24Network addresses to connecting & reconnecting nodes
-    mesh.DHCP();
-    
-    // Handle external (TCP) data
-    // Note: If not utilizing RF24Network payloads directly, users can edit the RF24Network_config.h file
-    // and uncomment #define DISABLE_USER_PAYLOADS. This can save a few hundred bytes of RAM.
-    
-    if(headerType == EXTERNAL_DATA_TYPE){
-      RF24NetworkFrame *frame = network.frag_ptr;
-      size_t size = frame->message_size;
-      uint8_t *pointer = frame->message_buffer;
-      slipdev_send(pointer,size);
+    // Get the last octet of the destination IP address
+    uint8_t lastOctet = slip_buf[19];
+
+    //Convert the IP into an RF24Network Mac address
+    if ( (meshAddr = mesh.getAddress(lastOctet)) > 0) {
+      // Set the RF24Network address in the header
+      header.to_node = meshAddr;
+      
+      #if defined (LED_TXRX)
+        digitalWrite(DEBUG_LED_PIN, HIGH);
+      #endif
+      
+      network.write(header, &slip_buf, len);
+      
+      #if defined (LED_TXRX)
+        digitalWrite(DEBUG_LED_PIN, LOW);
+      #endif
+    } else {
+      // If nodeID/IP not found in address list, the node would need to renew its address
+      // Flash the LED 3 times slowly
+      flashLED();
     }
-    
-    // Poll the SLIP device for incoming data
-      slipdev_poll();
+
+  }
 
 }
 
 
 
+void flashLED() {
+#if defined (SLIP_DEBUG)
+  digitalWrite(DEBUG_LED_PIN, HIGH);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, LOW);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, HIGH);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, LOW);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, HIGH);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, LOW);
+  delay(200);
+#endif
 
-
+}
