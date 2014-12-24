@@ -253,10 +253,23 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * This is an example of how to create a more advanced interactive web server.
  */
+ 
   /**
  * @example HTML.h
  *
  * This file is included with the Interactive Server example
+ */
+ 
+ /**
+ * @example SLIP_Gateway.ino
+ *
+ * This example demonstrates how to use an Arduino as a gateway to a SLIP enabled device.
+ */
+ 
+ /**
+ * @example SLIP_InteractiveServer.ino
+ *
+ * This example demonstrates how to use RF24Mesh with RF24Ethernet when working with a SLIP or TUN interface.
  */
  
  /**
@@ -265,10 +278,10 @@ extern RF24EthernetClass RF24Ethernet;
  * @section Overview Overview
  *
  * The RF24Ethernet library was initially designed as an experiment and potential testing tool for RF24Network, allowing a Raspberry Pi to
- * act as a TCP/IP gateway or host for connected sensor nodes. The RPi runs companion software, RF24toTUN, which creates a network interface linked
- * to the RF24 radio network, which can be further linked to the local network or internet. This allows the RPi to perform automatic discovery and
- * routing of TCP/IP data, with no required pre-configuration or interaction from the user beyond assigning appropriate addresses to the nodes
- * initially.
+ * act as a TCP/IP gateway or host for connected sensor nodes. An Arduino can interface with any Linux machine or SLIP capable device supporting USB, or
+ * preferably, an RPi runs companion software, RF24toTUN, which creates a network interface linked to the RF24 radio network. This interface can be
+ * further linked to the local network or internet. This allows the RPi or Arduino gateway to perform automatic discovery and routing of TCP/IP data,
+ * with no required pre-configuration or interaction from the user beyond assigning appropriate addresses to the nodes initially.
  *
  * @section What What does it do?
  *
@@ -279,8 +292,8 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section How How does it work?
  *
- * RF24Ethernet utilizes the UIP TCP/IP stack to provide communication, allowing Arduino devices to use a Raspberry Pi running RF24toTUN as
- * a gateway to your network or the internet, or simply as a repository for sensor information. RF24Network addresses need to be assigned
+ * RF24Ethernet utilizes the UIP TCP/IP stack to provide communication, allowing Arduino devices to use a Raspberry Pi running RF24toTUN or Arduino
+ * as a gateway to your network or the internet, or simply as a repository for sensor information. RF24Network addresses need to be assigned
  * in the usual manner, and IP addresses can be configured as desired by the user. The master node (00) uses the Address Resolution
  * Protocol (ARP) to find the appropriate nodes when IP traffic is forwarded though, and routes traffic to the correct RF24Network address.
  * This provides a fairly seamless interaction, since users only need to configure standard IP forwarding and firewall rules as desired.
@@ -290,11 +303,18 @@ extern RF24EthernetClass RF24Ethernet;
  * RF24Ethernet requires the RF24 and RF24Network_DEV libraries found on my github repository at https://github.com/TMRh20  <br>
  *  <br>
  *  <b> RPi </b>
- * 1. On the Raspberry Pi, a companion program, RF24toTUN must be installed along with the RF24 and RF24Network libraries
- * 2. Edit the included rf24totun_configAndPing.sh to modify the IP information to suit your desired network config
- * 3. Run @code sudo ./rf24totun_configAndPing.sh 2 3 @endcode
- * 4. The '2' specifies the last octet of the RPi IP address. The '3' specifies the last octet of the node it will attempt to ping once started.
- * 5. Raspberry Pi defaults to the master node (00). Secondary Raspberry pi nodes would need the MAC address modified accordingly. * 
+ * On the Raspberry Pi, a companion program, RF24toTUN must be installed along with the RF24 and RF24Network libraries
+ * @note RF24toTUN requires the boost libraries. Run @code sudo apt-get install libboost1.50-all @endcode
+ * 
+ * See the video at https://www.youtube.com/watch?v=rBAIqAaRu0g for a walk-through of the setup with Raspberry Pi and Arduino.
+ *
+ * 1. @code wget http://tmrh20.github.io/RF24Installer/RPi/install.sh  @endcode  
+ * 2. @code chmod +x install.sh  @endcode  
+ * 3. @code sudo ./install.sh  @endcode  
+ * 4. Edit the included rf24totun_configAndPing.sh to modify the IP information to suit your desired network config  
+ * 5. @code sudo ./rf24totun_configAndPing.sh 2 3 @endcode  
+ * 6. The '2' specifies the last octet of the RPi IP address. The '3' specifies the last octet of the node it will attempt to ping once started.  
+ * 7. Raspberry Pi defaults to the master node (00). Secondary Raspberry pi nodes would need the MAC address modified accordingly.
  *   
  *<b> Arduino </b>
  * 1. For Arduino devices, the RF24, RF24Network and RF24Ethernet libraries need to be installed.
@@ -306,6 +326,11 @@ extern RF24EthernetClass RF24Ethernet;
  * Note: To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment #define DISABLE_USER_PAYLOADS. This
  * will disable standard RF24Network messages, and only allow external data, such as TCP/IP information. 
  *
+ * <b> Non-Raspberry Pi Devices </b><br>
+ * Arduino can also function as a gateway for any Linux machine or PC/MAC that supports SLIP. <br>
+ * See the SLIP_Gateway and SLIP_InteractiveServer
+ * examples for usage without the need for a Raspberry Pi.
+ * 
  * <b>Accessing External Systems: Forwarding and Routing</b>
  *
  * In order to give your network or nodes access to your network or the internet beyond the RPi, it needs to be configured to route traffic

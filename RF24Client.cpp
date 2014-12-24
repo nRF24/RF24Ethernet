@@ -291,7 +291,7 @@ void serialip_appcall(void)
 	}
 	
 finish_newdata:
-    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 5500)
+    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 2500)
     {	  
       
 	  if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
