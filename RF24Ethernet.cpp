@@ -56,9 +56,9 @@ void RF24EthernetClass::use_device()
 
 void RF24EthernetClass::setMac(uint16_t address){
 	
-	uint8_t mac[6] = {0x00,0x00,0x52,0x46,0x32,0x34};
-	mac[0] = address;
-	mac[1] = address >> 8;
+	uint8_t mac[6] = {0x52,0x46,0x32,0x34,0x00,0x00};
+	mac[4] = address;
+	mac[5] = address >> 8;
 	//printf("MAC: %o %d\n",address,mac[0]);
 	
 	#if defined (RF24_TAP)
