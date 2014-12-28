@@ -290,25 +290,7 @@ void serialip_appcall(void)
 	  }
 	}
 	
-finish_newdata:
-    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 2500)
-    {	  
-      
-	  if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
-		
-		/*if(!uip_stopped(uip_conn)){
-			Serial.print("not stopped");
-		}*/
-			uip_restart();
 
-	  // Workaround to prevent the connection from stalling when a restart packet fails to get through
-	  // If data has not been received by the next time round, call restart again
-		u->restartTime = millis();
-		//Serial.print("rst");
-		
-	  }
-	  
-    }
 	
 	
 	      // If the connection has been closed, save received but unread data.
@@ -414,7 +396,25 @@ finish_newdata:
   //uip_send(uip_appdata,send_len);
   //uip_len = send_len;
   //u->packets_out[0]=0;
-
+finish_newdata:
+    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 250)
+    {	  
+      
+	  if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
+		
+		/*if(!uip_stopped(uip_conn)){
+			Serial.print("not stopped");
+		}*/
+			uip_restart();			
+		
+	  // Workaround to prevent the connection from stalling when a restart packet fails to get through
+	  // If data has not been received by the next time round, call restart again
+		u->restartTime = millis();
+		//Serial.print("rst");
+		
+	  }
+	  
+    }
 
 }
 
