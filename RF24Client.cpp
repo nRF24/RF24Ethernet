@@ -397,7 +397,7 @@ void serialip_appcall(void)
   //uip_len = send_len;
   //u->packets_out[0]=0;
 finish_newdata:
-    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 250)
+    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 500)
     {	  
       
 	  if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
