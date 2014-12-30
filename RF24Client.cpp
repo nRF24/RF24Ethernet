@@ -174,13 +174,13 @@ size_t RF24Client::write(const uint8_t *buf, size_t size)
 
 size_t RF24Client::_write(uip_userdata_t* u, const uint8_t *buf, size_t size)
 {
-
+/*
 test:	  
 	  RF24EthernetClass::tick();
 	  if(u->packets_out[0] == 1){
-		//delay(50);
+		delay(1);
 		goto test;
-	  }
+	  }*/
   RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
   int remain = size;
   uint16_t written;
@@ -189,7 +189,7 @@ test:
 #endif
   repeat:
   u->state &= ~UIP_CLIENT_RESTART;
-  RF24EthernetClass::tick();
+  //RF24EthernetClass::tick();
   if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
     {	
 
@@ -208,38 +208,17 @@ test:
       Serial.println(F("'"));
 #endif
     	
-	 memcpy(&u->myDataOut[0],buf,size);
+	 memcpy(&RF24Ethernet.myDataOut,buf,size);
 	 u->packets_out[0] = 1;
-     remain -= size;//written;
+     remain = 0;//written;
      u->out_pos=size;
-	  //Serial.print(F(") pos: "));
-      //Serial.println(u->out_pos);
-/*	  
+
 test2:	  
 	  RF24EthernetClass::tick();
 	  if(u->packets_out[0] == 1){
+		delay(1);
 		goto test2;
-	  }*/
-	  //u->packets_out[0] = 1;
-      /*if (remain > 0)
-        {
-          if (p == UIP_SOCKET_NUMPACKETS-1)
-            {
-#if UIP_ATTEMPTS_ON_WRITE > 0
-              if ((--attempts)>0)
-#endif
-#if UIP_ATTEMPTS_ON_WRITE != 0
-                goto repeat;
-#endif
-              goto ready;
-            }
-          p++;
-          goto newpacket;
-        }*/
-ready:
-/*#if UIP_CLIENT_TIMER >= 0
-      u->timer = millis()+UIP_CLIENT_TIMER;
-#endif*/
+	  }
       return size;//-remain;
     }
   return -1;
@@ -341,7 +320,7 @@ void serialip_appcall(void)
                 {
                   RF24Ethernet.uip_hdrlen = ((uint8_t*)uip_appdata)-uip_buf;
 					   uip_len = send_len;
-					   uip_send(&u->myDataOut[0],send_len);
+					   uip_send(RF24Ethernet.myDataOut,send_len);
 					   
                       RF24Ethernet.packetstate |= UIPETHERNET_SENDPACKET;
                 }
@@ -358,7 +337,7 @@ void serialip_appcall(void)
                 {
                   RF24Ethernet.uip_hdrlen = ((uint8_t*)uip_appdata)-uip_buf;
 				  uip_len = send_len;
-				  uip_send(&u->myDataOut[0],send_len);
+				  uip_send(RF24Ethernet.myDataOut,send_len);
                   RF24Ethernet.packetstate |= UIPETHERNET_SENDPACKET;
                 }
               goto finish;
@@ -397,8 +376,8 @@ void serialip_appcall(void)
   //uip_len = send_len;
   //u->packets_out[0]=0;
 finish_newdata:
-    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 500)
-    {	  
+    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 1000)
+    {
       
 	  if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
 		

@@ -141,7 +141,7 @@ uip_ip_addr(ipaddr, subnet);
 uip_setnetmask(ipaddr);
 _dnsServerAddress = dns;
 
-	timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
+	timer_set(&this->periodic_timer, CLOCK_SECOND / 10);
 	//timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
 	
 	#if defined (RF24_TAP)

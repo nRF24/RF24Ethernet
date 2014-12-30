@@ -164,6 +164,7 @@ class RF24EthernetClass {//: public Print {
 		
 
 	uint8_t myData[UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN];
+	 uint8_t myDataOut[OUTPUT_BUFFER_SIZE];
 /*	uint8_t myData2[512];
 	size_t myData2Cnt;
 	uint8_t udpDataOut[512];
