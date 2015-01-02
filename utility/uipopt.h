@@ -276,9 +276,15 @@
  * The initial retransmission timeout counted in timer pulses.
  *
  * This should not be changed.
+ *
+ * TMRh20: Auto-adjust this value depending on the configured timer setting
  */
-#define UIP_RTO         3
 
+#ifndef UIP_CONF_RTO 
+#define UIP_RTO         3
+#else
+#define UIP_RTO UIP_CONF_RTO
+#endif
 /**
  * The maximum number of times a segment should be retransmitted
  * before the connection should be aborted.

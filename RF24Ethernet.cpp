@@ -141,7 +141,7 @@ uip_ip_addr(ipaddr, subnet);
 uip_setnetmask(ipaddr);
 _dnsServerAddress = dns;
 
-	timer_set(&this->periodic_timer, CLOCK_SECOND / 10);
+	timer_set(&this->periodic_timer, CLOCK_SECOND / UIP_TIMER_DIVISOR);
 	//timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
 	
 	#if defined (RF24_TAP)
@@ -294,7 +294,6 @@ void RF24EthernetClass::tick() {
 
 boolean RF24EthernetClass::network_send()
 {
-	RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
 	
 	bool ok = 0;
 	//if(RF24Ethernet.packetstate == UIPETHERNET_SENDPACKET){
@@ -320,12 +319,10 @@ boolean RF24EthernetClass::network_send()
 	//	ok = RF24Ethernet.network.write(headerOut,&uip_buf,RF24Ethernet.uip_hdrlen);
 	//}else{
  
-		
+		RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
 		ok = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
 	//}
-	if(ok){
 		RF24Ethernet.packetstate &= ~UIPETHERNET_SENDPACKET;
-	}
 }
 
 /*******************************************************/

@@ -103,6 +103,31 @@ typedef unsigned short uip_stats_t;
 
 #define UIP_CONF_BUFFER_SIZE     120
 
+ /**
+  * Adjust the rate at which the IP stack performs periodic processing.  
+  * The periodic timer will be called at a rate of 1 second divided by this value  
+  *  
+  * Default: 500ms  
+  * Increase this value to reduce response times and increase throughput during user interactions.  
+  * @note: Increasing this value will increase network traffic and errors.  
+  */
+#define UIP_TIMER_DIVISOR 3
+
+
+ /**
+  * Optional: Uncomment to disable  
+  *
+  * Adjust the length of time after which a connection will be timed out.  
+  * 
+  * If data is not sent or received on an open connection for this duration in ms, kill the connection.
+  */
+#define UIP_CONNECTION_TIMEOUT 20000
+
+/**
+ *  SLIP/TUN - 14 for Ethernet/TAP & 0 for TUN
+ */
+#define UIP_CONF_LLH_LEN 14
+
 /**
 * uIP User Output buffer size 
 * The output buffer size determines the max 
@@ -158,15 +183,14 @@ typedef unsigned short uip_stats_t;
  */
 #define UIP_CONF_STATISTICS      0
 
-// SLIP/TUN - 14 for Ethernet/TAP & 0 for TUN
-#define UIP_CONF_LLH_LEN 14
-
-
 // Define config for TAP or TUN based on Link-layer header length
 #if UIP_CONF_LLH_LEN > 0
   #define RF24_TAP
 #endif
 
+#if defined UIP_TIMER_DIVISOR
+  #define UIP_CONF_RTO (UIP_TIMER_DIVISOR*2)-1
+#endif
 
 typedef void* uip_tcp_appstate_t;
 

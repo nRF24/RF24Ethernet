@@ -58,7 +58,11 @@ typedef struct {
 #if UIP_CLIENT_TIMER >= 0
   unsigned long timer;
 #endif
+ bool windowOpened;
+ uint32_t sequenceNo;
  uint32_t restartTime;
+ uint32_t restartInterval;
+ uint32_t connAbortTime;
 } uip_userdata_t;
 
 

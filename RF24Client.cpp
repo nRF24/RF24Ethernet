@@ -260,6 +260,7 @@ void serialip_appcall(void)
 #endif
 		u->state &= ~UIP_CLIENT_RESTART;
 		u->restartTime = millis();
+		u->windowOpened = false;
         if (uip_len && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
             uip_stop();
 			RF24Ethernet.dataCnt = uip_datalen();
@@ -341,7 +342,9 @@ void serialip_appcall(void)
                   RF24Ethernet.packetstate |= UIPETHERNET_SENDPACKET;
                 }
               goto finish;
-            } 
+            }else{
+			  Serial.print("Failed ReXmit, buffer empty");
+			}
 	 }
 		
 		
@@ -371,29 +374,67 @@ void serialip_appcall(void)
             }
         }			
 
-  finish:;
+
   //uip_send(uip_appdata,send_len);
   //uip_len = send_len;
   //u->packets_out[0]=0;
 finish_newdata:
-    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > 1000)
-    {
-      
+    if (u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > u->restartInterval)
+    {      
 	  if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
+	  
+	    uint32_t seqNo=uip_conn->rcv_nxt[3];
+		seqNo|=uip_conn->rcv_nxt[2] << 8;
+		seqNo|=uip_conn->rcv_nxt[1] << 16;
+		seqNo|=uip_conn->rcv_nxt[0] << 24;
+	    if(!u->windowOpened){
+		  uip_restart();
+		  u->sequenceNo = seqNo;
+		  //Serial.print("rst");
+		  u->windowOpened = true;
+		  u->restartInterval = 750; //.5 seconds
+		  u->connAbortTime = millis();
+		}else
+		if(u->sequenceNo == seqNo){
 		
-		/*if(!uip_stopped(uip_conn)){
-			Serial.print("not stopped");
-		}*/
-			uip_restart();			
-		
+		#if defined UIP_CONNECTION_TIMEOUT
+		  if(millis() - u->connAbortTime >= UIP_CONNECTION_TIMEOUT){
+		    //uip_stop();
+		    //Serial.println("");
+			//Serial.println("*********** ABORTING CONNECTION ***************");
+			if (u->packets_in[0] != 0){
+              ((uip_userdata_closed_t *)u)->lport = uip_conn->lport;
+              u->state |= UIP_CLIENT_REMOTECLOSED;
+            }
+            else{
+              u->state = 0;
+		    }
+            uip_conn->appstate = NULL;
+            goto finish;
+		  }
+		#endif
+		  //Serial.println("rst seq same");
+		//if(uip_stopped(uip_conn)){
+		  u->restartInterval+=500;		  
+		  u->restartInterval=min(u->restartInterval,7000); //Max 7 seconds between restarts 
+		  
+		  uip_restart();
+		  
+		}
+		//}else{
+		//  uip_stop();		
+		//}
+	  }
 	  // Workaround to prevent the connection from stalling when a restart packet fails to get through
 	  // If data has not been received by the next time round, call restart again
 		u->restartTime = millis();
 		//Serial.print("rst");
 		
-	  }
+	  
 	  
     }
+
+finish:;
 
 }
 
