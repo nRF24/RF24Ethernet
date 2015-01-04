@@ -26,7 +26,9 @@ extern "C" {
 #define UIP_CLIENT_STATEFLAGS (UIP_CLIENT_CONNECTED | UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED | UIP_CLIENT_RESTART)
 #define UIP_CLIENT_SOCKETS ~UIP_CLIENT_STATEFLAGS
 
-
+/**
+ * @warning <b> This is used internally and should not be accessed directly by users </b>
+ */
 
 typedef struct {
   uint8_t state;
@@ -34,22 +36,11 @@ typedef struct {
   uint16_t lport;        /**< The local TCP port, in network byte order. */
 } uip_userdata_closed_t;
 
-/*
-typedef struct {
-  uint8_t state;
-  memhandle packets_in[UIP_SOCKET_NUMPACKETS];
-  memhandle packets_out[UIP_SOCKET_NUMPACKETS];
-  memaddress out_pos;
-#if UIP_CLIENT_TIMER >= 0
-  unsigned long timer;
-#endif
-} uip_userdata_t;
-*/
 
-
-/*
-* Data structure for holding per connection data
-*/
+/**
+ * Data structure for holding per connection data
+ * @warning <b> This is used internally and should not be accessed directly by users </b>
+ */
 typedef struct {
   uint8_t state;
   uint8_t packets_in[UIP_SOCKET_NUMPACKETS];
@@ -59,7 +50,6 @@ typedef struct {
   unsigned long timer;
 #endif
  bool windowOpened;
- uint32_t sequenceNo;
  uint32_t restartTime;
  uint32_t restartInterval;
  uint32_t connAbortTime;
@@ -128,11 +118,19 @@ public:
 	/**
 	* Indicates whether data is available to be read by the client.
 	* Returns the number of bytes available to be read
+	* @note Calling client or server available() keeps the RF24Network layer running, so needs to be called regularly,  
+    * even when disconnected or delaying for extended periods.  
 	*/
 	int available();
     
-    
+    /**
+	* Not working currently
+	*/
 	int peek();
+	
+	/**
+	* Not working currently
+	*/
     void flush();
     using Print::write;	
 		

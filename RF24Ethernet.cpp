@@ -78,30 +78,6 @@ void RF24EthernetClass::setChannel(uint8_t channel){
 }
 
 /*******************************************************/
-/*
-void RF24EthernetClass::begin(IP_ADDR myIP, IP_ADDR subnet)
-{
-	uip_ipaddr_t ipaddr;
-
-	timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
-	//timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
-	
-	#if defined (TAP)
-		timer_set(&this->arp_timer, CLOCK_SECOND * 10);		
-		uip_init();
-		uip_arp_init();
-		
-	#else
-	  uip_init();
-	#endif
-	
-	//slipdev_init();
-	uip_ipaddr(ipaddr, myIP.a, myIP.b, myIP.c, myIP.d);
-	uip_sethostaddr(ipaddr);
-	uip_ipaddr(ipaddr, subnet.a, subnet.b, subnet.c, subnet.d);
-	uip_setnetmask(ipaddr);
-
-}*/
 
 void RF24EthernetClass::begin(IPAddress ip)
 {
@@ -294,34 +270,8 @@ void RF24EthernetClass::tick() {
 
 boolean RF24EthernetClass::network_send()
 {
-	
-	bool ok = 0;
-	//if(RF24Ethernet.packetstate == UIPETHERNET_SENDPACKET){
-		
-		/*uint8_t buf[uip_len + UIP_TCPIP_HLEN + UIP_LLH_LEN];
-		size_t pSize = 0;
-		//RF24Ethernet.network.write(headerOut,&uip_buf[0], UIP_LLH_LEN);
-		memcpy(&buf[0],&uip_buf[0],UIP_LLH_LEN);
-		pSize += UIP_LLH_LEN;
-		if(uip_len <= UIP_LLH_LEN + UIP_TCPIP_HLEN) {
-			//RF24Ethernet.network.write(headerOut,&uip_buf[UIP_LLH_LEN], uip_len - UIP_LLH_LEN);
-			memcpy(&buf[UIP_LLH_LEN],&uip_buf[UIP_LLH_LEN],uip_len-UIP_LLH_LEN);
-			pSize += uip_len-UIP_LLH_LEN;
-		} else {
-			//RF24Ethernet.network.write(headerOut,&uip_buf[UIP_LLH_LEN], UIP_TCPIP_HLEN);
-			//RF24Ethernet.network.write(headerOut,uip_appdata, uip_len - UIP_TCPIP_HLEN - UIP_LLH_LEN);
-			memcpy(&buf[UIP_LLH_LEN],&uip_buf[UIP_LLH_LEN],UIP_TCPIP_HLEN);
-			pSize += UIP_TCPIP_HLEN;
-			memcpy(&buf[UIP_LLH_LEN+UIP_TCPIP_HLEN],uip_appdata,uip_len - UIP_TCPIP_HLEN - UIP_LLH_LEN);
-			pSize += uip_len - UIP_TCPIP_HLEN - UIP_LLH_LEN;
-		}
-		ok = RF24Ethernet.network.write(headerOut,&buf[0],pSize);*/
-	//	ok = RF24Ethernet.network.write(headerOut,&uip_buf,RF24Ethernet.uip_hdrlen);
-	//}else{
- 
 		RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
-		ok = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
-	//}
+		RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
 		RF24Ethernet.packetstate &= ~UIPETHERNET_SENDPACKET;
 }
 

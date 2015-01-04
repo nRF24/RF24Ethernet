@@ -24,10 +24,11 @@
 #define RF24Ethernet_h
 
 /**
- * @file RF24.h
+ * @file RF24Ethernet.h
  *
  * Class declaration for RF24Ethernet
  */
+
 
 #include <Arduino.h>
 #include "ethernet_comp.h"
@@ -75,30 +76,14 @@ extern "C" {
                               uip_ethaddr.addr[5] = eaddr[5];} while(0)
 
 						  
-
+/**
+* @warning <b>This is used internally. Use IPAddress instead. </b>
+*/
 typedef struct {
 	int a, b, c, d;
 } IP_ADDR;
 
-/*
-#define IP_INCOMING_CONNECTION  0
-#define IP_CONNECTION_CLOSED    1
-#define IP_PACKET_ACKED         2
-#define IP_INCOMING_DATA        3
-#define IP_SEND_PACKET          4
-*/
-//typedef struct psock ip_connection_t;
 
-//typedef void (*fn_uip_cb_t)(uip_tcp_appstate_t *conn);
-
-//typedef void (*fn_my_cb_t)(unsigned long a);
-//extern fn_my_cb_t x;
-
-// Since this is a HardwareSerial class it means you can't use
-// SoftwareSerial devices with it, but this could be fixed by making both
-// HardwareSerial and SoftwareSerial inherit from a common Serial ancestor
-// which we call SerialDevice here.
-//typedef HardwareSerial SerialDevice;
 
 class RF24;
 class RF24Network;
@@ -163,13 +148,6 @@ class RF24EthernetClass {//: public Print {
 		void setChannel(uint8_t channel);
 		
 
-	uint8_t myData[UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN];
-	 uint8_t myDataOut[OUTPUT_BUFFER_SIZE];
-/*	uint8_t myData2[512];
-	size_t myData2Cnt;
-	uint8_t udpDataOut[512];
-	size_t udpDataOutCnt;*/
-	
 	size_t dataCnt;
 	
 	/** Indicates whether data is available.
@@ -190,7 +168,10 @@ class RF24EthernetClass {//: public Print {
 	/** Returns the DNS server IP address
 	*/
 	IPAddress dnsServerIP();
-	
+
+	uint8_t myData[UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN];
+	uint8_t myDataOut[OUTPUT_BUFFER_SIZE];
+
 	private:
 		RF24& radio;
 		RF24Network& network;
@@ -286,22 +267,38 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section What What does it do?
  *
- * RF24Ethernet provides an API and interface very similar to the Arduino Ethernet library, to allow sensor nodes to connect out to local or
- * internet based devices to retrieve or send information, or be connected to from the internet or your local network directly. Sensor nodes
- * can act as individual web servers, simple command-and-control servers, or can connect out as required via TCP/IP. 
+ * RF24Ethernet creates a network of internet enabled RF24/Arduino sensors. It provides an API and interface very similar to the Arduino Ethernet library,
+ * to allow sensor nodes to connect out to local or internet based devices to retrieve or send information, or be connected to from the internet or your
+ * local network directly.  
+ * 
+ * Sensor nodes can act as individual web servers, simple command-and-control servers, or can connect out as required via TCP/IP. 
  * 
  *
  * @section How How does it work?
  *
- * RF24Ethernet utilizes the UIP TCP/IP stack to provide communication, allowing Arduino devices to use a Raspberry Pi running RF24toTUN or Arduino
- * as a gateway to your network or the internet, or simply as a repository for sensor information. RF24Network addresses need to be assigned
- * in the usual manner, and IP addresses can be configured as desired by the user. The master node (00) uses the Address Resolution
- * Protocol (ARP) to find the appropriate nodes when IP traffic is forwarded though, and routes traffic to the correct RF24Network address.
+ * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running RF24toTUN or Arduino
+ * as a gateway to your network or the internet, or simply as a repository for sensor information. The RF24, RF24Network and optionally RF24Mesh libraries
+ * handle the underlying routing, addressing etc. so users do not need to be familiar with the radio modules or libraries.  
+ *  
+ * RF24Network addresses need to be assigned as MAC addresses, and IP addresses can be configured as desired by the user. The master node (00) uses
+ * either the Address Resolution Protocol (ARP) or RF24Mesh to find the appropriate nodes when IP traffic is sent though, and routes traffic to the correct
+ * RF24Network address.
+ * 
  * This provides a fairly seamless interaction, since users only need to configure standard IP forwarding and firewall rules as desired.
+ *
+ * @section News News
+ * 
+ * <b>Jan 4 2015</b>  
+ *  - Add connection timeout to recover from hangs during failed client donwloads
+ *  - Better TCP window management to prevent hangs during client downloads
+ *  - Stability improvements
+ *
+ * <b>Dec 2014</b>
+ *  - Outgoing client data corruption should be fixed
  *
  * @section Config Configuration and Setup
  * 
- * RF24Ethernet requires the RF24 and RF24Network_DEV libraries found on my github repository at https://github.com/TMRh20  <br>
+ * RF24Ethernet requires the RF24 and RF24Network_DEV libraries (optionally RF24Mesh) found on my github repository at https://github.com/TMRh20  <br>
  *  <br>
  *  <b> RPi </b>
  * On the Raspberry Pi, a companion program, RF24toTUN must be installed along with the RF24 and RF24Network libraries
@@ -311,7 +308,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * 1. @code wget http://tmrh20.github.io/RF24Installer/RPi/install.sh  @endcode  
  * 2. @code chmod +x install.sh  @endcode  
- * 3. @code sudo ./install.sh  @endcode  
+ * 3. @code ./install.sh  @endcode  
  * 4. Edit the included rf24totun_configAndPing.sh to modify the IP information to suit your desired network config  
  * 5. @code sudo ./rf24totun_configAndPing.sh 2 3 @endcode  
  * 6. The '2' specifies the last octet of the RPi IP address. The '3' specifies the last octet of the node it will attempt to ping once started.  
@@ -327,7 +324,7 @@ extern RF24EthernetClass RF24Ethernet;
  * Note: To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment #define DISABLE_USER_PAYLOADS. This
  * will disable standard RF24Network messages, and only allow external data, such as TCP/IP information. 
  *
- * <b> Non-Raspberry Pi Devices </b><br>
+ * <b> Non-Raspberry Pi (Linux etc) Devices </b><br>
  * Arduino can also function as a gateway for any Linux machine or PC/MAC that supports SLIP. <br>
  * See the SLIP_Gateway and SLIP_InteractiveServer
  * examples for usage without the need for a Raspberry Pi.
@@ -338,17 +335,11 @@ extern RF24EthernetClass RF24Ethernet;
  * between the networks.
  * 1. Run @code sudo sysctl -w net.ipv4.ip_forward=1 @endcode to allow the RPi to forward requests between the network interfaces
  * 2. @code sudo iptables -t nat -A POSTROUTING -j MASQUERADE @endcode to allow the RPi to perform NAT between the network interfaces <br>
- * <b>Note:</b> Users are responsible to manage further routing rules along with their IP traffic in order to prevent unauthorized access. 
- * Users may also need to add a static route to their PC or router to connect in to or ping the sensor nodes.
+ * @warning <b>Note:</b> Users are responsible to manage further routing rules along with their IP traffic in order to prevent unauthorized access. 
+ * Users may also need to add a static route or port forwarding to their PC or router to connect in to or ping the sensor nodes.
  * @section Advanced Advanced Configuration and Info
  *
- * Additional settings are available by editing the uip-conf.h file included with the library. The main option available is the 
- * #define UIP_CONF_BUFFER_SIZE setting, which will define the maximum available size of TCP payloads. The default is 120 bytes, but
- * large values can speed up data transfers, since more data can be included in every payload. Very large values are untested.
- * When modifying the UIP_CONF_BUFFER_SIZE setting, the #define MAX_PAYLOAD_SIZE must also be adjusted in the RF24Network_config.h file, to
- * allow the network to pass the same size of payloads as RF24Ethernet accepts.
- * RF24Ethernet provides an interface for TCP/IP, but does not really understand the concept of sockets, ports, etc. so all data received
- * goes into the same incoming buffer currently. This behaviour may be modified in the future.
+ * See the <a href="group__UipConfiguration.html">User Configuration</a> section for modifying uip-conf.h
  *
  * @section Limitations Limitations
  *

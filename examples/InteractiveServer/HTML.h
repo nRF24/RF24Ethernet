@@ -93,14 +93,14 @@ void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
   const char *i;
   
   // Increment the iterator (i) in increments of 45-3 (OUTPUT_BUFFER_SIZE-3) and send the data to the client
-  for(i=_pointer; i<=_pointer+(size-(OUTPUT_BUFFER_SIZE+1));i+=OUTPUT_BUFFER_SIZE-3){
+  for(i=_pointer; i<=_pointer+(size-(OUTPUT_BUFFER_SIZE-1));i+=OUTPUT_BUFFER_SIZE-3){
     snprintf_P(buffer,OUTPUT_BUFFER_SIZE-2,i);
     _client.write( buffer );
   }
   // For the last bit, send only the data that remains
-  snprintf_P(buffer,((_pointer+size)-i),i);
-  Serial.print("Psiz ");
-  Serial.println((_pointer+size)-i);
+  snprintf_P(buffer,((_pointer+size)-i)+1,i);
+  //Serial.print("Psiz ");
+  //Serial.println((_pointer+size)-i);
   _client.write( buffer );
 }
 

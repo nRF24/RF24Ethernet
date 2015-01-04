@@ -300,7 +300,7 @@
  *
  * This should not need to be changed.
  */
-#define UIP_MAXSYNRTX      5
+#define UIP_MAXSYNRTX      3 //5
 
 /**
  * The TCP maximum segment size.
