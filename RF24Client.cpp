@@ -165,7 +165,11 @@ size_t RF24Client::_write(uip_userdata_t* u, const uint8_t *buf, size_t size)
   u->state &= ~UIP_CLIENT_RESTART;
   RF24EthernetClass::tick();
   
-  if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
+  if(!(u->state & (UIP_CLIENT_CONNECTED)) ){
+	return -1;
+  }
+	
+  if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED ) ))
     {
 
 #ifdef RF24ETHERNET_DEBUG_CLIENT
@@ -174,11 +178,9 @@ size_t RF24Client::_write(uip_userdata_t* u, const uint8_t *buf, size_t size)
       Serial.print(F(") pos: "));
       Serial.print(u->out_pos);
       Serial.print(F(", buf["));
-      Serial.print(size-remain);
-      Serial.print(F("-"));
-      Serial.print(remain);
+      Serial.print(size);
       Serial.print(F("]: '"));
-      Serial.write((uint8_t*)buf+size-remain,remain);
+      Serial.write((uint8_t*)buf,size);
       Serial.println(F("'"));
 #endif
     	
@@ -188,6 +190,10 @@ size_t RF24Client::_write(uip_userdata_t* u, const uint8_t *buf, size_t size)
 
 test2:	  
 	  RF24EthernetClass::tick();
+	  if (!(u->state & (UIP_CLIENT_CONNECTED))){
+	    u->packets_out[0] = 0;
+	    return -1;
+	  }
 	  if(u->packets_out[0] == 1){
 		delay(1);
 		goto test2;
@@ -207,7 +213,7 @@ void serialip_appcall(void)
   
   /*******Connected**********/
   if (!u && uip_connected()){
-
+	u->state |= UIP_CONNECTED;
     IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(F("UIPClient uip_connected")); );
 
     u = (uip_userdata_t*) EthernetClient::_allocateData();
@@ -215,7 +221,7 @@ void serialip_appcall(void)
       uip_conn->appstate = u;
       IF_RF24ETHERNET_DEBUG_CLIENT( Serial.print(F("UIPClient allocated state: ")); Serial.println(u->state,BIN); );
     }
-    IF_RF24ETHERNET_DEBUG_CLIENT(else Serial.println(F("UIPClient allocation failed")); );
+    IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(F("UIPClient allocation failed")); );
   }
   
   /*******User Data RX**********/
@@ -244,8 +250,9 @@ void serialip_appcall(void)
     if (u->packets_in[0] != 0) {
       ((uip_userdata_closed_t *)u)->lport = uip_conn->lport;
       u->state |= UIP_CLIENT_REMOTECLOSED;
-    
+      IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(F("UIPClient close 1")); );
 	}else{
+	  IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(F("UIPClient close 2")); );
 	  u->state = 0;
 	}
     IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(F("after UIPClient uip_closed")); );

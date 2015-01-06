@@ -190,7 +190,11 @@ User Configuration Options
 #endif
 
 #if defined UIP_TIMER_DIVISOR
-  #define UIP_CONF_RTO (UIP_TIMER_DIVISOR*2)-1
+  #if UIP_TIMER_DIVISOR > 5
+    #define UIP_CONF_RTO (UIP_TIMER_DIVISOR/2)
+  #else
+    #define UIP_CONF_RTO 3
+  #endif
 #endif
 
 

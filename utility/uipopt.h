@@ -289,9 +289,10 @@
  * The maximum number of times a segment should be retransmitted
  * before the connection should be aborted.
  *
- * This should not be changed.
+ * This should not be changed. 
+ * TMRh20: Lower RTX value for shorter timeouts
  */
-#define UIP_MAXRTX      8
+#define UIP_MAXRTX      5 //8
 
 /**
  * The maximum number of times a SYN segment should be retransmitted

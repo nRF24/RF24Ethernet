@@ -289,7 +289,7 @@ extern RF24EthernetClass RF24Ethernet;
  * @section News News
  * 
  * <b>Jan 4 2015</b>  
- *  - Add connection timeout to recover from hangs during failed client donwloads
+ *  - Add connection timeout to recover from hangs during failed client downloads
  *  - Better TCP window management to prevent hangs during client downloads
  *  - Stability improvements
  *
