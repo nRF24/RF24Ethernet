@@ -20,7 +20,7 @@
 #include "RF24Server.h"
 
 extern "C" {
-  #include "uip-conf.h"
+  //#include "uip-conf.h"
 }
 
 RF24Server::RF24Server(uint16_t port) : _port(htons(port))

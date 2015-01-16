@@ -3,15 +3,8 @@
 #ifndef RF24CLIENT_H
 #define RF24CLIENT_H
 
-
-#include "ethernet_comp.h"
 #include "Print.h"
 #import "Client.h"
-
-extern "C" {
-  #import "utility/uip.h"
-}
-
 
 #define UIP_SOCKET_DATALEN UIP_TCP_MSS
 //#define UIP_SOCKET_NUMPACKETS UIP_RECEIVE_WINDOW/UIP_TCP_MSS+1
@@ -45,7 +38,7 @@ typedef struct {
   uint8_t state;
   uint8_t packets_in[UIP_SOCKET_NUMPACKETS];
   uint8_t packets_out[UIP_SOCKET_NUMPACKETS];
-  uint8_t out_pos;
+  uint16_t out_pos;
 #if UIP_CLIENT_TIMER >= 0
   unsigned long timer;
 #endif
@@ -53,6 +46,8 @@ typedef struct {
  uint32_t restartTime;
  uint32_t restartInterval;
  uint32_t connAbortTime;
+ uint8_t myData[OUTPUT_BUFFER_SIZE];
+ uint16_t dataCnt = 0;
 } uip_userdata_t;
 
 
@@ -74,6 +69,11 @@ public:
     
 	/**
 	* Establish a connection to a given hostname and port
+	* @note UDP must be enabled in uip-conf.h for DNS lookups to work  
+	* 
+	* @note Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater.
+	* Lookups will generally return responses with a single A record if using hostnames like
+	* "www.google.com" instead of "google.com" which works well with the default buffer size
 	*/
 	int connect(const char *host, uint16_t port);
     
@@ -118,18 +118,18 @@ public:
 	/**
 	* Indicates whether data is available to be read by the client.
 	* Returns the number of bytes available to be read
-	* @note Calling client or server available() keeps the RF24Network layer running, so needs to be called regularly,  
+	* @note Calling client or server available() keeps the IP stack and RF24Network layer running, so needs to be called regularly,  
     * even when disconnected or delaying for extended periods.  
 	*/
 	int available();
     
     /**
-	* Not working currently
+	* Read a byte from the incoming buffer without advancing the point of reading
 	*/
 	int peek();
 	
 	/**
-	* Not working currently
+	* Flush all incoming client data from the current connection/buffer
 	*/
     void flush();
     using Print::write;	
@@ -137,7 +137,7 @@ public:
     operator bool();
     virtual bool operator==(const EthernetClient&);
     virtual bool operator!=(const EthernetClient& rhs) { return !this->operator==(rhs); };
-	
+	static uip_userdata_t all_data[UIP_CONNS];
 private:
 	
 	static int handle_connection(uip_tcp_appstate_t *s);
@@ -148,7 +148,7 @@ private:
 	
 	static int _available(uip_userdata_t *);
 	
-    static uip_userdata_t all_data[UIP_CONNS];
+    
 	static uip_userdata_t* _allocateData();
 	static size_t _write(uip_userdata_t *,const uint8_t *buf, size_t size);
 	
@@ -157,7 +157,7 @@ private:
 	
 	//friend void uipclient_appcall(void);	
 	friend void serialip_appcall(void);
-	
+	friend void uip_log(char* msg);
 };
 
 

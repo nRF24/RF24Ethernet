@@ -20,19 +20,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include <Arduino.h>
 #include "RF24Ethernet.h"
-
-
-extern "C" {
-#include "uip-conf.h"
-#include "uip.h"
-#include "uip_arp.h"
-#include "timer.h"
-}  
-
-#include <RF24.h>
-#include <RF24Network.h>
 
 IPAddress RF24EthernetClass::_dnsServerAddress;
 //DhcpClass* RF24EthernetClass::_dhcp(NULL);
@@ -48,13 +36,18 @@ RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network): radio
 
 void RF24EthernetClass::use_device()
 {
-  radio.begin();
-  RF24_Channel = RF24_Channel ? RF24_Channel : 97;
+// Kept for backwards compatibility only
 }
 
 /*******************************************************/
 
+/*******************************************************/
 void RF24EthernetClass::setMac(uint16_t address){
+	
+	if(!network.multicastRelay){ // Radio has not been started yet
+	  radio.begin();
+	}
+	
 	
 	uint8_t mac[6] = {0x52,0x46,0x32,0x34,0x00,0x00};
 	mac[4] = address;
@@ -74,7 +67,9 @@ void RF24EthernetClass::setMac(uint16_t address){
 void RF24EthernetClass::setChannel(uint8_t channel){
 	
 	RF24_Channel = channel;
-	radio.setChannel(RF24_Channel);
+	if(network.multicastRelay){ // Radio has not been started yet
+	  radio.setChannel(RF24_Channel);
+	}
 }
 
 /*******************************************************/
@@ -125,7 +120,9 @@ _dnsServerAddress = dns;
 	#endif
 	
 	uip_init();
+	#if defined (RF24_TAP)
 	uip_arp_init();	
+	#endif
 }
 
 /*******************************************************/
@@ -182,11 +179,13 @@ return _dnsServerAddress;
 void RF24EthernetClass::tick() {
 
 	if(RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE){
+		RF24Ethernet.lastRadio = millis();
 		RF24NetworkFrame *frame = RF24Ethernet.network.frag_ptr;	
 		uip_len = frame->message_size;
 		memcpy(&uip_buf,frame->message_buffer,frame->message_size);	
-	}else{
-		uip_len = 0;
+		/*Serial.println();
+		Serial.print("eth ext ");
+		Serial.println(uip_len);*/
 	}
 
     #if !defined (RF24_TAP)
@@ -271,8 +270,20 @@ void RF24EthernetClass::tick() {
 boolean RF24EthernetClass::network_send()
 {
 		RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
-		RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
-		RF24Ethernet.packetstate &= ~UIPETHERNET_SENDPACKET;
+		while(millis() - RF24Ethernet.lastRadio < 2){}
+		
+		bool ok = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
+		#if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2
+		if(!ok){
+		  Serial.println(); Serial.print(millis()); Serial.println(F(" *** RF24Ethernet Network Write Fail ***")); 
+		}
+		#endif
+		#if defined ETH_DEBUG_L2
+		if(ok){
+		  Serial.println(); Serial.print(millis()); Serial.println(F(" RF24Ethernet Network Write OK")); 
+		}
+		#endif
+		//RF24Ethernet.packetstate &= ~UIPETHERNET_SENDPACKET;
 }
 
 /*******************************************************/

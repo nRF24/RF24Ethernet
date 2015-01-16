@@ -230,7 +230,12 @@
  *
  * \hideinitializer
  */
+ 
+#ifndef UIP_CONF_ACTIVE_OPEN 
 #define UIP_ACTIVE_OPEN 1
+#else
+#define UIP_ACTIVE_OPEN UIP_CONF_ACTIVE_OPEN
+#endif
 
 /**
  * The maximum number of simultaneously open TCP connections.
@@ -285,6 +290,7 @@
 #else
 #define UIP_RTO UIP_CONF_RTO
 #endif
+
 /**
  * The maximum number of times a segment should be retransmitted
  * before the connection should be aborted.
@@ -292,7 +298,7 @@
  * This should not be changed. 
  * TMRh20: Lower RTX value for shorter timeouts
  */
-#define UIP_MAXRTX      5 //8
+#define UIP_MAXRTX      6 //8
 
 /**
  * The maximum number of times a SYN segment should be retransmitted
@@ -442,7 +448,7 @@
  * This function must be implemented by the module that uses uIP, and
  * is called by uIP whenever a log message is generated.
  */
-void uip_log(char *msg);
+//void uip_log(char *msg);
 
 /**
  * The link level header length.

@@ -1,23 +1,8 @@
 /*
-  RF24Ethernet - Initially based on SerialIP
+  RF24Ethernet by TMRh20 2014-2015
   
-  SerialIP.h - Arduino implementation of a uIP wrapper class.
-  Copyright (c) 2010 Adam Nielsen <malvineous@shikadi.net>
-  All rights reserved.
+  https://github.com/TMRh20
 
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #ifndef RF24Ethernet_h
@@ -29,19 +14,28 @@
  * Class declaration for RF24Ethernet
  */
 
+ #include <Arduino.h>
 
-#include <Arduino.h>
+extern "C" {
+  #import "uip-conf.h"
+  #import "utility/uip.h"
+  #include "utility/timer.h"
+  #include "utility/uip_arp.h"
+}
+#include "RF24Ethernet_config.h"
+#include <RF24.h>
+#include <RF24Network.h>
+
+
 #include "ethernet_comp.h"
 #include "IPAddress.h"
 #include "RF24Client.h"
-#include "RF24Server.h"
-#include "RF24Ethernet_config.h"
-//#include "RF24Udp.h"
 
-extern "C" {
-#include "utility/timer.h"
-#include "utility/uip.h"
-}
+#if UIP_CONF_UDP > 0
+#include "RF24Udp.h"
+#include "Dns.h"
+#endif
+
 
 
 #define UIPETHERNET_FREEPACKET 1
@@ -104,7 +98,9 @@ class RF24EthernetClass {//: public Print {
 		RF24EthernetClass();
 		
 		/**
-		* use_device() must be called to enable the radio with basic settings before calling any other functions
+		* @note Deprecated, maintained for backwards compatibility with old examples  
+		*  
+		* This function is no longer needed, and does nothing  
 		*/
 		void use_device();
 		
@@ -148,13 +144,11 @@ class RF24EthernetClass {//: public Print {
 		void setChannel(uint8_t channel);
 		
 
-	size_t dataCnt;
-	
 	/** Indicates whether data is available.
 	*/
 	int available();
-	uint8_t packetstate;
-	uint8_t uip_hdrlen;
+	static uint8_t packetstate;
+	static uint8_t uip_hdrlen;
 	
 	/** Returns the local IP address
 	*/
@@ -169,8 +163,8 @@ class RF24EthernetClass {//: public Print {
 	*/
 	IPAddress dnsServerIP();
 
-	uint8_t myData[UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN];
-	uint8_t myDataOut[OUTPUT_BUFFER_SIZE];
+	//uint8_t myData[OUTPUT_BUFFER_SIZE];
+	uint32_t lastRadio;
 
 	private:
 		RF24& radio;
@@ -193,7 +187,7 @@ class RF24EthernetClass {//: public Print {
 		void uip_callback();
 
 	//friend void serialip_appcall(void);
-	friend void uipudp_appcall(void);
+	//friend void uipudp_appcall(void);
     
 	friend class RF24Server;
     friend class RF24Client;
@@ -286,14 +280,21 @@ extern RF24EthernetClass RF24Ethernet;
  * 
  * This provides a fairly seamless interaction, since users only need to configure standard IP forwarding and firewall rules as desired.
  *
- * @section News News
+ * @section News Update News
  * 
- * <b>Jan 4 2015</b>  
+ * \version  <b>1.2b - Jan 16 2015</b>
+ *  - Add UDP support
+ *  - Add DNS support
+ *  - Add support for up to 512 byte buffer size
+ *  - Reduce used memory and program space
+ *  - Support for multiple connections with per-connection memory  buffers
+ *
+ * \version  <b>1.1b - Jan 4 2015</b>  
  *  - Add connection timeout to recover from hangs during failed client downloads
  *  - Better TCP window management to prevent hangs during client downloads
  *  - Stability improvements
  *
- * <b>Dec 2014</b>
+ * \version  <b>1.0b - Dec 2014</b>
  *  - Outgoing client data corruption should be fixed
  *
  * @section Config Configuration and Setup
