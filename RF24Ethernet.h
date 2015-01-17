@@ -30,6 +30,7 @@ extern "C" {
 #include "ethernet_comp.h"
 #include "IPAddress.h"
 #include "RF24Client.h"
+#include "RF24Server.h"
 
 #if UIP_CONF_UDP > 0
 #include "RF24Udp.h"
@@ -282,7 +283,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section News Update News
  * 
- * \version  <b>1.2b - Jan 16 2015</b>
+ * \version  <b>1.21b - Jan 16 2015</b>
  *  - Add UDP support
  *  - Add DNS support
  *  - Add support for up to 512 byte buffer size
