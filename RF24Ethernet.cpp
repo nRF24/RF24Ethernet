@@ -240,7 +240,7 @@ void RF24EthernetClass::tick() {
 	     network_send();
 	  }
     }
-
+    #endif
 #if UIP_UDP
       for(int i = 0; i < UIP_UDP_CONNS; i++) {
 	uip_udp_periodic(i);
@@ -254,7 +254,7 @@ void RF24EthernetClass::tick() {
 	}
       }
 #endif /* UIP_UDP */
-      
+#if defined (RF24_TAP)      
       /* Call the ARP timer function every 10 seconds. */
 
 	if(timer_expired(&Ethernet.arp_timer)) {
@@ -263,6 +263,7 @@ void RF24EthernetClass::tick() {
     }
 
   }
+
 #endif //RF24_TAP
 }
 

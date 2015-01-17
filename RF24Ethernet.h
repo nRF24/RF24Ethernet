@@ -283,7 +283,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section News Update News
  * 
- * \version  <b>1.21b - Jan 16 2015</b>
+ * \version  <b>1.22b - Jan 16 2015</b>
  *  - Add UDP support
  *  - Add DNS support
  *  - Add support for up to 512 byte buffer size
