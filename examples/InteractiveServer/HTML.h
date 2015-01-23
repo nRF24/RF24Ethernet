@@ -87,14 +87,13 @@ static const char main_html_p2[] PROGMEM =
 */
 void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
   
-  uint16_t mss = uip_mss();
-  char buffer[mss()]; // 45 bytes by default
+  char buffer[uip_mss()+1]; // 91 bytes by default
    
   // Create a pointer for iterating through the array
   const char *i;
   
   // Increment the iterator (i) in increments of 45-3 (OUTPUT_BUFFER_SIZE-3) and send the data to the client
-  for(i=_pointer; i<=_pointer+(size-(mss()));i+=mss()){
+  for(i=_pointer; i<=_pointer+(size-(uip_mss()));i+=uip_mss()){
     snprintf_P(buffer,uip_mss()+1,i);
     _client.write( buffer );
   }
@@ -207,5 +206,4 @@ void stats_page(EthernetClient& _client) {
     "</body>"
     "</html>";
     
-
 
