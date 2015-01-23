@@ -23,37 +23,28 @@ extern "C" {
   //#include "uip-conf.h"
 }
 
+/*************************************************************/
+
 RF24Server::RF24Server(uint16_t port) : _port(htons(port))
 {
 }
 
+/*************************************************************/
+
 RF24Client RF24Server::available()
 {
-
   Ethernet.tick();
   for ( uip_userdata_t* data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++ )
     {
-        if (data->packets_in[0] != 0 && (((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport ==_port)
+        if (data->packets_in != 0 && (((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport ==_port)
               || ((data->state & UIP_CLIENT_REMOTECLOSED) && ((uip_userdata_closed_t *)data)->lport == _port))){
-			  
-		//Serial.println("*********OK");	  
-        return RF24Client(data);
+			  return RF24Client(data);
 		}
-    }
-	
-  //Serial.println("************NOK");
+    }	
   return RF24Client();
-
-/*	  uint8_t sok=1;
-	  EthernetClient client(sok);
-	  if (client.available()) {
-        // XXX: don't always pick the lowest numbered socket.
-        return client;
-      }
-*/
-  
-  
 }
+
+/*************************************************************/
 
 void RF24Server::begin()
 {  
@@ -61,10 +52,14 @@ void RF24Server::begin()
   RF24Ethernet.tick();  
 }
 
+/*************************************************************/
+
 size_t RF24Server::write(uint8_t c)
 {
   return write(&c,1);
 }
+
+/*************************************************************/
 
 size_t RF24Server::write(const uint8_t *buf, size_t size)
 {
@@ -77,3 +72,4 @@ size_t RF24Server::write(const uint8_t *buf, size_t size)
   return ret;
 }
 
+/*************************************************************/

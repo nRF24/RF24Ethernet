@@ -1,12 +1,16 @@
 /*
- * RF24Ethernet Hello World example, lib initially based on SerialIP
+ * RF24Ethernet Getting_Started_SimpleServer example by TMRh20
  *
  * RF24Ethernet uses the fine uIP stack by Adam Dunkels <adam@sics.se>
  *
- * This example demonstrates how to send out an HTTP response to a browser
+ * This example demonstrates how to send out an HTTP response to a browser using extra
+ * resources to print radio debug information and uses Serial.print
  *
- * This example was based upon uIP hello-world by Adam Dunkels <adam@sics.se>
- * Ported to the Arduino IDE by Adam Nielsen <malvineous@shikadi.net>
+ * In order to minimize memory use and program space:
+ * 1. Open the RF24Network library folder
+ * 2. Edit the RF24Networl_config.h file
+ * 3. Un-comment #define DISABLE_USER_PAYLOADS
+ * 4. See the Getting_Started_SimpleServer_Minimal example
  */
 
 
@@ -14,7 +18,7 @@
 #include <RF24.h>
 #include <SPI.h>
 #include <printf.h>
- #include <RF24Ethernet.h>
+#include <RF24Ethernet.h>
 
 
 /** Configure the radio CE & CS pins **/
@@ -31,14 +35,10 @@ void setup() {
   Serial.begin(115200);
   printf_begin();
   Serial.println(F("start"));
-
-  // This initializes the radio with basic settings.
-  // Needs to be called at the beginning of every sketch
-  Ethernet.use_device();  
   
   // Tell RF24Ethernet which channel to use. This step is not that important, but it 
   // is important to set the channel this way, not directly via the radio
-  Ethernet.setChannel(97);
+  //Ethernet.setChannel(97);
   
   // This step is very important. The address of the node needs to be set both
   // on the radio and in the UIP layer
@@ -67,8 +67,6 @@ void setup() {
   server.begin();
 }
 
-uint16_t testTimer = 0;
-
 void loop() {
 
   size_t size;
@@ -83,15 +81,8 @@ void loop() {
         Serial.println("");
        }
         // Send an HTML response to the client.
-	client.write( "HTTP/1.1 200 OK\n");
-        client.write( "Content-Type: text/html\n");
-        client.write( "Connection: close\n");
-        client.write( "Refresh: 5\n");
-        client.write( "\n");
-        client.write( "<!DOCTYPE HTML>\n");
-        client.write( "<html>\n");
-        client.write( "HELLO FROM ARDUINO!\n");
-        client.write( "</html>\n");
+	client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
+        client.write( "\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");	
 	   
        client.stop(); 
        Serial.println(F("********"));       

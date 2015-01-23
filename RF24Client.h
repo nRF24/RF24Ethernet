@@ -6,11 +6,11 @@
 #include "Print.h"
 #import "Client.h"
 
-#define UIP_SOCKET_DATALEN UIP_TCP_MSS
+//#define UIP_SOCKET_DATALEN UIP_TCP_MSS
 //#define UIP_SOCKET_NUMPACKETS UIP_RECEIVE_WINDOW/UIP_TCP_MSS+1
-#ifndef UIP_SOCKET_NUMPACKETS
-#define UIP_SOCKET_NUMPACKETS 5
-#endif
+//#ifndef UIP_SOCKET_NUMPACKETS
+//#define UIP_SOCKET_NUMPACKETS 5
+//#endif
 
 #define UIP_CLIENT_CONNECTED 0x10
 #define UIP_CLIENT_CLOSE 0x20
@@ -36,8 +36,8 @@ typedef struct {
  */
 typedef struct {
   uint8_t state;
-  uint8_t packets_in[UIP_SOCKET_NUMPACKETS];
-  uint8_t packets_out[UIP_SOCKET_NUMPACKETS];
+  bool packets_in;
+  bool packets_out;
   uint16_t out_pos;
 #if UIP_CLIENT_TIMER >= 0
   unsigned long timer;
@@ -132,22 +132,22 @@ public:
 	* Flush all incoming client data from the current connection/buffer
 	*/
     void flush();
-    using Print::write;	
+    
+	using Print::write;	
 		
     operator bool();
     virtual bool operator==(const EthernetClient&);
     virtual bool operator!=(const EthernetClient& rhs) { return !this->operator==(rhs); };
-	static uip_userdata_t all_data[UIP_CONNS];
+
+	static uip_userdata_t all_data[UIP_CONNS];	
 private:
-	
-	static int handle_connection(uip_tcp_appstate_t *s);
+
     RF24Client(struct uip_conn *_conn);
     RF24Client(uip_userdata_t* conn_data);
 	
     uip_userdata_t* data;
 	
-	static int _available(uip_userdata_t *);
-	
+	static int _available(uip_userdata_t *);	
     
 	static uip_userdata_t* _allocateData();
 	static size_t _write(uip_userdata_t *,const uint8_t *buf, size_t size);
@@ -155,7 +155,6 @@ private:
 	friend class RF24EthernetClass;
 	friend class RF24Server;
 	
-	//friend void uipclient_appcall(void);	
 	friend void serialip_appcall(void);
 	friend void uip_log(char* msg);
 };

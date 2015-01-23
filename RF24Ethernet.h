@@ -148,8 +148,6 @@ class RF24EthernetClass {//: public Print {
 	/** Indicates whether data is available.
 	*/
 	int available();
-	static uint8_t packetstate;
-	static uint8_t uip_hdrlen;
 	
 	/** Returns the local IP address
 	*/
@@ -165,12 +163,11 @@ class RF24EthernetClass {//: public Print {
 	IPAddress dnsServerIP();
 
 	//uint8_t myData[OUTPUT_BUFFER_SIZE];
-	uint32_t lastRadio;
+	//uint32_t lastRadio;
 
 	private:
 		RF24& radio;
 		RF24Network& network;
-		uint8_t in_packet;
 		
 		static IPAddress _dnsServerAddress;
 		void configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
@@ -181,18 +178,14 @@ class RF24EthernetClass {//: public Print {
 		static boolean network_send();		
 		
 		uint8_t RF24_Channel;
-		int handle_connection(uip_tcp_appstate_t *s);
-		struct timer periodic_timer;
-		
-		struct timer arp_timer;
-		void uip_callback();
 
-	//friend void serialip_appcall(void);
-	//friend void uipudp_appcall(void);
-    
-	friend class RF24Server;
-    friend class RF24Client;
-	friend class RF24UDP;
+		struct timer periodic_timer;
+		#if defined RF24_TAP
+		struct timer arp_timer;
+		#endif
+		friend class RF24Server;
+		friend class RF24Client;
+		friend class RF24UDP;
 };
 
 //void handle_ip_event(uint8_t type, ip_connection_t *conn, void **user);
@@ -283,7 +276,13 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section News Update News
  * 
- * \version  <b>1.22b - Jan 16 2015</b>
+ * \version  <b>1.23b - Jan 22 2015</b>
+ *  - Small bugfixes from v1.20
+ *  - Slightly reduced latency
+ *  - Code clean-up/Reduce code size and memory usage for main Client/Server code
+ *  - Cleaned up some examples, added DNS and SimpleServer_Minimal examples
+ *  
+ * \version  <b>1.221b - Jan 16 2015</b>
  *  - Add UDP support
  *  - Add DNS support
  *  - Add support for up to 512 byte buffer size
@@ -304,7 +303,6 @@ extern RF24EthernetClass RF24Ethernet;
  *  <br>
  *  <b> RPi </b>
  * On the Raspberry Pi, a companion program, RF24toTUN must be installed along with the RF24 and RF24Network libraries
- * @note RF24toTUN requires the boost libraries. Run @code sudo apt-get install libboost1.50-all @endcode
  * 
  * See the video at https://www.youtube.com/watch?v=rBAIqAaRu0g for a walk-through of the setup with Raspberry Pi and Arduino.
  *

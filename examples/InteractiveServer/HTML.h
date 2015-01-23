@@ -87,20 +87,19 @@ static const char main_html_p2[] PROGMEM =
 */
 void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
   
-  char buffer[OUTPUT_BUFFER_SIZE+3]; // 45 bytes by default
+  uint16_t mss = uip_mss();
+  char buffer[mss()]; // 45 bytes by default
    
   // Create a pointer for iterating through the array
   const char *i;
   
   // Increment the iterator (i) in increments of 45-3 (OUTPUT_BUFFER_SIZE-3) and send the data to the client
-  for(i=_pointer; i<=_pointer+(size-(OUTPUT_BUFFER_SIZE-1));i+=OUTPUT_BUFFER_SIZE-3){
-    snprintf_P(buffer,OUTPUT_BUFFER_SIZE-2,i);
+  for(i=_pointer; i<=_pointer+(size-(mss()));i+=mss()){
+    snprintf_P(buffer,uip_mss()+1,i);
     _client.write( buffer );
   }
   // For the last bit, send only the data that remains
   snprintf_P(buffer,((_pointer+size)-i)+1,i);
-  //Serial.print("Psiz ");
-  //Serial.println((_pointer+size)-i);
   _client.write( buffer );
 }
 

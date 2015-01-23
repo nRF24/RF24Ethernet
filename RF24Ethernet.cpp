@@ -46,12 +46,9 @@ void RF24EthernetClass::setMac(uint16_t address){
 	
 	if(!network.multicastRelay){ // Radio has not been started yet
 	  radio.begin();
-	}
+	}	
 	
-	
-	uint8_t mac[6] = {0x52,0x46,0x32,0x34,0x00,0x00};
-	mac[4] = address;
-	mac[5] = address >> 8;
+	const uint8_t mac[6] = {0x52,0x46,0x32,0x34,address,address>>8};
 	//printf("MAC: %o %d\n",address,mac[0]);
 	
 	#if defined (RF24_TAP)
@@ -116,7 +113,8 @@ _dnsServerAddress = dns;
 	//timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
 	
 	#if defined (RF24_TAP)
-	timer_set(&this->arp_timer, CLOCK_SECOND * 10);
+//	timer_set(&this->arp_timer, CLOCK_SECOND * 10);
+	timer_set(&this->arp_timer, CLOCK_SECOND * 2);
 	#endif
 	
 	uip_init();
@@ -179,7 +177,7 @@ return _dnsServerAddress;
 void RF24EthernetClass::tick() {
 
 	if(RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE){
-		RF24Ethernet.lastRadio = millis();
+		//RF24Ethernet.lastRadio = millis();
 		RF24NetworkFrame *frame = RF24Ethernet.network.frag_ptr;	
 		uip_len = frame->message_size;
 		memcpy(&uip_buf,frame->message_buffer,frame->message_size);	
@@ -271,7 +269,7 @@ void RF24EthernetClass::tick() {
 boolean RF24EthernetClass::network_send()
 {
 		RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
-		while(millis() - RF24Ethernet.lastRadio < 2){}
+		//while(millis() - RF24Ethernet.lastRadio < 1){}
 		
 		bool ok = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
 		#if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2

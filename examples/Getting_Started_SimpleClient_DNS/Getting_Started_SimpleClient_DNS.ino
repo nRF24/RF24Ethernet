@@ -1,14 +1,15 @@
 /*
  * TMRh20 2014
  * 
- * RF24Ethernet simple web client example
+ * RF24Ethernet simple web client using DNS example
  *
  * RF24Ethernet uses the fine uIP stack by Adam Dunkels <adam@sics.se>
  *
- * In order to minimize memory use and program space:
- * 1. Open the RF24Network library folder
- * 2. Edit the RF24Networl_config.h file
- * 3. Un-comment #define DISABLE_USER_PAYLOADS
+ * In order to use DNS, UDP must be enabled in the uIP stack:
+ * 1. Open the RF24Ethernet library folder
+ * 2. Edit the uip_conf.h file
+ * 3. Set #define UIP_CONF_UDP 1
+ * 4. The gateway device must be able to forward DNS requests to the DNS server
  *
  * This example connects to google and downloads the index page
  */
@@ -33,29 +34,13 @@ void setup() {
   Serial.begin(115200);
  // printf_begin();
   
-  // Tell RF24Ethernet which channel to use. This step is not that important, but it 
-  // is important to set the channel this way, not directly via the radio
-  //Ethernet.setChannel(97);
-  
-  // This step is very important. The address of the node needs to be set both
-  // on the radio and in the UIP layer
-  // This is the RF24Network address and needs to be configured accordingly if
-  // using more than 4 nodes with the master node. Otherwise, 01-04 can be used.
   uint16_t myRF24NetworkAddress = 01;
   Ethernet.setMac(myRF24NetworkAddress);
   
-  //Optional
-  //radio.setPALevel(RF24_PA_HIGH);
-  //radio.printDetails(); // Requires printf
-  
-  // Set the IP address we'll be using.  Make sure this doesn't conflict with
-  // any IP addresses or subnets on your LAN or you won't be able to connect to
-  // either the Arduino or your LAN...
   IPAddress myIP(10,10,2,4);
-  Ethernet.begin(myIP);
+  IPAddress dnsIP(192,168,1,1);
+  Ethernet.begin(myIP,dnsIP);
   
-  // If you'll be making outgoing connections from the Arduino to the rest of
-  // the world, you'll need a gateway set up.
   IPAddress gwIP(10,10,2,2);
   Ethernet.set_gateway(gwIP);  
 }
@@ -95,18 +80,13 @@ if(size = client.available() > 0){
 
 void connect(){
     Serial.println(F("connecting"));
-    IPAddress goog(74,125,224,87);
-    IPAddress pizza(94,199,58,243);
-    if (client.connect(goog, 80)) {
+
+    if (client.connect("www.google.com", 80)) {
       Serial.println(F("connected"));
       
       // Make an HTTP request:
-      //client.write("GET /asciiart/pizza.txt HTTP/1.1\n");
-      client.write("GET / HTTP/1.1\n");
-      
-      //client.write("Host: fiikus.net\n");
-      client.write("Host: www.google.ca\n");
-      
+      client.write("GET / HTTP/1.1\n");      
+      client.write("Host: www.google.ca\n");      
       client.write("Connection: close\n");
       client.println();    
     

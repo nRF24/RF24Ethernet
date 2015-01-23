@@ -1,11 +1,18 @@
 /*
- * RF24Ethernet Webserver controlling an LED example *
+ * RF24Ethernet Getting_Started_InteractiveServer example by TMRh20
+ * - Webserver controlling an LED example
  *
  * RF24Ethernet uses the uIP stack by Adam Dunkels <adam@sics.se>
  *
  * This example demonstrates how to configure a sensor node to act as a webserver and
  * allows a user to control a connected LED by clicking links on the webpage
  * The requested URL is used as input, to determine whether to turn the LED off or on
+ *
+ * In order to minimize memory use and program space:
+ * 1. Open the RF24Network library folder
+ * 2. Edit the RF24Networl_config.h file
+ * 3. Un-comment #define DISABLE_USER_PAYLOADS
+ * 4. See the Getting_Started_SimpleServer_Minimal example
  */
 
 
@@ -31,16 +38,12 @@ void setup() {
   // Set up the speed of our serial link.
   Serial.begin(115200);
   //printf_begin();
-  Serial.println("start");
+  Serial.println(F("start"));
   pinMode(LED_PIN,OUTPUT); 
-
-  // This initializes the radio with basic settings.
-  // Needs to be called at the beginning of every sketch
-  Ethernet.use_device();  
   
   // Tell RF24Ethernet which channel to use. This step is not that important, but it 
   // is important to set the channel this way, not directly via the radio
-  Ethernet.setChannel(97);
+  //Ethernet.setChannel(97);
   
   // This step is very important. The address of the node needs to be set both
   // on the radio and in the UIP layer
@@ -50,7 +53,7 @@ void setup() {
   Ethernet.setMac(myRF24NetworkAddress);
   
   //Optional
-  radio.setPALevel(RF24_PA_HIGH);
+  //radio.setPALevel(RF24_PA_HIGH);
   //radio.printDetails();
   
   // Set the IP address we'll be using.  Make sure this doesn't conflict with
@@ -108,13 +111,10 @@ void loop() {
         char stateLine[24];
         int len = sprintf(stateLine, "The LED state is %d\n<br>",led_state);	
         
-        client.write( "HTTP/1.1 200 OK\nContent-Type: text/html\n");
-        client.write( "Connection: close\n\n<!DOCTYPE HTML>\n<html>\n");
+        client.write( "HTTP/1.1 200 OK\nContent-Type: text/html\n Connection: close\n\n<!DOCTYPE HTML>\n<html>\n");
         client.write( "Hello From Arduino!<br>\n");
         client.write( stateLine );
-        client.write( "<a href='/ON'>Turn LED On</a><br>\n");
-        client.write( "<a href='/OF'>Turn LED Off</a><br>\n");
-        client.write( "</html>\n");
+        client.write( "<a href='/ON'>Turn LED On</a><br>\n <a href='/OF'>Turn LED Off</a><br>\n</html>\n");
 
        client.stop(); 
        Serial.println(F("********"));
