@@ -93,7 +93,7 @@ void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
   const char *i;
   
   // Increment the iterator (i) in increments of 45-3 (OUTPUT_BUFFER_SIZE-3) and send the data to the client
-  for(i=_pointer; i<=_pointer+(size-(uip_mss()));i+=uip_mss()){
+  for(i=_pointer; i<_pointer+(size-(uip_mss()));i+=uip_mss()){
     snprintf_P(buffer,uip_mss()+1,i);
     _client.write( buffer );
   }
