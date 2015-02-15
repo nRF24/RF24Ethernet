@@ -31,33 +31,16 @@ void setup() {
   Serial.begin(115200);
   //printf_begin();
   Serial.println(F("start"));
-
-  // This initializes the radio with basic settings.
-  // Needs to be called at the beginning of every sketch
-  Ethernet.use_device();  
   
-  // Tell RF24Ethernet which channel to use. This step is not that important, but it 
-  // is important to set the channel this way, not directly via the radio
-  //Ethernet.setChannel(97);
-  //mesh.setChannel(97);
-  
-  // This step is very important. The address of the node needs to be set both
-  // on the radio and in the UIP layer
-  // This is the RF24Network address and needs to be configured accordingly if
-  // using more than 4 nodes with the master node. Otherwise, 01-04 can be used.
-
-  mesh.setNodeID(1); //Node id must be any unique value between 1 and 250
+  // Note: The mesh nodeID must be equal to the last octet of the assigned
+  // IP address
+  mesh.setNodeID(4); //Node id must be any unique value between 1 and 250
   mesh.begin();
   //Serial.println(mesh.mesh_address,HEX);
   Ethernet.setMac(mesh.mesh_address);
   
-  //Optional
-  radio.setPALevel(RF24_PA_LOW);
-  radio.printDetails();
-  
-  // Set the IP address we'll be using.  Make sure this doesn't conflict with
-  // any IP addresses or subnets on your LAN or you won't be able to connect to
-  // either the Arduino or your LAN...
+  // Set the IP address we'll be using. The last octet of the IP must be equal
+  // to the designated mesh nodeID
   IPAddress myIP(10,10,2,4);
   Ethernet.begin(myIP);
   
