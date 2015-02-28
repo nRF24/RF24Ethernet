@@ -74,26 +74,21 @@ void loop() {
   if(EthernetClient client = server.available())  
   {
 
-      while((size = client.available()) > 0)
-      {                 
-        // Read any incoming data from the client
-        Serial.print((char)client.read());
-        Serial.println("");
-       }
-        // Send an HTML response to the client.
-	client.write( "HTTP/1.1 200 OK\n");
-        client.write( "Content-Type: text/html\n");
-        client.write( "Connection: close\n");
-        client.write( "Refresh: 5\n");
-        client.write( "\n");
-        client.write( "<!DOCTYPE HTML>\n");
-        client.write( "<html>\n");
-        client.write( "HELLO FROM ARDUINO!\n");
-        client.write( "</html>\n");
-	   
-       client.stop(); 
-       Serial.println(F("********"));       
-    }
+    do{
+    
+      while((size = client.available()) > 0){
+         Serial.print((char)client.read());
+       }      
+    //Give the client time to receive more data  
+    }while(client.waitAvailable(500) > 1);
+   
+    // Send an HTML response to the client. Default max size/characters per write is 90
+    client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\nRefresh: 5\n\n");
+    client.write( "<!DOCTYPE HTML>\n <html>HELLO FROM ARDUINO!</html>");
+
+    client.stop(); 
+    Serial.println(F("********"));       
+  }
  
   // We can do other things in the loop, but be aware that the loop will
   // briefly pause while IP data is being processed.

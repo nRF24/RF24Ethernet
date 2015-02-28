@@ -47,6 +47,7 @@ typedef struct {
  uint32_t restartInterval;
  uint32_t connAbortTime;
  uint8_t myData[OUTPUT_BUFFER_SIZE];
+ uint16_t dataPos;
  uint16_t dataCnt;
 } uip_userdata_t;
 
@@ -123,6 +124,7 @@ public:
 	*/
 	int available();
     
+	int waitAvailable(uint32_t timeout=1000);
     /**
 	* Read a byte from the incoming buffer without advancing the point of reading
 	*/

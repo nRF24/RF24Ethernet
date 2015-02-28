@@ -215,6 +215,7 @@ void serialip_appcall(void) {
 		  u->state &= ~UIP_CLIENT_RESTART;
 		  u->windowOpened = false;
 		  u->packets_in = 1;
+		  u->dataPos=0;
 	  }		  
 	  goto finish;
 	}
@@ -339,17 +340,35 @@ uip_userdata_t *RF24Client::_allocateData() {
 	  data->state = sock | UIP_CLIENT_CONNECTED;
 	  data->packets_in=0;
 	  data->dataCnt = 0;
+	  data->dataPos=0;
 	  return data;
 	}
   }
   return NULL;
 }
 
+int RF24Client::waitAvailable(uint32_t timeout){
+	
+	
+	uint32_t start = millis();
+	do{
+		RF24Ethernet.tick();
+	
+		if(millis()-start > timeout){
+		  return 0; 
+		}
+	
+	}while(available() < 1);
+
+	return available();
+}
+
 /*************************************************************/
 
 int RF24Client::available() {
-  if (*this){
-	RF24Ethernet.tick();
+  
+  RF24Ethernet.tick();  
+  if (*this){	
 	return _available(data);
   }
   return 0;
@@ -371,13 +390,14 @@ int RF24Client::read(uint8_t *buf, size_t size) {
     if (!data->packets_in) { return 0; }
 
     size = rf24_min(data->dataCnt,size);
-	memcpy(buf,&data->myData,size);
+	memcpy(buf,&data->myData[data->dataPos],size);
 	data->dataCnt -= size;
-	memmove(data->myData,data->myData+size,data->dataCnt);	  			
+	data->dataPos+=size;
     
 	if(!data->dataCnt) {
       
 	  data->packets_in = 0;
+	  data->dataPos = 0;
 	  
       if (uip_stopped(&uip_conns[data->state & UIP_CLIENT_SOCKETS]) && !(data->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
         data->state |= UIP_CLIENT_RESTART;

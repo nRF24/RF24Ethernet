@@ -177,13 +177,8 @@ return _dnsServerAddress;
 void RF24EthernetClass::tick() {
 
 	if(RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE){
-		//RF24Ethernet.lastRadio = millis();
-		RF24NetworkFrame *frame = RF24Ethernet.network.frag_ptr;	
-		uip_len = frame->message_size;
-		memcpy(&uip_buf,frame->message_buffer,frame->message_size);	
-		/*Serial.println();
-		Serial.print("eth ext ");
-		Serial.println(uip_len);*/
+		uip_len = RF24Ethernet.network.frag_ptr->message_size;
+		memcpy(&uip_buf,RF24Ethernet.network.frag_ptr->message_buffer,RF24Ethernet.network.frag_ptr->message_size);
 	}
 
     #if !defined (RF24_TAP)
