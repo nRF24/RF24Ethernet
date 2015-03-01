@@ -209,7 +209,7 @@ void serialip_appcall(void) {
       IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println();Serial.print(F("UIPClient uip_newdata, uip_len:")); Serial.println(uip_len); );
       if (uip_len && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
 		  uip_stop();
-		  memcpy(u->myData + u->dataCnt, uip_appdata, uip_datalen());
+		  memcpy(u->myDataIn, uip_appdata, uip_datalen());
 		  u->dataCnt += uip_datalen();
 		  u->connAbortTime = u->restartTime = millis();
 		  u->state &= ~UIP_CLIENT_RESTART;
@@ -348,18 +348,14 @@ uip_userdata_t *RF24Client::_allocateData() {
 }
 
 int RF24Client::waitAvailable(uint32_t timeout){
-	
-	
+
 	uint32_t start = millis();
-	do{
-		RF24Ethernet.tick();
-	
+    while(available() < 1){	
 		if(millis()-start > timeout){
 		  return 0; 
 		}
-	
-	}while(available() < 1);
-
+		RF24Ethernet.tick();
+	}
 	return available();
 }
 
@@ -367,7 +363,7 @@ int RF24Client::waitAvailable(uint32_t timeout){
 
 int RF24Client::available() {
   
-  RF24Ethernet.tick();  
+  RF24Ethernet.tick();    
   if (*this){	
 	return _available(data);
   }
@@ -390,9 +386,11 @@ int RF24Client::read(uint8_t *buf, size_t size) {
     if (!data->packets_in) { return 0; }
 
     size = rf24_min(data->dataCnt,size);
-	memcpy(buf,&data->myData[data->dataPos],size);
+	memcpy(buf,&data->myDataIn[data->dataPos],size);
+	//memcpy(buf,&data->myData,size);
 	data->dataCnt -= size;
 	data->dataPos+=size;
+	//memmove(data->myData,data->myData+size,data->dataCnt);	
     
 	if(!data->dataCnt) {
       
@@ -434,13 +432,11 @@ int RF24Client::read() {
 /*************************************************************/
 
 int RF24Client::peek() {
-  if (*this) {
-	if (data->packets_in == 1) {
+	/*if(available()){
 	  uint8_t c;
-	  memcpy(&c,&data->myData,1);
+	  memcpy(&c,&data->myDataIn[data->dataPos],1);
 	  return c;
-	}
-  }
+	}*/
   return -1;
 }
 

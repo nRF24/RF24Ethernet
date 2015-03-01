@@ -13,7 +13,7 @@
 class DNSClient
 {
 public:
-    // ctor
+
     void begin(const IPAddress& aDNSServer);
 
     /** Convert a numeric IP address string into a four-byte IP address.

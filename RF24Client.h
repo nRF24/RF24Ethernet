@@ -47,6 +47,7 @@ typedef struct {
  uint32_t restartInterval;
  uint32_t connAbortTime;
  uint8_t myData[OUTPUT_BUFFER_SIZE];
+ uint8_t myDataIn[OUTPUT_BUFFER_SIZE]; 
  uint16_t dataPos;
  uint16_t dataCnt;
 } uip_userdata_t;
@@ -118,14 +119,26 @@ public:
     
 	/**
 	* Indicates whether data is available to be read by the client.
-	* Returns the number of bytes available to be read
+	* @return Returns the number of bytes available to be read
 	* @note Calling client or server available() keeps the IP stack and RF24Network layer running, so needs to be called regularly,  
     * even when disconnected or delaying for extended periods.  
 	*/
 	int available();
     
-	int waitAvailable(uint32_t timeout=1000);
-    /**
+	/**
+	* Wait Available
+	*
+	* Helps to ensure all incoming data has been received, prior to writing data back to the client, etc.
+	*
+	* Indicates whether data is available to be read by the client, after waiting a maximum period of time.
+	* @return Returns the number of bytes available to be read or 0 if timed out
+	* @note Calling client or server available() keeps the IP stack and RF24Network layer running, so needs to be called regularly,  
+    * even when disconnected or delaying for extended periods.  
+	*/
+	
+	int waitAvailable(uint32_t timeout=750);
+    
+	/**
 	* Read a byte from the incoming buffer without advancing the point of reading
 	*/
 	int peek();

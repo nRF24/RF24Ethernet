@@ -124,7 +124,7 @@ User Configuration Options
   * Increase this value to reduce response times and increase throughput during user interactions.  
   * @note: Increasing this value will increase throughput for individual nodes, but can impact other network traffic.  
   */
-#define UIP_TIMER_DIVISOR 4
+#define UIP_TIMER_DIVISOR 16
 
 /**
  * If operating solely as a server, disable the ability to open TCP connections as a client by setting to 0
