@@ -74,15 +74,15 @@ void loop() {
   if(EthernetClient client = server.available())  
   {
 
-      while((size = client.available()) > 0)
+      while((size = client.waitAvailable()) > 0)
       {                 
         // Read any incoming data from the client
         Serial.print((char)client.read());
         Serial.println("");
        }
         // Send an HTML response to the client.
-	client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
-        client.write( "\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");	
+       client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
+       client.write( "\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");	
 	   
        client.stop(); 
        Serial.println(F("********"));       

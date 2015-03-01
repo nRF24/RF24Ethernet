@@ -47,15 +47,15 @@ void loop() {
 
   if(EthernetClient client = server.available()) {
 
-      while((size = client.available()) > 0) {                 
+      while((size = client.waitAvailable()) > 0) {                 
         // Flush any incoming data from the client
         client.flush();
       }
       // Send an HTML response to the client.
-	client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
-        client.write( "\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");	   
-        client.stop();     
-    }
+      client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
+      client.write( "\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");	   
+      client.stop();     
+  }
  
   // We can do other things in the loop, but be aware that the loop will
   // briefly pause while IP data is being processed.

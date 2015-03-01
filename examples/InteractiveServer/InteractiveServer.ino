@@ -96,7 +96,7 @@ void loop() {
         }
       }
       // Empty the rest of the data from the client
-      while (client.available()) {
+      while (client.waitAvailable()) {
         client.flush();
       }
     }

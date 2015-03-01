@@ -69,24 +69,16 @@ void loop() {
      }
   }
   
-  size_t size;
-
   if(EthernetClient client = server.available())  
   {
-
-    do{
-    
-      while((size = client.available()) > 0){
-         Serial.print((char)client.read());
-       }      
-    //Give the client time to receive more data  
-    }while(client.waitAvailable(500) > 1);
-   
+     while( client.waitAvailable() > 0){
+        Serial.print((char)client.read());
+     }
     // Send an HTML response to the client. Default max size/characters per write is 90
-    client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\nRefresh: 5\n\n");
-    client.write( "<!DOCTYPE HTML>\n <html>HELLO FROM ARDUINO!</html>");
-
+    client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
+    client.write( "<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");
     client.stop(); 
+
     Serial.println(F("********"));       
   }
  
