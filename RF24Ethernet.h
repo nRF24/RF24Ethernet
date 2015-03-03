@@ -309,6 +309,11 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section News Update News
  * 
+ * \version <b>1.24b - March 3 2015</b>
+ * - Utilize separate incoming/outgoing buffers (bugfix)
+ * - Update documentation for DNS & UDP
+ * - Add waitAvailable() function, update examples to demonstrate usage.
+ *
  * \version  <b>1.23b - Jan 22 2015</b>
  *  - Small bugfixes from v1.20
  *  - Slightly reduced latency
