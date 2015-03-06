@@ -207,15 +207,28 @@ void serialip_appcall(void) {
   if(u){
     if (uip_newdata()){
       IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println();Serial.print(F("UIPClient uip_newdata, uip_len:")); Serial.println(uip_len); );
-      if (uip_len && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
-		  uip_stop();
-		  memcpy(u->myDataIn, uip_appdata, uip_datalen());
-		  u->dataCnt += uip_datalen();
-		  u->connAbortTime = u->restartTime = millis();
-		  u->state &= ~UIP_CLIENT_RESTART;
-		  u->windowOpened = false;
+      
+	  if (uip_len && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
+		  
+		if(u->dataCnt > 0 || uip_len > uip_mss()/2){
+			uip_stop();
+		    u->connAbortTime = u->restartTime = millis();
+		    u->state &= ~UIP_CLIENT_RESTART;
+		    u->windowOpened = false;			
+		}
+	    memcpy(&u->myDataIn[u->dataPos+u->dataCnt], uip_appdata, uip_datalen());
+	    u->dataCnt += uip_datalen();
+		
+	    /*if(u->dataCnt == uip_mss()){
+		    uip_stop();
+		    u->connAbortTime = u->restartTime = millis();
+		    u->state &= ~UIP_CLIENT_RESTART;
+		    u->windowOpened = false;
+		}	  */
+
 		  u->packets_in = 1;
-		  u->dataPos=0;
+		  //u->dataPos=0;
+		  
 	  }		  
 	  goto finish;
 	}
@@ -253,7 +266,7 @@ void serialip_appcall(void) {
 	
   /*******Polling**********/
   if (uip_poll() || uip_rexmit() ){
-    IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.println(F("UIPClient uip_poll")); );
+    //IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.println(F("UIPClient uip_poll")); );
     
 	if (u->packets_out != 0 ) {
 	  uip_len = u->out_pos;
@@ -387,11 +400,13 @@ int RF24Client::read(uint8_t *buf, size_t size) {
 
     size = rf24_min(data->dataCnt,size);
 	memcpy(buf,&data->myDataIn[data->dataPos],size);
-	//memcpy(buf,&data->myData,size);
 	data->dataCnt -= size;
+	
 	data->dataPos+=size;
-	//memmove(data->myData,data->myData+size,data->dataCnt);	
-    
+    if(data->dataPos >= uip_mss()){
+	  data->dataPos = 0;
+	}
+	
 	if(!data->dataCnt) {
       
 	  data->packets_in = 0;
