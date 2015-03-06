@@ -308,7 +308,10 @@ extern RF24EthernetClass RF24Ethernet;
  *
  *
  * @section News Update News
- * 
+ *
+ * \version <b>1.3b - March 6 2015</b>
+ * - Major Improvement: Better TCP window handling increases reliability, throughput and performance
+ *
  * \version <b>1.24b - March 3 2015</b>
  * - Utilize separate incoming/outgoing buffers (bugfix)
  * - Update documentation for DNS & UDP
