@@ -212,10 +212,10 @@ void serialip_appcall(void) {
 		  
 		if(u->dataCnt > 0 || uip_len > uip_mss()/2){
 			uip_stop();
-		    u->connAbortTime = u->restartTime = millis();
 		    u->state &= ~UIP_CLIENT_RESTART;
 		    u->windowOpened = false;			
 		}
+		u->connAbortTime = u->restartTime = millis();
 	    memcpy(&u->myDataIn[u->dataPos+u->dataCnt], uip_appdata, uip_datalen());
 	    u->dataCnt += uip_datalen();
 		
