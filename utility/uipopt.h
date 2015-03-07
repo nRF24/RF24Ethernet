@@ -298,7 +298,7 @@
  * This should not be changed. 
  * TMRh20: Lower RTX value for shorter timeouts
  */
-#define UIP_MAXRTX      8 //8
+#define UIP_MAXRTX      10 //8
 
 /**
  * The maximum number of times a SYN segment should be retransmitted
