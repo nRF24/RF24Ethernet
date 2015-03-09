@@ -34,6 +34,12 @@ RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network): radio
 
 /*************************************************************/
 
+void RF24EthernetClass::update() {
+  Ethernet.tick();
+}
+
+/*************************************************************/
+
 void RF24EthernetClass::use_device()
 {
 // Kept for backwards compatibility only

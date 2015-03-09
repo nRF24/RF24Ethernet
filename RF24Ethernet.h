@@ -162,8 +162,9 @@ class RF24EthernetClass {//: public Print {
 	*/
 	IPAddress dnsServerIP();
 
-	//uint8_t myData[OUTPUT_BUFFER_SIZE];
-	//uint32_t lastRadio;
+	/** Keeps the TCP/IP stack running & processing incoming data
+	*/
+	void update();
 
 	private:
 		RF24& radio;
@@ -187,8 +188,6 @@ class RF24EthernetClass {//: public Print {
 		friend class RF24Client;
 		friend class RF24UDP;
 };
-
-//void handle_ip_event(uint8_t type, ip_connection_t *conn, void **user);
 
 extern RF24EthernetClass RF24Ethernet;
 
