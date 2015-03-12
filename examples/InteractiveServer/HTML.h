@@ -87,7 +87,7 @@ static const char main_html_p2[] PROGMEM =
 */
 void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
   
-  size_t bufSize = UIP_BUFSIZE;
+  size_t bufSize = UIP_TCP_MSS;
   
   char buffer[bufSize+1]; // 91 bytes by default
    
