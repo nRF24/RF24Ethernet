@@ -50,6 +50,7 @@ typedef struct {
  uint8_t myDataIn[OUTPUT_BUFFER_SIZE]; 
  uint16_t dataPos;
  uint16_t dataCnt;
+ bool hold;
 } uip_userdata_t;
 
 

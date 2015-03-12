@@ -148,26 +148,37 @@ size_t RF24Client::write(const uint8_t *buf, size_t size) {
 
 size_t RF24Client::_write(uip_userdata_t* u, const uint8_t *buf, size_t size) {
 
-  u->state &= ~UIP_CLIENT_RESTART;
+  size_t total_written = 0;
+  size_t payloadSize = rf24_min(size,UIP_TCP_MSS);
+  
   RF24EthernetClass::tick();
+	
+test2:   	
+  if( u->out_pos + payloadSize > UIP_TCP_MSS || u->hold){
+	  RF24EthernetClass::tick();
+	  goto test2;
+  }
   
   if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED ) )) {
 
-	IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.print(F("UIPClient.write: writePacket(")); Serial.print(u->packets_out); Serial.print(F(") pos: ")); Serial.print(u->out_pos); Serial.print(F(", buf[")); Serial.print(size); Serial.print(F("]: '")); Serial.write((uint8_t*)buf,size); Serial.println(F("'")); );
-   	
-	memcpy(u->myData,buf,size);
+	IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.print(F("UIPClient.write: writePacket(")); Serial.print(u->packets_out); Serial.print(F(") pos: ")); Serial.print(u->out_pos); Serial.print(F(", buf[")); Serial.print(size-total_written); Serial.print(F("]: '")); Serial.write((uint8_t*)buf+total_written,payloadSize); Serial.println(F("'")); );
+	
+	memcpy(u->myData+u->out_pos,buf+total_written,payloadSize);	
 	u->packets_out = 1;
-	u->out_pos=size;
+	u->out_pos+=payloadSize;
 
-  test2:	  
 	if (!(u->state & (UIP_CLIENT_CONNECTED))){
 	  u->packets_out = 0;
 	  return -1;
 	}
-	if(u->packets_out == 1){
-	  RF24EthernetClass::tick();
-	  //delay(1);
-	  goto test2;
+	
+	if( size != total_written ){
+		total_written += payloadSize;
+		size_t remain = size-total_written;
+		payloadSize = rf24_min(remain,UIP_TCP_MSS);
+		
+		RF24EthernetClass::tick();
+		goto test2;
 	}
 	return u->out_pos;
 	}
@@ -252,7 +263,7 @@ void serialip_appcall(void) {
   if (uip_acked()) {
     IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.println(F("UIPClient uip_acked")); );
 	u->state &= ~UIP_CLIENT_RESTART;
-	u->windowOpened = u->packets_out = u->out_pos=false;
+	u->hold = u->out_pos = u->windowOpened = u->packets_out = false;
 	u->connAbortTime = u->restartTime = millis();	
   }
 	
@@ -263,6 +274,7 @@ void serialip_appcall(void) {
 	if (u->packets_out != 0 ) {
 	  uip_len = u->out_pos;
 	  uip_send(u->myData,u->out_pos);
+	  u->hold = true;
 	  goto finish;    
 	}else
     // Restart mechanism to keep connections going
