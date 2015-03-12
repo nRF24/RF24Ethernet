@@ -150,16 +150,15 @@ size_t RF24Client::_write(uip_userdata_t* u, const uint8_t *buf, size_t size) {
 
   size_t total_written = 0;
   size_t payloadSize = rf24_min(size,UIP_TCP_MSS);
-  
-  RF24EthernetClass::tick();
-	
-test2:   	
-  if( u->out_pos + payloadSize > UIP_TCP_MSS || u->hold){
-	  RF24EthernetClass::tick();
-	  goto test2;
-  }
+
+test2:    
+  RF24EthernetClass::tick(); 	
   
   if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED ) )) {
+
+    if( u->out_pos + payloadSize > UIP_TCP_MSS || u->hold){
+	  goto test2;
+    }
 
 	IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.print(F("UIPClient.write: writePacket(")); Serial.print(u->packets_out); Serial.print(F(") pos: ")); Serial.print(u->out_pos); Serial.print(F(", buf[")); Serial.print(size-total_written); Serial.print(F("]: '")); Serial.write((uint8_t*)buf+total_written,payloadSize); Serial.println(F("'")); );
 	
@@ -172,8 +171,9 @@ test2:
 	  return -1;
 	}
 	
-	if( size != total_written ){
-		total_written += payloadSize;
+	total_written += payloadSize;
+	
+	if( total_written < size ){	
 		size_t remain = size-total_written;
 		payloadSize = rf24_min(remain,UIP_TCP_MSS);
 		
@@ -235,7 +235,6 @@ void serialip_appcall(void) {
 	  }		  
 	  goto finish;
 	}
-  }
 
   /*******Closed/Timed-out/Aborted**********/  
   // If the connection has been closed, save received but unread data.
@@ -342,6 +341,7 @@ finish_newdata:
 	  u->restartTime = u->connAbortTime = millis();
 	}
   }
+  }
   
 finish:;
 
@@ -356,8 +356,10 @@ uip_userdata_t *RF24Client::_allocateData() {
     if (!data->state) {
 	  data->state = sock | UIP_CLIENT_CONNECTED;
 	  data->packets_in=0;
+	  data->packets_out=0;
 	  data->dataCnt = 0;
 	  data->dataPos=0;
+	  data->out_pos = 0;
 	  return data;
 	}
   }
