@@ -153,8 +153,7 @@ size_t RF24Client::_write(uip_userdata_t* u, const uint8_t *buf, size_t size) {
 
 test2:    
   RF24EthernetClass::tick(); 	
-  
-  if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED ) )) {
+  if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED ) ) && u->state & (UIP_CLIENT_CONNECTED) ) {
 
     if( u->out_pos + payloadSize > UIP_TCP_MSS || u->hold){
 	  goto test2;
@@ -166,11 +165,6 @@ test2:
 	u->packets_out = 1;
 	u->out_pos+=payloadSize;
 
-	if (!(u->state & (UIP_CLIENT_CONNECTED))){
-	  u->packets_out = 0;
-	  return -1;
-	}
-	
 	total_written += payloadSize;
 	
 	if( total_written < size ){	
@@ -182,6 +176,7 @@ test2:
 	}
 	return u->out_pos;
 	}
+  u->hold = false;
   return -1;
 }
 

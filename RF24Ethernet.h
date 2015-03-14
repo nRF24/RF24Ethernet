@@ -308,6 +308,11 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section News Update News
  *
+ * \version <b>1.41b - March 12 2015</b>
+ * - Add Ethernet.update() function
+ * - Improve/Fix outgoing data handling
+ * - Fix: Hanging in 1.4b
+ *
  * \version <b>1.3b - March 6 2015</b>
  * - Major Improvement: Better TCP window handling increases reliability, throughput and performance
  *
