@@ -36,8 +36,7 @@ void setup() {
   // IP address
   mesh.setNodeID(4); //Node id must be any unique value between 1 and 250
   mesh.begin();
-  //Serial.println(mesh.mesh_address,HEX);
-  Ethernet.setMac(mesh.mesh_address);
+  //Serial.println(mesh.mesh_address,OCT);
   
   // Set the IP address we'll be using. The last octet of the IP must be equal
   // to the designated mesh nodeID
@@ -54,7 +53,6 @@ void setup() {
   server.begin();
 }
 
-uint16_t testTimer = 0;
 uint32_t mesh_timer = 0;
 
 void loop() {
@@ -65,7 +63,7 @@ void loop() {
     mesh_timer = millis();
     if( ! mesh.checkConnection() ){
         //refresh the network address        
-        Ethernet.setMac(mesh.renewAddress());
+        mesh.renewAddress();
      }
   }
   

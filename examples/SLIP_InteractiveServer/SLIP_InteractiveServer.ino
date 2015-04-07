@@ -59,25 +59,15 @@ void setup() {
   printf_begin();
   Serial.println("start");
   pinMode(LED_PIN, OUTPUT);
-  // This initializes the radio with basic settings.
-  // Needs to be called at the beginning of every sketch
-  Ethernet.use_device();
-  
-  // Tell RF24Ethernet which channel to use. This step is not that important, but it
-  // is important to set the channel this way, not directly via the radio
-  Ethernet.setChannel(97);
- // mesh.setChannel(97);
+
 
   // This step is very important. When using TUN or SLIP, the IP of the device
   // must be configured as the NodeID in the RF24Mesh layer
   
   mesh.setNodeID(2);
   mesh.begin();
-  Serial.println(mesh.mesh_address,HEX);
-  Ethernet.setMac(mesh.mesh_address);
 
   //Optional
-  radio.setPALevel(RF24_PA_HIGH);
   radio.printDetails();
 
   // Set the IP address we'll be using.  Make sure this doesn't conflict with
@@ -110,7 +100,7 @@ void loop() {
     mesh_timer = millis();
     if( ! mesh.checkConnection() ){
         //refresh the network address        
-        Ethernet.setMac(mesh.renewAddress());
+        mesh.renewAddress();
      }
   }
   

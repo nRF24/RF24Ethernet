@@ -307,8 +307,8 @@ extern RF24EthernetClass RF24Ethernet;
  *
  *
  * @section News Update News
- *
- * \version <b>1.41b - March 12 2015</b>
+ * 
+ * \version <b>1.4b/1.411b - March 14 - Apr 7 2015 </b>
  * - Add Ethernet.update() function
  * - Improve/Fix outgoing data handling
  * - Fix: Hanging in 1.4b

@@ -327,7 +327,7 @@ finish_newdata:
   if (u->state & UIP_CLIENT_RESTART && !u->windowOpened) {
     if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){	  
 	  uip_restart();
-	  #if defined RF24ETHERNET_DEBUG_CLIENT || defined ETH_DEBUG_L1
+	  #if defined ETH_DEBUG_L1
 	    Serial.println();
 		Serial.println(F("UIPClient Re-Open TCP Window"));
       #endif

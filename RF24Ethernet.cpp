@@ -62,7 +62,6 @@ void RF24EthernetClass::setMac(uint16_t address){
 	#endif
 	RF24_Channel = RF24_Channel ? RF24_Channel : 97;
 	network.begin(RF24_Channel, address);
-	network.multicastRelay = 1;
 }
 
 /*******************************************************/
@@ -127,6 +126,7 @@ _dnsServerAddress = dns;
 	#if defined (RF24_TAP)
 	uip_arp_init();	
 	#endif
+   	network.multicastRelay = 1;
 }
 
 /*******************************************************/
