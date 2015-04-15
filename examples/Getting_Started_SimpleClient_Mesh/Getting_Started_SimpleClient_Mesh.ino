@@ -61,7 +61,19 @@ void setup() {
 uint32_t counter = 0;
 uint32_t reqTimer = 0;
 
+uint32_t mesh_timer = 0;
+
 void loop() {
+
+  // Optional: If the node needs to move around physically, or using failover nodes etc.,
+  // enable address renewal
+  if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
+    mesh_timer = millis();
+    if( ! mesh.checkConnection() ){
+        //refresh the network address        
+        mesh.renewAddress();
+     }
+  }
 
 size_t size;
 
