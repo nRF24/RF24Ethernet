@@ -1,4 +1,9 @@
 
+#if defined (ARDUINO_SAM_DUE)
+  #define sprintf_P sprintf
+  #define snprintf_P snprintf
+#endif
+
 bool led_state = 0;
 
 /**
@@ -96,11 +101,11 @@ void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
   
   // Increment the iterator (i) in increments of 45-3 (OUTPUT_BUFFER_SIZE-3) and send the data to the client
   for(i=_pointer; i<_pointer+(size-(bufSize));i+=bufSize){
-    snprintf_P(buffer,bufSize+1,i);
+    strncpy_P(buffer, i, bufSize);
     _client.write( buffer );
   }
   // For the last bit, send only the data that remains
-  snprintf_P(buffer,((_pointer+size)-i)+1,i);
+  strncpy_P(buffer, i, ((_pointer+size)-i));
   _client.write( buffer );
 }
 
@@ -167,27 +172,27 @@ void stats_page(EthernetClient& _client) {
   
   char buffer[45];
   
-  sprintf_P(buffer, PSTR("HTTP/1.1 200 OK\nContent-Type: text/html\n"));
+  strncpy_P(buffer, PSTR("HTTP/1.1 200 OK\nContent-Type: text/html\n"),45);
   _client.write( buffer );
-  sprintf_P(buffer, PSTR("Connection: close\n\n<!DOCTYPE HTML>\n<html>\n"));
+  strncpy_P(buffer, PSTR("Connection: close\n\n<!DOCTYPE HTML>\n<html>\n"),45);
   _client.write( buffer );
-  sprintf_P(buffer, PSTR("<head><style>body{background-color:linen;}\n"));
+  strncpy_P(buffer, PSTR("<head><style>body{background-color:linen;}\n"),45);
   _client.write( buffer );
-  sprintf_P(buffer, PSTR("td{border: 1px solid black;}</style></head>\n"));
+  strncpy_P(buffer, PSTR("td{border: 1px solid black;}</style></head>\n"),45);
   _client.write( buffer );
-  sprintf_P(buffer, PSTR("<body><table><tr><td> Uptime</td><td>\n"));
+  strncpy_P(buffer, PSTR("<body><table><tr><td> Uptime</td><td>\n"),45);
   _client.write( buffer );
   sprintf_P(buffer, PSTR("%u days, %lu hours %lu minutes %lu"),days,hours,minutes,seconds);
   _client.write( buffer );
-  sprintf_P(buffer, PSTR("seconds</td></tr><tr><td>UIP Buffer Size"));
+  strncpy_P(buffer, PSTR("seconds</td></tr><tr><td>UIP Buffer Size"),45);
   _client.write( buffer );
   sprintf_P(buffer, PSTR("</td><td>%u bytes</td></tr><tr><td>User "),UIP_BUFSIZE);
   _client.write( buffer );
   sprintf_P(buffer, PSTR("Output<br>Buffer Size</td><td>%u bytes"),OUTPUT_BUFFER_SIZE);
   _client.write( buffer );
-  sprintf_P(buffer, PSTR("</td></tr></table><br><br>"));
+  strncpy_P(buffer, PSTR("</td></tr></table><br><br>"),45);
   _client.write( buffer );
-  sprintf_P(buffer, PSTR("<a href='/'>Home</a></body></html>"));
+  strncpy_P(buffer, PSTR("<a href='/'>Home</a></body></html>"),45);
   _client.write( buffer );
   
 }

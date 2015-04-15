@@ -96,7 +96,7 @@ User Configuration Options
  *  
  * RF24Mesh generally needs to be used if setting this to 0 and using a TUN or SLIP interface  
  */
-#define UIP_CONF_LLH_LEN 14
+#define UIP_CONF_LLH_LEN 0
 
 /**
  * UDP support on or off (required for DNS)

@@ -197,7 +197,7 @@ extern RF24EthernetClass RF24Ethernet;
 
 
 /**
- * @example Getting_Started_SimpleServer.ino
+ * @example Getting_Started_SimpleServer_Mesh.ino
  * <b>Updated: TMRh20 2014 </b><br>
  *
  * This is an example of how to use the RF24Ethernet class to create a web server which will allow you to connect via
@@ -205,50 +205,21 @@ extern RF24EthernetClass RF24Ethernet;
  */
 
 /**
- * @example Getting_Started_SimpleServer_Minimal.ino
- * <b>Updated: TMRh20 2014 </b><br>
- *
- * This is an example of how to use the RF24Ethernet class to create a web server which will allow you to connect via
- * any device with a web-browser using minimal resources. The url is http://your_chosen_IP:1000
- */
- 
-/**
- * @example Getting_Started_SimpleClient.ino
- * <b>Updated: TMRh20 2014 </b><br>
+ * @example Getting_Started_SimpleClient_Mesh.ino
  *
  * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP.
  */
  
  /**
- * @example Getting_Started_SimpleClient_DNS.ino
- * <b>Updated: TMRh20 2014 </b><br>
- *
- * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP using DNS.
- */
- 
-  /**
- * @example Getting_Started_InteractiveServer.ino
- *
- * This is an example of how to create a simple interactive web server.
- */
- 
- /**
- * @example InteractiveServer.ino
+ * @example InteractiveServer_Mesh.ino
  *
  * This is an example of how to create a more advanced interactive web server.
  */
-
  
-  /**
+ /**
  * @example HTML.h
  *
  * This file is included with the Interactive Server example
- */
- 
-  /**
- * @example SimpleServer_mesh.ino
- *
- * This example demonstrates how to use RF24Mesh with RF24Ethernet.
  */
  
  /**
@@ -270,8 +241,8 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * The RF24Ethernet library was initially designed as an experiment and potential testing tool for <a href = http://tmrh20.github.io/RF24Network_Dev/RF24Network > RF24Network </a>, an OSI Layer 3 network driver, allowing a Raspberry Pi to
  * act as a TCP/IP gateway or host for connected sensor nodes. An Arduino can interface with any Linux machine or SLIP capable device supporting USB, or
- * preferably, an RPi runs companion software, RF24toTUN, which creates a network interface linked to the RF24 radio network. This interface can be
- * further linked to the local network or internet. This allows the RPi or Arduino gateway to perform automatic discovery and routing of TCP/IP data,
+ * preferably, an RPi runs companion software, RF24Gateway, which creates a network interface linked to the RF24 radio network. This interface can be
+ * further linked to the local network or internet. This allows the RPi or Arduino-based gateway to perform automatic discovery and routing of TCP/IP data,
  * with no required pre-configuration or interaction from the user beyond assigning appropriate addresses to the nodes initially.
  * 
  * @section What What does it do?
@@ -285,7 +256,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section How How does it work?
  *
- * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running RF24toTUN or Arduino
+ * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running RF24Gateway or Arduino
  * as a gateway to your network or the internet, or simply as a repository for sensor information. The RF24, RF24Network and optionally RF24Mesh libraries
  * handle the underlying routing, addressing etc. so users do not need to be familiar with the radio modules or libraries.  
  *  
@@ -308,6 +279,11 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section News Update News
  * 
+ * \version <b>1.5RC1 - Apr15 </b>
+ * - Seemingly stable release candidate
+ * - Major change: RF24Gateway replaces RF24toTUN
+ * - Now defaults to using RF24Mesh (TUN) interface 
+ *
  * \version <b>1.4b/1.411b - March 14 - Apr 7 2015 </b>
  * - Add Ethernet.update() function
  * - Improve/Fix outgoing data handling
@@ -359,7 +335,7 @@ extern RF24EthernetClass RF24Ethernet;
  * 
  * **TAP vs TUN:**
  *
- * RF24Ethernet and RF24toTUN are able to utilize both TAP and TUN type interfaces. <br>
+ * RF24Ethernet and RF24Gateway are able to utilize both TAP and TUN type interfaces. <br>
  * <b> TAP -</b> A TAP interface can be looked at much the same as an Ethernet interface, Ethernet headers are used to identify devices via MAC address, and the Address
  * Resolution Protocol (ARP) is used to perform that identification. <br>
  * <b> TUN -</b> A TUN interface does not utilize Ethernet headers, MAC addresses or ARP, in this case relying on RF24Mesh/IP routing instead.
@@ -395,21 +371,22 @@ extern RF24EthernetClass RF24Ethernet;
  *  <br><br>
  *  <b> RPi </b>
  *
- * On the Raspberry Pi, a companion program, RF24toTUN must be installed along with the RF24 and RF24Network libraries
+ * On the Raspberry Pi, a companion program, RF24Gateway must be installed along with the RF24 and RF24Network libraries
  * 1. @code wget http://tmrh20.github.io/RF24Installer/RPi/install.sh  @endcode  
  * 2. @code chmod +x install.sh  @endcode  
  * 3. @code ./install.sh  @endcode  
- * 4. Edit the included rf24totun_configAndPing.sh to modify the IP information to suit your desired network config  
- * 5. @code sudo ./rf24totun_configAndPing.sh 2 3 @endcode  
- * 6. The '2' specifies the last octet of the RPi IP address. The '3' specifies the last octet of the node it will attempt to ping once started.  
- * 7. Raspberry Pi defaults to the master node (00). Secondary Raspberry pi nodes need to specify their RF24Network address or RF24Mesh nodeID.
+ * 4. @code cd RF24Gateway/examples/ncurses @endcode
+ * 5. @code make @endcode
+ * 6. @code sudo ./RF24Gateway_ncurses @endcode  
+ * 7. The application will require the user to specify an IP address and Subnet Mask: 10.10.2.2 and 255.255.255.0 are the defaults with RF24Ethernet examples 
+ * 8. Raspberry Pi defaults to the master node (00) using RF24Mesh. Secondary Raspberry pi nodes need to specify their RF24Network address or RF24Mesh nodeID.
  *   
  *<b> Arduino </b>
  * 1. For Arduino devices, the RF24, RF24Network and RF24Ethernet libraries need to be installed ( see http://tmrh20.github.io )
  * 2. Open the included Getting_Started_SimpleServer or Getting_Started_SimpleClient example
  * 3. Configure your chosen CE and CS pins for the radio connection.
- * 4. Configure the RF24Network address (see http://tmrh20.github.io/RF24Network_Dev/ for more info)
- * 5. Configure the IP address according to your preferences, with the gateway set to the chosen IP of the RPi.
+ * 4. Configure the RF24Mesh nodeID (Any unique value from 3 to 255)
+ * 5. Configure the IP address according to your preferences, (last octet must==nodeID) with the gateway set to the chosen IP of the RPi.
  * 6. Connect into your nodes web-server at http://ip-of-your-node:1000 from the RPi or configure the client sketch to connect to a server
  * running on the Raspberry Pi.
  * Note: To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment #define DISABLE_USER_PAYLOADS. This
@@ -466,9 +443,9 @@ extern RF24EthernetClass RF24Ethernet;
  * 
  * See the links below for more information on utilizing RF24Mesh with RF24Ethernet and RF24Network.
  *
- * @section RF24toTUN RF24toTUN
+ * @section RF24Gateway RF24Gateway
  * 
- * See the rf24totun_configAndPing.sh file included with RF24toTUN for general information and configuration examples for utilizing RF24toTUN with RF24Mesh.
+ * See http://tmrh20.github.io/RF24Gateway/ for more information on RF24Gateway
  *
  ** @section HybridNetworks Hybrid- RF24Network/RF24Ethernet Networks
  * 
@@ -508,7 +485,7 @@ extern RF24EthernetClass RF24Ethernet;
  * **RPi:**<br>
  *  a: Navigate to the rf24libs/RF24/examples_RPi folder<br>
  *  b: Configure the correct pins in gettingstarted.cpp ( See http://www.airspayce.com/mikem/bcm2835/group__constants.html#ga63c029bd6500167152db4e57736d0939 ) <br>
- *  c: Build the examples: @code make @endcode
+ *  c: Build the examples: @code make @endcode 
  *  d: Run an example @code sudo ./gettingstarted @endcode
  *
  * **Arduino:** <br>
@@ -518,15 +495,15 @@ extern RF24EthernetClass RF24Ethernet;
  *  d: Upload to Arduino to test <br>
  *
  *  <br>
- * @section TestingTCP Testing RF24toTUN and RF24Ethernet
- * @note Troubleshooting steps assume a fresh library install with the default configuration, using TAP/Ethernet
+ * @section TestingTCP Testing RF24Gateway and RF24Ethernet
+ * @note Troubleshooting steps assume a fresh library install with the default configuration, using RF24Mesh/TUN
  * @warning The maximum payload size configured in RF24Network_config.h will determine the maximum size of TCP or UDP segments. Set to 1514 (TAP) or 1500 (TUN) on Raspberry Pi/Linux devices for full TCP/IP capabilities. TCP+IP+LL headers add 54 bytes of overhead to each payload with TAP/Ethernet, and 40 bytes with TUN/RF24Mesh
  *  
- * **RPi (RF24toTUN):** <br>
- *  a: Edit the rf24totun_configAndPing.sh file in rf24libs/RF24toTUN/ <br>
- *  b: Set the MYIP and PINGIP variables to align with your chosen IP subnet ie: MYIP="10.10.3.${1}/24" for a subnet of 10.10.3.0/24 <br>
- *  c: To set the IP of this node, and the IP of the node to ping, run @code sudo ./rf24totun_configAndPing.sh <IP-last-octet> <IP_TO_PING-last-octet> @endcode
- *  d: Test connectivity: @code ping 10.10.3.<IP_TO_PING-last-octet> @endcode
+ * **RPi (RF24Gateway):** <br>
+ *  a: Run the included RF24Gateway_ncurses example @code sudo ./RF24Gateway_ncurses @endcode 
+ *  b: Test connectivity: @code ping 10.10.3.<IP_TO_PING-last-octet> @endcode 
+ *  c: If connectivity fails, ensure IP information is accurate. Forwarding is required if pinging from a device other than the RPi. <br>
+ *  d: If using pins connections other than the default, edit the RF24 constructor in the example file: ie: RF24 radio(22,0); <br>
  *  e: Optional: For RPi to RPi communication over RF24, edit the rf24libs/RF24Network/RF24Network_config.h file. Set @code #define MAX_PAYLOAD_SIZE 1514 @endcode
  *
  * **Arduino (RF24Ethernet):** <br>
