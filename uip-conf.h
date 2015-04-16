@@ -148,6 +148,8 @@ User Configuration Options
 * @note Must be an odd number or the TCP/IP sequence gets out of order with payloads larger than 511 bytes
 * I think this might be a bug or missing feature of the uip stack
 */
+#define UIP_CONF_EXTERNAL_BUFFER
+
 #if UIP_CONF_BUFFER_SIZE >= 512
   #define OUTPUT_BUFFER_SIZE 511
 #else

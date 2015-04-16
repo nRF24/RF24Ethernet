@@ -138,6 +138,8 @@ struct uip_eth_addr uip_ethaddr = {{0,0,0,0,0,0}};
 #ifndef UIP_CONF_EXTERNAL_BUFFER
 u8_t uip_buf[UIP_BUFSIZE + 2];   /* The packet buffer that contains
 				    incoming packets. */
+#else
+uint8_t *uip_buf;
 #endif /* UIP_CONF_EXTERNAL_BUFFER */
 
 void *uip_appdata;               /* The uip_appdata pointer points to

@@ -419,8 +419,11 @@ void uip_setipid(u16_t id);
  }
  \endcode
  */
+#ifndef UIP_CONF_EXTERNAL_BUFFER 
 extern u8_t uip_buf[UIP_BUFSIZE+2];
-
+#else
+extern u8_t *uip_buf;
+#endif
 /** @} */
 
 /*---------------------------------------------------------------------------*/

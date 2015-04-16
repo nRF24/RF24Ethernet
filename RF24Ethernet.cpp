@@ -105,6 +105,9 @@ configure(ip,dns,gateway,subnet);
 /*******************************************************/
 
 void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet) {
+
+uip_buf = (uint8_t*)&network.frag_ptr->message_buffer[0];
+
 uip_ipaddr_t ipaddr;
 uip_ip_addr(ipaddr, ip);
 uip_sethostaddr(ipaddr);
@@ -184,7 +187,6 @@ void RF24EthernetClass::tick() {
 
 	if(RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE){
 		uip_len = RF24Ethernet.network.frag_ptr->message_size;
-		memcpy(&uip_buf,RF24Ethernet.network.frag_ptr->message_buffer,RF24Ethernet.network.frag_ptr->message_size);
 	}
 
     #if !defined (RF24_TAP)
@@ -272,7 +274,7 @@ boolean RF24EthernetClass::network_send()
 		RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
 		//while(millis() - RF24Ethernet.lastRadio < 1){}
 		
-		bool ok = RF24Ethernet.network.write(headerOut,&uip_buf,uip_len);
+		bool ok = RF24Ethernet.network.write(headerOut,uip_buf,uip_len);
 		#if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2
 		if(!ok){
 		  Serial.println(); Serial.print(millis()); Serial.println(F(" *** RF24Ethernet Network Write Fail ***")); 

@@ -241,7 +241,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * The RF24Ethernet library was initially designed as an experiment and potential testing tool for <a href = http://tmrh20.github.io/RF24Network_Dev/RF24Network > RF24Network </a>, an OSI Layer 3 network driver, allowing a Raspberry Pi to
  * act as a TCP/IP gateway or host for connected sensor nodes. An Arduino can interface with any Linux machine or SLIP capable device supporting USB, or
- * preferably, an RPi runs companion software, RF24Gateway, which creates a network interface linked to the RF24 radio network. This interface can be
+ * preferably, an RPi runs companion software, <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a>, which creates a network interface linked to the RF24 radio network. This interface can be
  * further linked to the local network or internet. This allows the RPi or Arduino-based gateway to perform automatic discovery and routing of TCP/IP data,
  * with no required pre-configuration or interaction from the user beyond assigning appropriate addresses to the nodes initially.
  * 
@@ -256,7 +256,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section How How does it work?
  *
- * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running RF24Gateway or Arduino
+ * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> or Arduino
  * as a gateway to your network or the internet, or simply as a repository for sensor information. The RF24, RF24Network and optionally RF24Mesh libraries
  * handle the underlying routing, addressing etc. so users do not need to be familiar with the radio modules or libraries.  
  *  
@@ -279,45 +279,14 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section News Update News
  * 
- * \version <b>1.5RC1 - Apr15 </b>
+ * \version <b>1.51RC1 - Apr15-16 2015</b>
  * - Seemingly stable release candidate
- * - Major change: RF24Gateway replaces RF24toTUN
+ * - Major change: <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
  * - Now defaults to using RF24Mesh (TUN) interface 
- *
- * \version <b>1.4b/1.411b - March 14 - Apr 7 2015 </b>
- * - Add Ethernet.update() function
- * - Improve/Fix outgoing data handling
- * - Fix: Hanging in 1.4b
- *
- * \version <b>1.3b - March 6 2015</b>
- * - Major Improvement: Better TCP window handling increases reliability, throughput and performance
- *
- * \version <b>1.24b - March 3 2015</b>
- * - Utilize separate incoming/outgoing buffers (bugfix)
- * - Update documentation for DNS & UDP
- * - Add waitAvailable() function, update examples to demonstrate usage.
- *
- * \version  <b>1.23b - Jan 22 2015</b>
- *  - Small bugfixes from v1.20
- *  - Slightly reduced latency
- *  - Code clean-up/Reduce code size and memory usage for main Client/Server code
- *  - Cleaned up some examples, added DNS and SimpleServer_Minimal examples
- *  
- * \version  <b>1.221b - Jan 16 2015</b>
- *  - Add UDP support
- *  - Add DNS support
- *  - Add support for up to 512 byte buffer size
- *  - Reduce used memory and program space
- *  - Support for multiple connections with per-connection memory  buffers
- *
- * \version  <b>1.1b - Jan 4 2015</b>  
- *  - Add connection timeout to recover from hangs during failed client downloads
- *  - Better TCP window management to prevent hangs during client downloads
- *  - Stability improvements
- *
- * \version  <b>1.0b - Dec 2014</b>
- *  - Outgoing client data corruption should be fixed
- *<br><br>
+ * - Apr 16 - Use external buffer for uIP to save memory. Requires Updating RF24Network and RF24Mesh.
+ * 
+ * See <a href="VersionInfo.html"> version history </a> for more info 
+ * 
  * @section Config Configuration and Setup
  * 
  * See the <a href="ConfigAndSetup.html">Configuration and Set-Up</a> page for general installation and configuration information
@@ -361,7 +330,6 @@ extern RF24EthernetClass RF24Ethernet;
  *
  *
  *
- *
  * @page ConfigAndSetup Configuration and Set-Up
  *
  * RF24Ethernet requires the RF24 and RF24Network_DEV libraries (optionally RF24Mesh) <br>
@@ -371,7 +339,7 @@ extern RF24EthernetClass RF24Ethernet;
  *  <br><br>
  *  <b> RPi </b>
  *
- * On the Raspberry Pi, a companion program, RF24Gateway must be installed along with the RF24 and RF24Network libraries
+ * On the Raspberry Pi, a companion program, <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> must be installed along with the RF24 and RF24Network libraries
  * 1. @code wget http://tmrh20.github.io/RF24Installer/RPi/install.sh  @endcode  
  * 2. @code chmod +x install.sh  @endcode  
  * 3. @code ./install.sh  @endcode  
@@ -499,7 +467,7 @@ extern RF24EthernetClass RF24Ethernet;
  * @note Troubleshooting steps assume a fresh library install with the default configuration, using RF24Mesh/TUN
  * @warning The maximum payload size configured in RF24Network_config.h will determine the maximum size of TCP or UDP segments. Set to 1514 (TAP) or 1500 (TUN) on Raspberry Pi/Linux devices for full TCP/IP capabilities. TCP+IP+LL headers add 54 bytes of overhead to each payload with TAP/Ethernet, and 40 bytes with TUN/RF24Mesh
  *  
- * **RPi (RF24Gateway):** <br>
+ * **RPi (<a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a>):** <br>
  *  a: Run the included RF24Gateway_ncurses example @code sudo ./RF24Gateway_ncurses @endcode 
  *  b: Test connectivity: @code ping 10.10.3.<IP_TO_PING-last-octet> @endcode 
  *  c: If connectivity fails, ensure IP information is accurate. Forwarding is required if pinging from a device other than the RPi. <br>
@@ -515,6 +483,50 @@ extern RF24EthernetClass RF24Ethernet;
  *  
  *  
  *<br><br><br> 
+ *
+ *
+ *
+ * @page VersionInfo Version Info
+ *
+ * \version <b>1.5RC1 - Apr15-16 2015</b>
+ * - Seemingly stable release candidate
+ * - Major change: <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
+ * - Now defaults to using RF24Mesh (TUN) interface 
+ * - Apr 16 - Use external buffer for uIP to save memory. Requires Updating RF24Network and RF24Mesh. 
+ *
+ * \version <b>1.4b/1.411b - March 14 - Apr 7 2015 </b>
+ * - Add Ethernet.update() function
+ * - Improve/Fix outgoing data handling
+ * - Fix: Hanging in 1.4b
+ *
+ * \version <b>1.3b - March 6 2015</b>
+ * - Major Improvement: Better TCP window handling increases reliability, throughput and performance
+ *
+ * \version <b>1.24b - March 3 2015</b>
+ * - Utilize separate incoming/outgoing buffers (bugfix)
+ * - Update documentation for DNS & UDP
+ * - Add waitAvailable() function, update examples to demonstrate usage.
+ *
+ * \version  <b>1.23b - Jan 22 2015</b>
+ *  - Small bugfixes from v1.20
+ *  - Slightly reduced latency
+ *  - Code clean-up/Reduce code size and memory usage for main Client/Server code
+ *  - Cleaned up some examples, added DNS and SimpleServer_Minimal examples
+ *  
+ * \version  <b>1.221b - Jan 16 2015</b>
+ *  - Add UDP support
+ *  - Add DNS support
+ *  - Add support for up to 512 byte buffer size
+ *  - Reduce used memory and program space
+ *  - Support for multiple connections with per-connection memory  buffers
+ *
+ * \version  <b>1.1b - Jan 4 2015</b>  
+ *  - Add connection timeout to recover from hangs during failed client downloads
+ *  - Better TCP window management to prevent hangs during client downloads
+ *  - Stability improvements
+ *
+ * \version  <b>1.0b - Dec 2014</b>
+ *  - Outgoing client data corruption should be fixed
  */
 
  
