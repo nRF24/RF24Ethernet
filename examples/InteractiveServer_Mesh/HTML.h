@@ -102,11 +102,11 @@ void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
   // Increment the iterator (i) in increments of 45-3 (OUTPUT_BUFFER_SIZE-3) and send the data to the client
   for(i=_pointer; i<_pointer+(size-(bufSize));i+=bufSize){
     strncpy_P(buffer, i, bufSize);
-    _client.write( buffer );
+    _client.write( buffer,bufSize );
   }
   // For the last bit, send only the data that remains
   strncpy_P(buffer, i, ((_pointer+size)-i));
-  _client.write( buffer );
+  _client.write( buffer,(_pointer+size)-i );
 }
 
 /***************************************************************/
@@ -213,4 +213,3 @@ void stats_page(EthernetClient& _client) {
     "</body>"
     "</html>";
     
-
