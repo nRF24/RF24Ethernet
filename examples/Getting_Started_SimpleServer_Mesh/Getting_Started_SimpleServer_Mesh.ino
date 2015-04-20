@@ -15,7 +15,6 @@
 //#include <printf.h>
 #include <RF24Ethernet.h>
 #include "RF24Mesh.h"
-#include "EEPROM.h"
 
 /** Configure the radio CE & CS pins **/
 RF24 radio(7,8);
@@ -34,18 +33,18 @@ void setup() {
   
   // Note: The mesh nodeID must be equal to the last octet of the assigned
   // IP address
-  mesh.setNodeID(9); //Node id must be any unique value between 1 and 250
+  mesh.setNodeID(4); //Node id must be any unique value between 1 and 250
   mesh.begin();
   //Serial.println(mesh.mesh_address,OCT);
   
   // Set the IP address we'll be using. The last octet of the IP must be equal
   // to the designated mesh nodeID
-  IPAddress myIP(10,10,3,9);
+  IPAddress myIP(10,10,2,4);
   Ethernet.begin(myIP);
   
   // If you'll be making outgoing connections from the Arduino to the rest of
   // the world, you'll need a gateway set up.
-  IPAddress gwIP(10,10,3,1);
+  IPAddress gwIP(10,10,2,2);
   Ethernet.set_gateway(gwIP);
 
   // Listen for incoming connections on TCP port 1000.  Each incoming
