@@ -4,5 +4,8 @@
  
 ### Current stage: Beta Testing
 
-Documentation: http://tmrh20.github.io/RF24Ethernet
+RF24Ethernet requires the RF24 and RF24Network_DEV and RF24Mesh libraries 
 
+Documentation & Setup Info: http://tmrh20.github.io/RF24Ethernet
+
+Downloads: http://tmrh20.github.io/
