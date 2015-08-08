@@ -87,26 +87,15 @@ static const char main_html_p2[] PROGMEM =
 
 /**
 * This function reads from a specified program memory buffer, and sends the data to the client
-* in chunks equal to the max output buffer size
+* in chunks equal to the max output buffer size or less
 * This allows the HTML code to be modified as desired, with no need to change any other code
 */
 void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
-  
-  size_t bufSize = UIP_TCP_MSS;
-  
-  char buffer[bufSize+1]; // 91 bytes by default
-   
-  // Create a pointer for iterating through the array
-  const char *i;
-  
-  // Increment the iterator (i) in increments of 45-3 (OUTPUT_BUFFER_SIZE-3) and send the data to the client
-  for(i=_pointer; i<_pointer+(size-(bufSize));i+=bufSize){
-    strncpy_P(buffer, i, bufSize);
-    _client.write( buffer,bufSize );
+
+  for(int i=0; i<size;i++){
+    char c = pgm_read_byte(_pointer++);
+    _client.write(&c,1);
   }
-  // For the last bit, send only the data that remains
-  strncpy_P(buffer, i, ((_pointer+size)-i));
-  _client.write( buffer,(_pointer+size)-i );
 }
 
 /***************************************************************/

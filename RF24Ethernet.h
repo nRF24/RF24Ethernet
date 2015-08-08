@@ -21,11 +21,14 @@ extern "C" {
   #import "utility/uip.h"
   #include "utility/timer.h"
   #include "utility/uip_arp.h"
+
 }
 #include "RF24Ethernet_config.h"
 #include <RF24.h>
 #include <RF24Network.h>
-
+#if !defined (RF24_TAP) // Using RF24Mesh
+#include <RF24Mesh.h>
+#endif
 
 #include "ethernet_comp.h"
 #include "IPAddress.h"
@@ -91,8 +94,11 @@ class RF24EthernetClass {//: public Print {
 		* Constructor to set up the Ethernet layer. Requires the radio and network to be configured by the user
 		* this allows users to set custom settings at the radio or network level
 		*/
-		RF24EthernetClass(RF24& _radio,RF24Network& _network);
-		
+        #if !defined (RF24_TAP) // Using RF24Mesh
+		RF24EthernetClass(RF24& _radio,RF24Network& _network, RF24Mesh& _mesh);
+		#else
+        RF24EthernetClass(RF24& _radio,RF24Network& _network);
+        #endif
 		/**
 		* Basic constructor
 		*/
@@ -165,11 +171,15 @@ class RF24EthernetClass {//: public Print {
 	/** Keeps the TCP/IP stack running & processing incoming data
 	*/
 	void update();
-
+    //uint8_t *key;
+	
 	private:
 		RF24& radio;
 		RF24Network& network;
-		
+        #if !defined (RF24_TAP) // Using RF24Mesh
+        RF24Mesh& mesh;
+		#endif
+        
 		static IPAddress _dnsServerAddress;
 		void configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
 		// tick() must be called at regular intervals to process the incoming serial

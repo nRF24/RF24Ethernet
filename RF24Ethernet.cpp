@@ -21,17 +21,22 @@
 */
 
 #include "RF24Ethernet.h"
-
+				   
 IPAddress RF24EthernetClass::_dnsServerAddress;
 //DhcpClass* RF24EthernetClass::_dhcp(NULL);
 
 /*************************************************************/
-
+#if defined (RF24_TAP) 
 RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network): radio(_radio),network(_network)
 	//fn_uip_cb(NULL)
 {
 }
-
+#else // Using RF24Mesh
+RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh): radio(_radio),network(_network), mesh(_mesh)
+	//fn_uip_cb(NULL)
+{
+}
+#endif
 /*************************************************************/
 
 void RF24EthernetClass::update() {
@@ -59,6 +64,7 @@ void RF24EthernetClass::setMac(uint16_t address){
 	
 	#if defined (RF24_TAP)
 	  uip_seteth_addr(mac);
+   	  network.multicastRelay = 1;
 	#endif
 	RF24_Channel = RF24_Channel ? RF24_Channel : 97;
 	network.begin(RF24_Channel, address);
@@ -106,6 +112,10 @@ configure(ip,dns,gateway,subnet);
 
 void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet) {
 
+  #if !defined (RF24_TAP) // Using RF24Mesh
+    mesh.setNodeID(ip[3]);
+  #endif
+  
 uip_buf = (uint8_t*)&network.frag_ptr->message_buffer[0];
 
 uip_ipaddr_t ipaddr;
@@ -129,7 +139,7 @@ _dnsServerAddress = dns;
 	#if defined (RF24_TAP)
 	uip_arp_init();	
 	#endif
-   	network.multicastRelay = 1;
+
 }
 
 /*******************************************************/
@@ -273,8 +283,10 @@ boolean RF24EthernetClass::network_send()
 {
 		RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
 		//while(millis() - RF24Ethernet.lastRadio < 1){}
+
+		  bool ok = RF24Ethernet.network.write(headerOut,uip_buf,uip_len);
+		//#endif
 		
-		bool ok = RF24Ethernet.network.write(headerOut,uip_buf,uip_len);
 		#if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2
 		if(!ok){
 		  Serial.println(); Serial.print(millis()); Serial.println(F(" *** RF24Ethernet Network Write Fail ***")); 

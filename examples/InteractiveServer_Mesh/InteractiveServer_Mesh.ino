@@ -28,13 +28,13 @@
 #include <avr/pgmspace.h>
 #include "HTML.h"
 #include "RF24Mesh.h"
-#include "EEPROM.h"
 
 /*** Configure the radio CE & CS pins ***/
 RF24 radio(7, 8);
 RF24Network network(radio);
-RF24EthernetClass RF24Ethernet(radio, network);
 RF24Mesh mesh(radio,network);
+RF24EthernetClass RF24Ethernet(radio, network,mesh);
+
 #define LED_PIN A3 //Analog pin A3
 
 
@@ -51,17 +51,12 @@ void setup() {
   Serial.println("start");
   pinMode(LED_PIN, OUTPUT);
   
-  //Set nodeID to the same as last octet of IP address
-  mesh.setNodeID(4);
-  mesh.begin();
-  Serial.println(mesh.mesh_address,OCT);
-  
-  //Set IP to same last octet (4) as nodeID
-  IPAddress myIP(10, 10, 2,4);
+  IPAddress myIP(10, 10, 2, 4);
   Ethernet.begin(myIP);
+  mesh.begin();
 
   //Set IP of the RPi (gateway)
-  IPAddress gwIP(10, 10, 2,2);
+  IPAddress gwIP(10, 10, 2, 2);
   Ethernet.set_gateway(gwIP);
 
   server.begin();
@@ -123,9 +118,9 @@ void loop() {
       }
       }
       // Empty the rest of the data from the client
-      while (client.waitAvailable()) {
+      //while (client.waitAvailable()) {
         client.flush();
-      }
+      //}
     }
     
     /**
@@ -162,9 +157,8 @@ static unsigned short generate_tcp_stats()
   for (uint8_t i = 0; i < UIP_CONF_MAX_CONNECTIONS; i++) {
     conn = &uip_conns[i];
 
-    // If there is an open connection to one of the listening ports, print the info
-    // This logic seems to be backwards?
-    if (uip_stopped(conn)) {
+    // If the application state is active for an available connection, print the info
+    if (conn->appstate) {
       Serial.print(F("Connection no "));
       Serial.println(i);
       Serial.print(F("Local Port "));

@@ -78,8 +78,7 @@ User Configuration Options
  * 6. Max usable value is 512
  */
 
-#define UIP_CONF_BUFFER_SIZE     MAX_PAYLOAD_SIZE
-
+#define UIP_CONF_BUFFER_SIZE MAX_PAYLOAD_SIZE
 /**
   * <b>Optional:</b> Uncomment to disable  
   *
