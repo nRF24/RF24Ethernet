@@ -202,7 +202,7 @@ void serialip_appcall(void) {
   if (!u && uip_connected()){
   
 	IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.print(millis()); Serial.println(F(" UIPClient uip_connected")); );
-	u->state |= UIP_CONNECTED;	
+
     u = (uip_userdata_t*) EthernetClient::_allocateData();
     
 	if (u) {

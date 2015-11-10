@@ -194,7 +194,9 @@ return _dnsServerAddress;
 /*******************************************************/
 
 void RF24EthernetClass::tick() {
-
+    #if defined (ARDUINO_ARCH_ESP8266)
+      yield();
+    #endif
 	if(RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE){
 		uip_len = RF24Ethernet.network.frag_ptr->message_size;
 	}

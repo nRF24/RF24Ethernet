@@ -20,12 +20,11 @@
  */
 
 
-#include <RF24Network.h>
-#include <RF24.h>
 #include <SPI.h>
+#include <RF24.h>
+#include <RF24Network.h>
 //#include <printf.h>
 #include <RF24Ethernet.h>
-#include <avr/pgmspace.h>
 #include "HTML.h"
 #include "RF24Mesh.h"
 
@@ -35,14 +34,17 @@ RF24Network network(radio);
 RF24Mesh mesh(radio,network);
 RF24EthernetClass RF24Ethernet(radio, network,mesh);
 
-#define LED_PIN A3 //Analog pin A3
-
-
+#if defined (ARDUINO_ARCH_ESP8266)
+  #define LED_PIN BUILTIN_LED
+#else
+  #define LED_PIN A3 //Analog pin A3
+#endif
 
 // Configure the server to listen on port 1000
 EthernetServer server = EthernetServer(1000);
 
 /**********************************************************/
+static unsigned short generate_tcp_stats();
 
 void setup() {
 

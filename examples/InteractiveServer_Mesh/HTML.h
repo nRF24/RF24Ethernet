@@ -1,7 +1,6 @@
 
-#if defined (ARDUINO_SAM_DUE)
-  #define sprintf_P sprintf
-  #define snprintf_P snprintf
+#if !defined (ARDUINO_ARCH_AVR)
+  #define strncpy_P strncpy
 #endif
 
 bool led_state = 0;
@@ -91,7 +90,6 @@ static const char main_html_p2[] PROGMEM =
 * This allows the HTML code to be modified as desired, with no need to change any other code
 */
 void sendPage(EthernetClient& _client, const char* _pointer, size_t size ){
-
   for(int i=0; i<size;i++){
     char c = pgm_read_byte(_pointer++);
     _client.write(&c,1);
