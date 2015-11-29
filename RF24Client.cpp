@@ -122,7 +122,7 @@ void RF24Client::stop() {
 // the next function allows us to use the client returned by
 // EthernetServer::available() as the condition in an if-statement.
 bool RF24Client::operator==(const RF24Client& rhs) {
-  return data && rhs.data && (data = rhs.data);
+  return data && rhs.data && (data == rhs.data);
 }
 
 /*************************************************************/
