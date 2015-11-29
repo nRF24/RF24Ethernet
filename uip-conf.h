@@ -86,7 +86,7 @@ User Configuration Options
   * 
   * If uIP is polling the established connection, but an ack or data is not received for this duration in ms, kill the connection.
   */
-#define UIP_CONNECTION_TIMEOUT 20000
+#define UIP_CONNECTION_TIMEOUT 30000
 
 /**
  * SLIP/TUN - 14 for Ethernet/TAP & 0 for TUN/SLIP  
@@ -152,7 +152,7 @@ User Configuration Options
 #if UIP_CONF_BUFFER_SIZE >= 512
   #define OUTPUT_BUFFER_SIZE 511
 #else
-  #define OUTPUT_BUFFER_SIZE UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN
+  #define OUTPUT_BUFFER_SIZE UIP_CONF_BUFFER_SIZE - 1 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN
 #endif
 
  /**
@@ -166,7 +166,7 @@ User Configuration Options
   * When increasing the uip buffer size, this value should be increased, or
   * the window may be reopened while the requested data is still being received, hindering traffic flow.
   */
-#define UIP_WINDOW_REOPEN_DELAY  750
+#define UIP_WINDOW_REOPEN_DELAY  5150
 
 /* @} */ 
 /** @} */
@@ -188,7 +188,8 @@ User Configuration Options
 #if UIP_CONF_BUFFER_SIZE >= 512
   #define UIP_CONF_RECEIVE_WINDOW 511
 #else
-  #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
+  //#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE *2 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
+  #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE * 2 - 1 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
 #endif
 
 #define UIP_CONF_TCP_MSS UIP_CONF_RECEIVE_WINDOW

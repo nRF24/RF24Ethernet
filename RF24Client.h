@@ -51,6 +51,7 @@ typedef struct {
  uint16_t dataPos;
  uint16_t dataCnt;
  bool hold;
+ bool sent;
 } uip_userdata_t;
 
 

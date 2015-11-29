@@ -218,13 +218,14 @@ void serialip_appcall(void) {
     if (uip_newdata()){
       IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.print(millis()); Serial.print(F(" UIPClient uip_newdata, uip_len:")); Serial.println(uip_len); );
       
+      if(u->sent){
+          u->hold = u->out_pos = u->windowOpened = u->packets_out = false;
+      }
 	  if (uip_len && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
 		  
-		if(u->dataCnt > 0 || uip_len > uip_mss()/2){
-			uip_stop();
-		    u->state &= ~UIP_CLIENT_RESTART;
-		    u->windowOpened = false;			
-		}
+		uip_stop();
+		u->state &= ~UIP_CLIENT_RESTART;
+		u->windowOpened = false;			
 		u->connAbortTime = u->restartTime = millis();
 	    memcpy(&u->myDataIn[u->dataPos+u->dataCnt], uip_appdata, uip_datalen());
 	    u->dataCnt += uip_datalen();
@@ -273,6 +274,7 @@ void serialip_appcall(void) {
 	  uip_len = u->out_pos;
 	  uip_send(u->myData,u->out_pos);
 	  u->hold = true;
+      u->sent = true;
 	  goto finish;    
 	}else
     // Restart mechanism to keep connections going
@@ -402,7 +404,7 @@ int RF24Client::read(uint8_t *buf, size_t size) {
 
   if (*this) {
 
-    if (!data->packets_in) { return 0; }
+    if (!data->packets_in) { return -1; }
 
     size = rf24_min(data->dataCnt,size);
 	memcpy(buf,&data->myDataIn[data->dataPos],size);
@@ -450,11 +452,9 @@ int RF24Client::read() {
 /*************************************************************/
 
 int RF24Client::peek() {
-	/*if(available()){
-	  uint8_t c;
-	  memcpy(&c,&data->myDataIn[data->dataPos],1);
-	  return c;
-	}*/
+	if(available()){
+	  return data->myDataIn[data->dataPos];
+	}
   return -1;
 }
 
