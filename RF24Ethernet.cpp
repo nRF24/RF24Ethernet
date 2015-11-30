@@ -45,6 +45,12 @@ void RF24EthernetClass::update() {
 
 /*************************************************************/
 
+void yield() {
+  Ethernet.update();
+}
+
+/*************************************************************/
+
 void RF24EthernetClass::use_device()
 {
 // Kept for backwards compatibility only

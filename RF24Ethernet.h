@@ -221,9 +221,22 @@ extern RF24EthernetClass RF24Ethernet;
  */
  
  /**
+ * @example SimpleClient_Mesh.ino
+ *
+ * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP.
+ * It also demonstrates how to read from the HTTP header to read the Content-Length before reading the data.
+ */
+ 
+ /**
  * @example InteractiveServer_Mesh.ino
  *
  * This is an example of how to create a more advanced interactive web server.
+ */
+ 
+  /**
+ * @example mqtt_basic.ino
+ *
+ * This is the example taken from the PubSub library (https://github.com/knolleary/pubsubclient) & slightly modified to include RF24Ethernet/RF24Mesh.
  */
  
  /**
@@ -246,7 +259,69 @@ extern RF24EthernetClass RF24Ethernet;
  
  /**
  * @mainpage RF24Ethernet library: TCP/IP over RF24Network
- *  
+ * 
+ * @section OpenSourceWireless Open & Open-Source IoT Wireless (not WiFi) Networks
+ * **An experiment disconnected...**
+ * <img src="tmrh20/RF24EthernetOverviewImg.jpg" alt="RF24EthernetImage" style="width:70%;height:70%">
+ * 
+ * @section Goals Goals:
+ * 
+ * - Bring the reliability of TCP/IP and potential of mesh networking/IoT to even the smallest of Arduino devices
+ * - Enable self-sustaining wireless sensor networks that seamlessly link together using standard protocols & networking
+ * - Simplify & automate it.
+ * - Experiment with/document a model for completely open & open-source communication
+ *
+ * 
+ * @section News Update News
+ * 
+ * \version <b>1.6 - Aug-Dec 2015</b>
+ * - Address problems with stream functions like client.parseInt() or find()
+ * - Tested working with MQTT via <a href="https://github.com/knolleary/pubsubclient">PubSub library</a>
+ * - Fix: Connection state set before begin allocated
+ * - Workaround for HTTP servers sending half TCP MSS
+ * - Automatically assign mesh nodeID based on IP & update examples
+ * - <a href="https://github.com/esp8266/Arduino">ESP8266 (Arduino)</a> support
+ *
+ * \version <b>1.51RC1 - Apr15-16 2015</b>
+ * - Seemingly stable release candidate
+ * - Major change: <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
+ * - Now defaults to using RF24Mesh (TUN) interface 
+ * - Apr 16 - Use external buffer for uIP to save memory. Requires Updating RF24Network and RF24Mesh.
+ * 
+ * See <a href="VersionInfo.html"> version history </a> for more info 
+ * 
+ * @section Config Configuration and Setup
+ * 
+ * The hardest part of setting up is getting the first radio module connected properly. <br>
+ * Scroll to the bottom of the RF24 <a href="http://tmrh20.github.io/RF24/index.html"> radio documentation for pin connections </a> <br><br>
+ * Once you have done that, see the <a href="ConfigAndSetup.html">Configuration and Set-Up</a> page for general installation and configuration information
+ *  <br><br> 
+ *
+ * @section DetailOverview Detailed Overview
+ * See the <b><a href="Overview.html">Overview</a></b> page
+ * 
+ * <br>
+ * @section BuildingANetwork Building a Network - Customizing your RF24 TCP/IP network
+ * 
+ * See the <a href="CustomNetworks.html">Building a network</a> page
+ *  <br>  <br> 
+ * @section Troubleshooting Troubleshooting
+ *
+ * The RF24 libraries are divided into layers, generally according to the OSI model, which allows specialized testing and troubleshooting of individual layers. 
+ * <br>See the <a href=Troubleshooting.html >Troubleshooting</a> section for general troubleshooting steps.
+ *  <br>  <br> 
+ * @section AdditionalInfo Additional Information
+ * 
+
+ *
+ *
+ *
+ *
+ *
+ *
+ * 
+ *
+ * @page Overview RF24Ethernet Overview
  * @section Overview Overview
  *
  * The RF24Ethernet library was initially designed as an experiment and potential testing tool for <a href = http://tmrh20.github.io/RF24Network_Dev/RF24Network > RF24Network </a>, an OSI Layer 3 network driver, allowing a Raspberry Pi to
@@ -262,7 +337,7 @@ extern RF24EthernetClass RF24Ethernet;
  * local network directly.  
  * 
  * Sensor nodes can act as individual web servers, simple command-and-control servers, or can connect out as required via TCP/IP. 
- * <img src="tmrh20/RF24EthernetOverviewImg.jpg" alt="RF24EthernetImage" style="width:70%;height:70%">
+ *
  *
  * @section How How does it work?
  *
@@ -287,31 +362,7 @@ extern RF24EthernetClass RF24Ethernet;
  * | <b>RF24Mesh</b> -Optional-     | OSI Layer 7 (Application)| Provides DHCP/DNS type protocols and allows dynamic addressing/topology for RF24Network. 
  *
  *
- * @section News Update News
- * 
- * \version <b>1.51RC1 - Apr15-16 2015</b>
- * - Seemingly stable release candidate
- * - Major change: <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
- * - Now defaults to using RF24Mesh (TUN) interface 
- * - Apr 16 - Use external buffer for uIP to save memory. Requires Updating RF24Network and RF24Mesh.
- * 
- * See <a href="VersionInfo.html"> version history </a> for more info 
- * 
- * @section Config Configuration and Setup
- * 
- * See the <a href="ConfigAndSetup.html">Configuration and Set-Up</a> page for general installation and configuration information
- *  <br><br> 
- * @section BuildingANetwork Building a Network - Customizing your RF24 TCP/IP network
- * 
- * See the <a href="CustomNetworks.html">Building a network</a> page
- *  <br>  <br> 
- * @section Troubleshooting Troubleshooting
  *
- * The RF24 libraries are divided into layers, generally according to the OSI model, which allows specialized testing and troubleshooting of individual layers. 
- * <br>See the <a href=Troubleshooting.html >Troubleshooting</a> section for general troubleshooting steps.
- *  <br>  <br> 
- * @section AdditionalInfo Additional Information
- * 
  * **TAP vs TUN:**
  *
  * RF24Ethernet and RF24Gateway are able to utilize both TAP and TUN type interfaces. <br>
@@ -337,9 +388,12 @@ extern RF24EthernetClass RF24Ethernet;
  * |      011           |  0x52  |  0x46  |  0x32  |   0x34 |  0x09  |  0x00  |
  * |      0443          |  0x52  |  0x46  |  0x32  |   0x34 |  0x23  |  0x01  |
  *
+ * <br><br>
  *
  *
  *
+ *
+ * 
  * @page ConfigAndSetup Configuration and Set-Up
  *
  * RF24Ethernet requires the RF24 and RF24Network_DEV libraries (optionally RF24Mesh) <br>
@@ -360,7 +414,7 @@ extern RF24EthernetClass RF24Ethernet;
  * 8. Raspberry Pi defaults to the master node (00) using RF24Mesh. Secondary Raspberry pi nodes need to specify their RF24Network address or RF24Mesh nodeID.
  *   
  *<b> Arduino </b>
- * 1. For Arduino devices, the RF24, RF24Network and RF24Ethernet libraries need to be installed ( see http://tmrh20.github.io )
+ * 1. For Arduino devices, use the Arduino Library Manager to install the RF24 libraries
  * 2. Open the included Getting_Started_SimpleServer or Getting_Started_SimpleClient example
  * 3. Configure your chosen CE and CS pins for the radio connection.
  * 4. Configure the RF24Mesh nodeID (Any unique value from 3 to 255)

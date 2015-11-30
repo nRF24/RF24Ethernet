@@ -27,6 +27,10 @@ uint8_t RF24Client::connected(){
 int RF24Client::connect(IPAddress ip, uint16_t port) {
 
 #if UIP_ACTIVE_OPEN > 0
+ 
+  uint32_t timer = millis();
+
+do{
 
   stop();
   uip_ipaddr_t ipaddr;
@@ -58,6 +62,9 @@ int RF24Client::connect(IPAddress ip, uint16_t port) {
     
 	}
   }
+  delay(25);
+}while(millis()-timer < 175);
+
 #endif //Active open enabled
 
 return 0;
