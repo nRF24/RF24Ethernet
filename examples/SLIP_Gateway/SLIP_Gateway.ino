@@ -19,9 +19,11 @@
  * 4. Type 'ls' and look for a new device ttyUSB<X> where <X> is a number
  * 5. Run   sudo modprobe slip
  * 6. Run   sudo slattach -L -s 115200 -p slip /dev/ttyUSB<X> &
+ * 7. Note the & at the end of the previous command. Without it, slattach will appear to hang and CTRL+C will exit.
  * 7. Run ifconfig , note the sl<X> device
  * 8. Run   sudo ifconfig sl<X> 10.10.3.1
  * 9. Run   sudo route add -net 10.10.3.0/24 gw 10.10.3.1
+ * 10. The gateway is now up and running. Active RF24Ethernet nodes should be pingable.
 
  Note: If using an ip of 192.168.3.1 for the gateway, the commands are very similar:
         ie: sudo route add -net 192.168.3.0/24 gw 192.168.3.1
@@ -33,12 +35,10 @@
  * The requested URL is used as input, to determine whether to turn the LED off or on
  */
 
-
-#include <RF24Network.h>
-#include <RF24.h>
 #include <SPI.h>
+#include <RF24.h>
+#include <RF24Network.h>
 #include <RF24Mesh.h>
-#include "EEPROM.h"
 
 RF24 radio(7, 8);
 RF24Network network(radio);
@@ -52,9 +52,12 @@ RF24Mesh mesh(radio, network);
 
 // NOTE: IMPORTANT this should be set to the same value as the UIP_BUFSIZE and
 // the MAX_PAYLOAD_SIZE in RF24Network. The default is 120 bytes
-#define UIP_BUFFER_SIZE 120
+#define UIP_BUFFER_SIZE MAX_PAYLOAD_SIZE
 
 uint8_t slip_buf[UIP_BUFFER_SIZE]; // MSS + TCP Header Length
+
+//Function to send incoming network data to the SLIP interface
+void networkToSLIP();
 
 void setup() {
 
@@ -77,31 +80,36 @@ void setup() {
 }
 
 
+uint32_t active_timer =0;
 
 void loop() {
 
-  // Poll the network and mesh for incoming data or address requests
-  uint8_t headerType = mesh.update();
-
   // Provide RF24Network addresses to connecting & reconnecting nodes
-  mesh.DHCP();
+  if(millis() > 10000){
+    mesh.DHCP();
+  }
 
+  //Ensure any incoming user payloads are read from the buffer
+  while(network.available()){
+    RF24NetworkHeader header;
+    network.read(header,0,0);    
+  }
+  
   // Handle external (TCP) data
   // Note: If not utilizing RF24Network payloads directly, users can edit the RF24Network_config.h file
   // and uncomment #define DISABLE_USER_PAYLOADS. This can save a few hundred bytes of RAM.
 
-  if (headerType == EXTERNAL_DATA_TYPE) {
-    RF24NetworkFrame *frame = network.frag_ptr;
-    size_t size = frame->message_size;
-    uint8_t *pointer = frame->message_buffer;
-    slipdev_send(pointer, size);
+  if(mesh.update() == EXTERNAL_DATA_TYPE) {
+    networkToSLIP();
   }
 
+  
   // Poll the SLIP device for incoming data
-  uint16_t len = slipdev_poll();
-
-  if (len) {
-   
+  //uint16_t len = slipdev_poll();
+  uint16_t len;
+  
+  if( (len = slipdev_poll()) > 0 ){
+    if(len > MAX_PAYLOAD_SIZE){ return; }
     RF24NetworkHeader header(01, EXTERNAL_DATA_TYPE);    
     uint8_t meshAddr;
     
@@ -118,7 +126,7 @@ void loop() {
       #endif
       
       network.write(header, &slip_buf, len);
-      
+
       #if defined (LED_TXRX)
         digitalWrite(DEBUG_LED_PIN, LOW);
       #endif
@@ -133,6 +141,15 @@ void loop() {
 }
 
 
+void networkToSLIP(){
+  
+    RF24NetworkFrame *frame = network.frag_ptr;
+    size_t size = frame->message_size;
+    uint8_t *pointer = frame->message_buffer;
+    slipdev_send(pointer, size);
+    //digitalWrite(DEBUG_LED_PIN, !digitalRead(DEBUG_LED_PIN));
+    
+}
 
 void flashLED() {
 #if defined (SLIP_DEBUG)
