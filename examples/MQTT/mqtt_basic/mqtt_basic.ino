@@ -62,7 +62,7 @@ PubSubClient client(ethClient);
 
 void reconnect() {
   // Loop until we're reconnected
-  while (!client.connected()) {
+  if (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     if (client.connect("arduinoClient")) {
