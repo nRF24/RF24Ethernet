@@ -30,7 +30,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port) {
  
   uint32_t timer = millis();
 
-do{
+//do{
 
   stop();
   uip_ipaddr_t ipaddr;
@@ -62,8 +62,8 @@ do{
     
 	}
   }
-  delay(25);
-}while(millis()-timer < 175);
+  //delay(25);
+//}while(millis()-timer < 175);
 
 #endif //Active open enabled
 
