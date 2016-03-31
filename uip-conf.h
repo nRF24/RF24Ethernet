@@ -189,7 +189,7 @@ User Configuration Options
   #define UIP_CONF_RECEIVE_WINDOW 511
 #else
   //#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE *2 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
-  #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE * 2 - 1 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
+  #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - 1 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
 #endif
 
 #define UIP_CONF_TCP_MSS OUTPUT_BUFFER_SIZE

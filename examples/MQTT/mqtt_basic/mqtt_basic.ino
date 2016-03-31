@@ -46,6 +46,7 @@ IPAddress ip(10,10,2,4);
 IPAddress gateway(10,10,2,2); //Specify the gateway in case different from the server
 IPAddress server(10,10,2,2);
 
+char *clientID = {"arduinoClient "};
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -65,7 +66,7 @@ void reconnect() {
   if (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("arduinoClient")) {
+    if (client.connect(clientID)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
       client.publish("outTopic","hello world");
@@ -95,7 +96,7 @@ void setup()
   } else {
     Serial.println(" Failed");
   }
-
+  clientID[13] = ip[3] + 48; //Convert last octet of IP to ascii & use in clientID
 }
 
 uint32_t mesh_timer = 0;
