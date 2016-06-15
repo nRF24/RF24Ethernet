@@ -42,7 +42,7 @@ void RF24EthernetClass::update() {
 }
 
 /*************************************************************/
-#if !defined ARDUINO_ARCH_ESP8266
+#if defined ARDUINO_ARCH_AVR
 void yield() {
   Ethernet.update();
 }
