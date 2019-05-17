@@ -112,6 +112,7 @@ uint32_t pub_timer = 0;
 
 void loop()
 {
+  Ethernet.update();
   
   if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
