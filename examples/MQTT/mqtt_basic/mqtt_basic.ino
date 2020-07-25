@@ -47,7 +47,7 @@ IPAddress ip(10,10,2,4);
 IPAddress gateway(10,10,2,2); //Specify the gateway in case different from the server
 IPAddress server(10,10,2,2);  //The ip of the MQTT server
 
-char *clientID = {"arduinoClient   "};
+char clientID[] = {"arduinoClient   "};
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
