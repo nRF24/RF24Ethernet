@@ -42,12 +42,6 @@ void RF24EthernetClass::update() {
 }
 
 /*************************************************************/
-#if defined ARDUINO_ARCH_AVR
-void yield() {
-  Ethernet.update();
-}
-#endif
-/*************************************************************/
 
 void RF24EthernetClass::use_device()
 {
