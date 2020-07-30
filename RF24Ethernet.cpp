@@ -57,13 +57,15 @@ void RF24EthernetClass::setMac(uint16_t address){
 	  radio.begin();
 	}	
 	
-	const uint8_t mac[6] = {0x52,0x46,0x32,0x34,address,address>>8};
+	const uint8_t mac[6] = {0x52,0x46,0x32,0x34,(uint8_t)address,(uint8_t)(address>>8)};
 	//printf("MAC: %o %d\n",address,mac[0]);
 	
 	#if defined (RF24_TAP)
 	  uip_seteth_addr(mac);
    	  network.multicastRelay = 1;
-	#endif
+	#else
+     if(mac){}; //Dummy operation to prevent warnings if TAP not defined
+    #endif
 	RF24_Channel = RF24_Channel ? RF24_Channel : 97;
 	network.begin(RF24_Channel, address);
 }
@@ -87,6 +89,8 @@ dns[3] = 1;
 begin(ip, dns);
 }
 
+/*******************************************************/
+
 void RF24EthernetClass::begin(IPAddress ip, IPAddress dns)
 {
 IPAddress gateway = ip;
@@ -94,15 +98,18 @@ gateway[3] = 1;
 begin(ip, dns, gateway);
 }
 
+/*******************************************************/
+
 void RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway)
 {
 IPAddress subnet(255, 255, 255, 0);
 begin(ip, dns, gateway, subnet);
 }
 
+/*******************************************************/
+
 void RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
 {
-//init(mac);
 configure(ip,dns,gateway,subnet);
 }
 
@@ -126,10 +133,8 @@ uip_setnetmask(ipaddr);
 _dnsServerAddress = dns;
 
 	timer_set(&this->periodic_timer, CLOCK_SECOND / UIP_TIMER_DIVISOR);
-	//timer_set(&this->periodic_timer, CLOCK_SECOND / 4);
 	
 	#if defined (RF24_TAP)
-//	timer_set(&this->arp_timer, CLOCK_SECOND * 10);
 	timer_set(&this->arp_timer, CLOCK_SECOND * 2);
 	#endif
 	
@@ -278,26 +283,24 @@ void RF24EthernetClass::tick() {
 #endif //RF24_TAP
 }
 
+/*******************************************************/
 
-boolean RF24EthernetClass::network_send()
+void RF24EthernetClass::network_send()
 {
-		RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
-		//while(millis() - RF24Ethernet.lastRadio < 1){}
+    RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
+    RF24Ethernet.network.write(headerOut,uip_buf,uip_len);
 
-		  bool ok = RF24Ethernet.network.write(headerOut,uip_buf,uip_len);
-		//#endif
-		
-		#if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2
-		if(!ok){
-		  Serial.println(); Serial.print(millis()); Serial.println(F(" *** RF24Ethernet Network Write Fail ***")); 
-		}
-		#endif
-		#if defined ETH_DEBUG_L2
-		if(ok){
-		  Serial.println(); Serial.print(millis()); Serial.println(F(" RF24Ethernet Network Write OK")); 
-		}
-		#endif
-		//RF24Ethernet.packetstate &= ~UIPETHERNET_SENDPACKET;
+    #if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2
+      if(!ok){
+        Serial.println(); Serial.print(millis()); Serial.println(F(" *** RF24Ethernet Network Write Fail ***")); 
+      }
+    #endif
+    #if defined ETH_DEBUG_L2
+      if(ok){
+        Serial.println(); Serial.print(millis()); Serial.println(F(" RF24Ethernet Network Write OK")); 
+      }
+    #endif
+
 }
 
 /*******************************************************/

@@ -19,8 +19,8 @@
 #define RF24SERVER_H
 
 
-#import "Server.h"
-#import "RF24Client.h"
+#include "Server.h"
+#include "RF24Client.h"
 #include "ethernet_comp.h"
 
 class RF24Server : public Server {

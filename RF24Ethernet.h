@@ -32,8 +32,8 @@
  #include <Arduino.h>
 
 extern "C" {
-  #import "uip-conf.h"
-  #import "utility/uip.h"
+  #include "uip-conf.h"
+  #include "utility/uip.h"
   #include "utility/timer.h"
   #include "utility/uip_arp.h"
 
@@ -201,7 +201,7 @@ class RF24EthernetClass {//: public Print {
 		// data and issue IP events to the sketch.  It does not return until all IP
 		// events have been processed.
 		static void tick();
-		static boolean network_send();		
+		static void network_send();		
 		
 		uint8_t RF24_Channel;
 

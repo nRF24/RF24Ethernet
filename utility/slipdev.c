@@ -67,6 +67,7 @@
  */
 
 #include "uip.h"
+#include "slipdev.h"
 
 #define SLIP_END     0300
 #define SLIP_ESC     0333

@@ -20,7 +20,7 @@
 #define RF24CLIENT_H
 
 #include "Print.h"
-#import "Client.h"
+#include "Client.h"
 
 //#define UIP_SOCKET_DATALEN UIP_TCP_MSS
 //#define UIP_SOCKET_NUMPACKETS UIP_RECEIVE_WINDOW/UIP_TCP_MSS+1

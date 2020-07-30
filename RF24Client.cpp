@@ -43,8 +43,6 @@ int RF24Client::connect(IPAddress ip, uint16_t port) {
 
 #if UIP_ACTIVE_OPEN > 0
  
-  uint32_t timer = millis();
-
 //do{
 
   stop();
@@ -104,8 +102,13 @@ int RF24Client::connect(const char *host, uint16_t port) {
 	#endif
     return connect(remote_addr, port);
   }
+  #else
+    if(host){}; //Do something with the input paramaters to prevent compile time warnings
+    if(port){};
   #endif
-  #if defined (ETH_DEBUG_L1) || #defined (RF24ETHERNET_DEBUG_DNS)
+  
+  
+  #if defined (ETH_DEBUG_L1) || defined (RF24ETHERNET_DEBUG_DNS)
     Serial.println(F("*UIP DNS fail*"));
   #endif
 
@@ -172,9 +175,6 @@ size_t RF24Client::_write(uip_userdata_t* u, const uint8_t *buf, size_t size) {
 
   size_t total_written = 0;
   size_t payloadSize = rf24_min(size,UIP_TCP_MSS);
-  //Serial.println("W1");
-
-  uint32_t testTimeout=millis();
   
 test2:    
 
@@ -212,6 +212,7 @@ void uip_log( char* msg ){
 	//Serial.println();
 	//Serial.println("** UIP LOG **");
 	//Serial.println(msg);
+    if(msg){};
 }
 
 /*************************************************************/
@@ -241,7 +242,7 @@ void serialip_appcall(void) {
       IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.print(millis()); Serial.print(F(" UIPClient uip_newdata, uip_len:")); Serial.println(uip_len); );
       
       if(u->sent){
-          u->hold = u->out_pos = u->windowOpened = u->packets_out = false;
+          u->hold = (u->out_pos = (u->windowOpened = (u->packets_out = false)));
       }
 	  if (uip_len && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){
 		  
@@ -284,8 +285,8 @@ void serialip_appcall(void) {
   if (uip_acked()) {
     IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.print(millis()); Serial.println(F(" UIPClient uip_acked")); );
 	u->state &= ~UIP_CLIENT_RESTART;
-	u->hold = u->out_pos = u->windowOpened = u->packets_out = false;
-	u->connAbortTime = u->restartTime = millis();	
+	u->hold = (u->out_pos = (u->windowOpened = (u->packets_out = false)));
+	u->connAbortTime = (u->restartTime = millis());	
   }
 	
   /*******Polling**********/
@@ -351,7 +352,7 @@ void serialip_appcall(void) {
     }
   }			
 finish:;
-finish_newdata:
+
   if (u->state & UIP_CLIENT_RESTART && !u->windowOpened) {
     if( !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED))){	  
 	  uip_restart();
