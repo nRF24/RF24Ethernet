@@ -82,7 +82,7 @@ buf_setup(struct psock_buf *buf,
 static u8_t
 buf_bufdata(struct psock_buf *buf, u16_t len,
 	    u8_t **dataptr, u16_t *datalen)
-{
+{ if(len){};
   if(*datalen < buf->left) {
     memcpy(buf->ptr, *dataptr, *datalen);
     buf->ptr += *datalen;
@@ -173,11 +173,11 @@ data_acked(register struct psock *s)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-PT_THREAD(psock_send(register struct psock *s, const char *buf,
+PT_THREAD(psock_send(register struct psock *s, const u8_t *buf,
 		     unsigned int len))
 {
   PT_BEGIN(&s->psockpt);
-
+  if(PT_YIELD_FLAG){};
   /* If there is no data to send, we exit immediately. */
   if(len == 0) {
     PT_EXIT(&s->psockpt);
@@ -216,7 +216,7 @@ PT_THREAD(psock_generator_send(register struct psock *s,
 			       unsigned short (*generate)(void *), void *arg))
 {
   PT_BEGIN(&s->psockpt);
-
+  if(PT_YIELD_FLAG){};
   /* Ensure that there is a generator function to call. */
   if(generate == NULL) {
     PT_EXIT(&s->psockpt);
@@ -272,7 +272,7 @@ psock_newdata(struct psock *s)
 PT_THREAD(psock_readto(register struct psock *psock, unsigned char c))
 {
   PT_BEGIN(&psock->psockpt);
-
+  if(PT_YIELD_FLAG){};
   buf_setup(&psock->buf, psock->bufptr, psock->bufsize);
   
   /* XXX: Should add buf_checkmarker() before do{} loop, if
@@ -299,7 +299,7 @@ PT_THREAD(psock_readto(register struct psock *psock, unsigned char c))
 PT_THREAD(psock_readbuf(register struct psock *psock))
 {
   PT_BEGIN(&psock->psockpt);
-
+  if(PT_YIELD_FLAG){};
   buf_setup(&psock->buf, psock->bufptr, psock->bufsize);
   
   /* XXX: Should add buf_checkmarker() before do{} loop, if
@@ -325,7 +325,7 @@ PT_THREAD(psock_readbuf(register struct psock *psock))
 }
 /*---------------------------------------------------------------------------*/
 void
-psock_init(register struct psock *psock, char *buffer, unsigned int buffersize)
+psock_init(register struct psock *psock, u8_t *buffer, unsigned int buffersize)
 {
   psock->state = STATE_NONE;
   psock->readlen = 0;
