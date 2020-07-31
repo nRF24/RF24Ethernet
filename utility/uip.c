@@ -110,12 +110,14 @@ const uip_ipaddr_t uip_netmask =
 uip_ipaddr_t uip_hostaddr, uip_draddr, uip_netmask;
 #endif /* UIP_FIXEDADDR */
 
+#if UIP_UDP || UIP_BROADCAST
 static const uip_ipaddr_t all_ones_addr =
 #if UIP_CONF_IPV6
   {0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
 #else /* UIP_CONF_IPV6 */
   {0xffff,0xffff};
 #endif /* UIP_CONF_IPV6 */
+#endif // UIP_UDP || UIP_BROADCAST
 static const uip_ipaddr_t all_zeroes_addr =
 #if UIP_CONF_IPV6
   {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000};
@@ -855,7 +857,7 @@ uip_process(u8_t flag)
      the packet has been padded and we set uip_len to the correct
      value.. */
 
-  if((BUF->len[0] << 8) + BUF->len[1] <= uip_len) {
+  if(( (uint8_t)(BUF->len[0] << 8) + BUF->len[1]) <= uip_len) {
     uip_len = (BUF->len[0] << 8) + BUF->len[1];
 #if UIP_CONF_IPV6
     uip_len += 40; /* The length reported in the IPv6 header is the
@@ -1845,9 +1847,9 @@ uip_process(u8_t flag)
   /* Calculate TCP checksum. */
   BUF->tcpchksum = 0;
   BUF->tcpchksum = ~(uip_tcpchksum());
-  
+#if UIP_UDP  
  ip_send_nolen:
-
+#endif
 #if UIP_CONF_IPV6
   BUF->vtc = 0x60;
   BUF->tcflow = 0x00;

@@ -114,7 +114,8 @@ void loop() {
     {
       // If a request is received with enough characters, search for the / character
       if (size >= 7) {
-        client.findUntil("/", "/");
+        char slash[] = {"/"};
+        client.findUntil(slash, slash);
         char buf[3] = {"  "};
         if(client.available() >= 2){
         buf[0] = client.read();  // Read in the first two characters from the request
@@ -246,5 +247,6 @@ static unsigned short generate_tcp_stats()
 
     }
   }
+  return 1;
 }
 

@@ -64,7 +64,7 @@ void RF24EthernetClass::setMac(uint16_t address){
 	  uip_seteth_addr(mac);
    	  network.multicastRelay = 1;
 	#else
-     if(mac){}; //Dummy operation to prevent warnings if TAP not defined
+     if(mac[0]==1){}; //Dummy operation to prevent warnings if TAP not defined
     #endif
 	RF24_Channel = RF24_Channel ? RF24_Channel : 97;
 	network.begin(RF24_Channel, address);

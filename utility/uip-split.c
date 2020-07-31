@@ -86,8 +86,8 @@ uip_split_output(void)
 #endif /* UIP_CONF_IPV6 */
     
     /* Transmit the first packet. */
-    /*    uip_fw_output();*/
-    tcpip_output();
+        uip_fw_output();
+    //tcpip_output();
 
     /* Now, create the second packet. To do this, it is not enough to
        just alter the length field, but we must also update the TCP
@@ -125,11 +125,11 @@ uip_split_output(void)
 #endif /* UIP_CONF_IPV6 */
 
     /* Transmit the second packet. */
-    /*    uip_fw_output();*/
-    tcpip_output();
+        uip_fw_output();
+    //tcpip_output();
   } else {
-    /*    uip_fw_output();*/
-    tcpip_output();
+        uip_fw_output();
+    //tcpip_output();
   }
      
 }

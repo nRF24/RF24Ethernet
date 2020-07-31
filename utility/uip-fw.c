@@ -282,7 +282,7 @@ static void
 fwcache_register(void)
 {
   struct fwcache_entry *fw;
-  int i, oldest;
+  uint16_t i, oldest;
 
   oldest = FW_TIME;
   fw = NULL;

@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <utility/uip_debug.h>
 extern "C" {
-  #import "utility/uip.h"
+  #include "utility/uip.h"
 }
 
 struct uip_conn con[UIP_CONNS];
@@ -60,9 +60,9 @@ UIPDebug::uip_debug_printcon(struct uip_conn *lhs,struct uip_conn *rhs)
       uip_debug_printbytes(lhs->rcv_nxt,4);
       Serial.print(" -> ");
       uip_debug_printbytes(rhs->rcv_nxt,4);
-      *((uint32_t *)&lhs->rcv_nxt[0]) = (uint32_t)rhs->rcv_nxt[0];
+      //*((uint32_t *)&lhs->rcv_nxt[0]) = (uint32_t)rhs->rcv_nxt[0];
       Serial.println();
-      changed = true;
+      changed = false;
     }
   if ((uint32_t)lhs->snd_nxt[0] != (uint32_t)rhs->snd_nxt[0])
     {
@@ -70,9 +70,9 @@ UIPDebug::uip_debug_printcon(struct uip_conn *lhs,struct uip_conn *rhs)
       uip_debug_printbytes(lhs->snd_nxt,4);
       Serial.print(" -> ");
       uip_debug_printbytes(rhs->snd_nxt,4);
-      *((uint32_t *)&lhs->snd_nxt[0]) = (uint32_t)rhs->snd_nxt[0];
+      //*((uint32_t *)&lhs->snd_nxt[0]) = (uint32_t)rhs->snd_nxt[0];
       Serial.println();
-      changed = true;
+      changed = false;
     }
   if (lhs->len != rhs->len)
     {

@@ -141,7 +141,8 @@ buf_bufto(register struct psock_buf *buf, u8_t endmarker,
   return BUF_FULL;
 }
 /*---------------------------------------------------------------------------*/
-static char
+//TMRh20: Comment this out to remove warnings. Protosockets not used by RF24Ethernet.
+/*static char
 send_data(register struct psock *s)
 {
   if(s->state != STATE_DATA_SENT || uip_rexmit()) {
@@ -154,9 +155,10 @@ send_data(register struct psock *s)
     return 1;
   }
   return 0;
-}
+}*/
 /*---------------------------------------------------------------------------*/
-static char
+//TMRh20: Comment this out to remove warnings. Protosockets not used by RF24Ethernet.
+/*static char
 data_acked(register struct psock *s)
 {
   if(s->state == STATE_DATA_SENT && uip_acked()) {
@@ -171,7 +173,7 @@ data_acked(register struct psock *s)
     return 1;
   }
   return 0;
-}
+}*/
 /*---------------------------------------------------------------------------*/
 PT_THREAD(psock_send(register struct psock *s, const u8_t *buf,
 		     unsigned int len))
@@ -204,7 +206,8 @@ PT_THREAD(psock_send(register struct psock *s, const u8_t *buf,
      * && operator, which would cause only the data_acked() function
      * to be called when it returns false.
      */
-    PT_WAIT_UNTIL(&s->psockpt, data_acked(s) & send_data(s));
+    //TMRh20: Comment this out to remove warnings. Protosockets not used by RF24Ethernet.
+    //PT_WAIT_UNTIL(&s->psockpt, data_acked(s) & send_data(s));
   }
 
   s->state = STATE_NONE;
@@ -235,7 +238,8 @@ PT_THREAD(psock_generator_send(register struct psock *s,
       generate(arg);
     }
     /* Wait until all data is sent and acknowledged. */
-    PT_WAIT_UNTIL(&s->psockpt, data_acked(s) & send_data(s));
+    //TMRh20: Comment this out to remove warnings. Protosockets not used by RF24Ethernet.
+    //PT_WAIT_UNTIL(&s->psockpt, data_acked(s) & send_data(s));
   } while(s->sendlen > 0);
   
   s->state = STATE_NONE;
@@ -280,7 +284,8 @@ PT_THREAD(psock_readto(register struct psock *psock, unsigned char c))
 
   do {
     if(psock->readlen == 0) {
-      PT_WAIT_UNTIL(&psock->psockpt, psock_newdata(psock));
+      //TMRh20: Comment this out to remove warnings. Protosockets not used by RF24Ethernet.
+      //PT_WAIT_UNTIL(&psock->psockpt, psock_newdata(psock));
       psock->state = STATE_READ;
       psock->readptr = (u8_t *)uip_appdata;
       psock->readlen = uip_datalen();
@@ -307,7 +312,8 @@ PT_THREAD(psock_readbuf(register struct psock *psock))
 
   do {
     if(psock->readlen == 0) {
-      PT_WAIT_UNTIL(&psock->psockpt, psock_newdata(psock));
+      //TMRh20: Comment this out to remove warnings. Protosockets not used by RF24Ethernet.
+      //PT_WAIT_UNTIL(&psock->psockpt, psock_newdata(psock));
       //printf("Waited for newdata\n");
       psock->state = STATE_READ;
       psock->readptr = (u8_t *)uip_appdata;

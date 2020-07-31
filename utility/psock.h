@@ -370,7 +370,7 @@ char psock_newdata(struct psock *s);
  * \hideinitializer
  */
 #define PSOCK_WAIT_UNTIL(psock, condition)    \
-  PT_WAIT_UNTIL(&((psock)->pt), (condition));
+   PT_WAIT_UNTIL(&((psock)->pt), (condition))
 
 #define PSOCK_WAIT_THREAD(psock, condition)   \
   PT_WAIT_THREAD(&((psock)->pt), (condition))
