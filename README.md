@@ -2,9 +2,9 @@
 
 ## Access your RF24Network sensors using a web browser  
  
-### Current stage: Beta Testing
+### Current stage: Functional & Mostly Stable (Updated 2020)
 
-RF24Ethernet requires the RF24 and RF24Network_DEV and RF24Mesh libraries 
+RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries 
 
 Documentation & Setup Info: http://tmrh20.github.io/RF24Ethernet
 
