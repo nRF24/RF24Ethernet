@@ -288,20 +288,17 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * 
  * @section News Update News
- * 
- * \version <b>1.6 - Aug-Dec 2015</b>
- * - Address problems with stream functions like client.parseInt() or find()
- * - Tested working with MQTT via <a href="https://github.com/knolleary/pubsubclient">PubSub library</a>
- * - Fix: Connection state set before begin allocated
- * - Workaround for HTTP servers sending half TCP MSS
- * - Automatically assign mesh nodeID based on IP & update examples
- * - <a href="https://github.com/esp8266/Arduino">ESP8266 (Arduino)</a> support
  *
- * \version <b>1.51RC1 - Apr15-16 2015</b>
- * - Seemingly stable release candidate
- * - Major change: <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
- * - Now defaults to using RF24Mesh (TUN) interface 
- * - Apr 16 - Use external buffer for uIP to save memory. Requires Updating RF24Network and RF24Mesh.
+ * \version <b>1.6.4 - Aug 2020 </b>
+ * Fix buggy behaviour on AVR devices. Remove hook to update RF24Ethernet during calls to delay.
+ * Fixes for MQTT example
+ * Major cleanup for warnings and minor issues 
+ *
+ * \version <b>1.6.3 - April 2020 </b>
+ * - Update & fix MQTT example
+ * - Add dependencies for RF24, RF24Network & RF24Mesh
+ * 
+ * \version <b>1.6.2 - May 2019 </b>
  * 
  * See <a href="VersionInfo.html"> version history </a> for more info 
  * 
@@ -437,7 +434,7 @@ extern RF24EthernetClass RF24Ethernet;
  * 6. Connect into your nodes web-server at http://ip-of-your-node:1000 from the RPi or configure the client sketch to connect to a server
  * running on the Raspberry Pi.
  * Note: To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment #define DISABLE_USER_PAYLOADS. This
- * will disable standard RF24Network messages, and only allow external data, such as TCP/IP information. 
+ * will disable standard RF24Network messages, and only allow external data, such as TCP/IP information. Remember to comment for normal operation!
  *
  * <b> Non-Raspberry Pi (Linux etc) Devices </b><br>
  * Arduino can also function as a gateway for any Linux machine or PC/MAC that supports SLIP. <br>
@@ -566,6 +563,26 @@ extern RF24EthernetClass RF24Ethernet;
  *
  *
  * @page VersionInfo Version Info
+ *
+ * \version <b>1.6.1 - Dec 2015</b>
+ * - Use Arduino yield() function to keep IP stack updated during calls to delay() etc. (Not working with ESP8266)
+ * - Fix mqtt example
+ * - Fix (mostly) SLIP gateway example (RPi direct connection preferred)
+ * - Fix client operator conversion
+ *
+ * \version <b>1.6 - Aug-Dec 2015</b>
+ * - Address problems with stream functions like client.parseInt() or find()
+ * - Tested working with MQTT via <a href="https://github.com/knolleary/pubsubclient">PubSub library</a>
+ * - Fix: Connection state set before begin allocated
+ * - Workaround for HTTP servers sending half TCP MSS
+ * - Automatically assign mesh nodeID based on IP & update examples
+ * - <a href="https://github.com/esp8266/Arduino">ESP8266 (Arduino)</a> support
+ *
+ * \version <b>1.51RC1 - Apr15-16 2015</b>
+ * - Seemingly stable release candidate
+ * - Major change: <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
+ * - Now defaults to using RF24Mesh (TUN) interface 
+ * - Apr 16 - Use external buffer for uIP to save memory. Requires Updating RF24Network and RF24Mesh.
  *
  * \version <b>1.5RC1 - Apr15-16 2015</b>
  * - Seemingly stable release candidate
