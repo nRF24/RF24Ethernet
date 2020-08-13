@@ -31,19 +31,6 @@
  * Remote networks can be easily interconnected using SSH tunnelling, VPNs etc., and 
  * sensor nodes can be configured to communicate without the need for an intermediary or additional programming.
  * 
- * Main Features:
- * 
- * 1. Same basic feature set as any Arduino Ethernet adapter, only wireless...
- * 2. Uses RPi OR Arduino+Linux OR Arduino + any SLIP capable device as the wireless gateway/router.
- * 3. Easy Arduino configuration: Just assign a unique IP address to each node, ending in 2-255 (ie: 192.168.1.32)
- *    *Linux devices use standard TCP/IP networking (IPTABLES,NAT,etc) and tools (wget, ftp, curl, python...)
- * 4. Automated (mesh) networking creates and maintains network connectivity as nodes join the network or move around
- * 5. Automated, multi-hop routing allows users to greatly extend the range of RF24 devices
- * 6. API based on the official Arduino Ethernet library. ( https://www.arduino.cc/en/Reference/Ethernet )
- * 7. RF24Gateway (companion program for RPi) provides a user interface that automatically handles TCP/IP
- *    data, and is easily modified to handle custom RF24Network/RF24Mesh data.
- * 8. Reduce/Remove the need for custom applications. Any device with a browser can connect directly to the sensors!
- * 9. Handle (relatively) large volumes of data and file transfers automatically.
  * 
  * *************************************************************************
  * Example Network:
@@ -80,21 +67,19 @@
  * 1. Open the RF24Network library folder
  * 2. Edit the RF24Networl_config.h file
  * 3. Un-comment #define DISABLE_USER_PAYLOADS
+ * 4. Remember to set it back for normal operation
  *
- * This example connects to google and downloads the index page
+ * This example will get you some pizza and a book to read
+ * 
  */
 
 
 
 #include <RF24.h>
-#include <SPI.h>
-#include <RF24Mesh.h>
 #include <RF24Network.h>
-//#include <printf.h>
+#include <RF24Mesh.h>
 #include <RF24Ethernet.h>
-#if !defined __arm__ && !defined __ARDUINO_X86__
-  #include <EEPROM.h>
-#endif
+//#include <printf.h>
 
 /*** Configure the radio CE & CS pins ***/
 RF24 radio(7,8);
@@ -102,14 +87,19 @@ RF24Network network(radio);
 RF24Mesh mesh(radio,network);
 RF24EthernetClass RF24Ethernet(radio,network,mesh);
 
-
 EthernetClient client;
+
+// The hosts we will be connecting to
+// Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
+IPAddress guten(152,19,134,47); //http://www.gutenberg.org/files/2591/2591-0.txt
+IPAddress pizza(94,199,58,243); //http://fiikus.net/asciiart/pizza.txt
+IPAddress host(pizza);
 
 void setup() {
   
   Serial.begin(115200);
- // printf_begin();
-  Serial.println("Start");
+  //printf_begin();
+  Serial.println(F("Start"));
   
   // Set the IP address we'll be using. The last octet mast match the nodeID (9)
   IPAddress myIP(10,10,2,4);
@@ -124,10 +114,20 @@ void setup() {
 
 uint32_t counter = 0;
 uint32_t reqTimer = 0;
-
 uint32_t mesh_timer = 0;
 
 void loop() {
+  
+  // Send a p or g character over serial to switch between hosts
+  if(Serial.available()){
+    char c = Serial.read();
+    if(c == 'p'){
+      host = pizza;
+    }else
+    if(c == 'g'){
+      host = guten;
+    }
+  }  
 
   // Optional: If the node needs to move around physically, or using failover nodes etc.,
   // enable address renewal
@@ -135,19 +135,19 @@ void loop() {
     mesh_timer = millis();
     if( ! mesh.checkConnection() ){
         //refresh the network address        
-        mesh.renewAddress();
+        if(!mesh.renewAddress()){
+          mesh.begin();
+        }
      }
   }
 
-size_t size;
+  size_t size;
 
-if(size = client.available() > 0){
+  if(size = client.available() > 0){
     char c = client.read();
     Serial.print(c);
-    // Sends a line-break every 150 characters, comment out if not connecting to google
-    //if(counter > 150){ Serial.println(""); counter=0;}
     counter++;
-}
+  }
 
   // if the server's disconnected, stop the client:
   if (!client.connected()) {
@@ -156,6 +156,8 @@ if(size = client.available() > 0){
     client.stop();
   
     // Wait 5 seconds between requests
+    // Calling client.available(); or Ethernet.update(); is required during delays
+    // to keep the stack updated
     reqTimer = millis();
     while(millis() - reqTimer < 5000 && !client.available() ){ }    
     connect();
@@ -167,17 +169,16 @@ if(size = client.available() > 0){
 
 void connect(){
     Serial.println(F("connecting"));
-    IPAddress goog(74,125,224,87);
-    IPAddress pizza(94,199,58,243);
-    if (client.connect(pizza, 80)) {
+    
+    if (client.connect(host, 80)) {
       Serial.println(F("connected"));
       
       // Make an HTTP request:
-      client.write("GET /asciiart/pizza.txt HTTP/1.1\n");
-      //client.write("GET / HTTP/1.1\n");
-      
-      client.write("Host: fiikus.net\n");
-      //client.write("Host: www.google.ca\n");
+      if(host == pizza){
+        client.write("GET /asciiart/pizza.txt HTTP/1.1\nHost: fiikus.net\n");
+      }else{
+        client.write("GET /files/2591/2591-0.txt HTTP/1.1\nHost: gutenberg.org\n");
+      }
       
       client.write("Connection: close\n\n");   
     
@@ -186,4 +187,3 @@ void connect(){
       Serial.println(F("connection failed"));
     }
 }
-
