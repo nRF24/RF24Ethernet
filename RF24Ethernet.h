@@ -276,7 +276,7 @@ extern RF24EthernetClass RF24Ethernet;
  * @mainpage RF24Ethernet library: TCP/IP over RF24Network
  * 
  * @section OpenSourceWireless Open & Open-Source IoT Wireless (not WiFi) Networks
- * **An experiment disconnected...**
+ * **An experiment disconnected...**<br>
  * <img src="tmrh20/RF24EthernetOverviewImg.jpg" alt="RF24EthernetImage" style="width:70%;height:70%">
  * 
  * @section Goals Goals:
@@ -289,16 +289,19 @@ extern RF24EthernetClass RF24Ethernet;
  * 
  * @section News Update News
  *
+ * \version <b>1.6.5 - Aug 2020</b>
+ * - Identified/Correct memory issue causing 'undefined behaviour' ie: A variety of symptoms depending on memory allocation etc.
+ * - Update getting started simple client example
+ *
  * \version <b>1.6.4 - Aug 2020 </b>
- * Fix buggy behaviour on AVR devices. Remove hook to update RF24Ethernet during calls to delay.
- * Fixes for MQTT example
- * Major cleanup for warnings and minor issues 
+ * - Fix buggy behaviour on AVR devices. Remove hook to update RF24Ethernet during calls to delay.
+ * - Fixes for MQTT example
+ * - Major cleanup for warnings and minor issues 
  *
  * \version <b>1.6.3 - April 2020 </b>
  * - Update & fix MQTT example
  * - Add dependencies for RF24, RF24Network & RF24Mesh
  * 
- * \version <b>1.6.2 - May 2019 </b>
  * 
  * See <a href="VersionInfo.html"> version history </a> for more info 
  * 
@@ -563,6 +566,8 @@ extern RF24EthernetClass RF24Ethernet;
  *
  *
  * @page VersionInfo Version Info
+ *
+ * \version <b>1.6.2 - May 2019 </b>
  *
  * \version <b>1.6.1 - Dec 2015</b>
  * - Use Arduino yield() function to keep IP stack updated during calls to delay() etc. (Not working with ESP8266)
