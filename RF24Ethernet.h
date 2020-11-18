@@ -253,6 +253,12 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * This is the example taken from the PubSub library (https://github.com/knolleary/pubsubclient) & slightly modified to include RF24Ethernet/RF24Mesh.
  */
+
+  /**
+ * @example mqtt_basic_2.ino
+ *
+ * A copy of the initial MQTT example using MQTT library https://github.com/256dpi/arduino-mqtt/ slightly modified to include RF24Ethernet/RF24Mesh.
+ */
  
  /**
  * @example HTML.h
