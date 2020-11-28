@@ -7,7 +7,7 @@
    RF24 -> RF24Network -> UIP(TCP/IP) -> RF24Ethernet
                        -> RF24Mesh
 
-        Documentation: http://tmrh20.github.io/RF24Ethernet/
+        Documentation: http://nRF24.github.io/RF24Ethernet/
 
  * *************************************************************************
 

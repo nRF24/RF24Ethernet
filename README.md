@@ -1,12 +1,12 @@
 # Ethernet and TCP/IP Networking for RF24Network
 
-## Access your RF24Network sensors using a web browser  
- 
+## Access your RF24Network sensors using a web browser
+
 ### Current stage: Functional & Mostly Stable (Updated 2020)
 
-RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries 
+RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries
 
-Documentation & Setup Info: http://tmrh20.github.io/RF24Ethernet
+Documentation & Setup Info: http://nRF24.github.io/RF24Ethernet
 
 Downloads: http://tmrh20.github.io/
 
@@ -18,7 +18,7 @@ Licenses include, but are not limited to the following.
 
 RF24Ethernet.h, RF24Ethernet.cpp, RF24Server.h, RF24Server.cpp, RF24Client.h, RF24Client.cpp, RF24Udp.h, RF24Udp.cpp, utility/mempool.h, utility/mempool.cpp
 
-Copyright (c) 2014 tmrh20@gmail.com, github.com/TMRh20 
+Copyright (c) 2014 tmrh20@gmail.com, github.com/TMRh20
 Copyright (c) 2013 Norbert Truchsess <norbert.truchsess@t-online.de>
 All rights reserved.
 
@@ -116,7 +116,7 @@ Released under Apache License, version 2.0
 --------------
 
 clock-arch.h, clock-arch.c
- 
+
 Copyright (c) 2010 Adam Nielsen <malvineous@shikadi.net>
 All rights reserved.
 

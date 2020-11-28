@@ -312,7 +312,7 @@ extern RF24EthernetClass RF24Ethernet;
  * @section Config Configuration and Setup
  *
  * The hardest part of setting up is getting the first radio module connected properly. <br>
- * Scroll to the bottom of the RF24 <a href="http://tmrh20.github.io/RF24/index.html"> radio documentation for pin connections </a> <br><br>
+ * Scroll to the bottom of the RF24 <a href="http://nRF24.github.io/RF24/index.html"> radio documentation for pin connections </a> <br><br>
  * Once you have done that, see the <a href="ConfigAndSetup.html">Configuration and Set-Up</a> page for general installation and configuration information
  *  <br><br>
  *
@@ -345,7 +345,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * The RF24Ethernet library was initially designed as an experiment and potential testing tool for <a href = http://tmrh20.github.io/RF24Network_Dev/RF24Network > RF24Network </a>, an OSI Layer 3 network driver, allowing a Raspberry Pi to
  * act as a TCP/IP gateway or host for connected sensor nodes. An Arduino can interface with any Linux machine or SLIP capable device supporting USB, or
- * preferably, an RPi runs companion software, <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a>, which creates a network interface linked to the RF24 radio network. This interface can be
+ * preferably, an RPi runs companion software, <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a>, which creates a network interface linked to the RF24 radio network. This interface can be
  * further linked to the local network or internet. This allows the RPi or Arduino-based gateway to perform automatic discovery and routing of TCP/IP data,
  * with no required pre-configuration or interaction from the user beyond assigning appropriate addresses to the nodes initially.
  *
@@ -360,7 +360,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section How How does it work?
  *
- * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> or Arduino
+ * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a> or Arduino
  * as a gateway to your network or the internet, or simply as a repository for sensor information. The RF24, RF24Network and optionally RF24Mesh libraries
  * handle the underlying routing, addressing etc. so users do not need to be familiar with the radio modules or libraries.
  *
@@ -416,13 +416,13 @@ extern RF24EthernetClass RF24Ethernet;
  * @page ConfigAndSetup Configuration and Set-Up
  *
  * RF24Ethernet requires the RF24 and RF24Network_DEV libraries (optionally RF24Mesh) <br>
- * See http://tmrh20.github.io for documentation and downloads <br>
+ * See http://nRF24.github.io for documentation and downloads <br>
  *
  * See the video at https://www.youtube.com/watch?v=rBAIqAaRu0g for a walk-through of the software setup with Raspberry Pi and Arduino.
  *  <br><br>
  *  <b> RPi </b>
  *
- * On the Raspberry Pi, a companion program, <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> must be installed along with the RF24 and RF24Network libraries
+ * On the Raspberry Pi, a companion program, <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a> must be installed along with the RF24 and RF24Network libraries
  * 1. @code wget http://tmrh20.github.io/RF24Installer/RPi/install.sh  @endcode
  * 2. @code chmod +x install.sh  @endcode
  * 3. @code ./install.sh  @endcode
@@ -496,7 +496,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section RF24Gateway RF24Gateway
  *
- * See http://tmrh20.github.io/RF24Gateway/ for more information on RF24Gateway
+ * See http://nRF24.github.io/RF24Gateway/ for more information on RF24Gateway
  *
  ** @section HybridNetworks Hybrid- RF24Network/RF24Ethernet Networks
  *
@@ -511,7 +511,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section Links Links
  *
- * See http://tmrh20.github.io/RF24Mesh for more information on using RF24Mesh to create a dynamic network, with automatic RF24Network addressing <br>
+ * See http://nRF24.github.io/RF24Mesh for more information on using RF24Mesh to create a dynamic network, with automatic RF24Network addressing <br>
  * See http://tmrh20.github.io/RF24Network_Dev for more information on using RF24Network as well as addressing and topology.
  * <br><br><br>
  *
@@ -550,7 +550,7 @@ extern RF24EthernetClass RF24Ethernet;
  * @note Troubleshooting steps assume a fresh library install with the default configuration, using RF24Mesh/TUN
  * @warning The maximum payload size configured in RF24Network_config.h will determine the maximum size of TCP or UDP segments. Set to 1514 (TAP) or 1500 (TUN) on Raspberry Pi/Linux devices for full TCP/IP capabilities. TCP+IP+LL headers add 54 bytes of overhead to each payload with TAP/Ethernet, and 40 bytes with TUN/RF24Mesh
  *
- * **RPi (<a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a>):** <br>
+ * **RPi (<a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a>):** <br>
  *  a: Run the included RF24Gateway_ncurses example @code sudo ./RF24Gateway_ncurses @endcode
  *  b: Test connectivity: @code ping 10.10.3.<IP_TO_PING-last-octet> @endcode
  *  c: If connectivity fails, ensure IP information is accurate. Forwarding is required if pinging from a device other than the RPi. <br>
@@ -589,13 +589,13 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * \version <b>1.51RC1 - Apr15-16 2015</b>
  * - Seemingly stable release candidate
- * - Major change: <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
+ * - Major change: <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
  * - Now defaults to using RF24Mesh (TUN) interface
  * - Apr 16 - Use external buffer for uIP to save memory. Requires Updating RF24Network and RF24Mesh.
  *
  * \version <b>1.5RC1 - Apr15-16 2015</b>
  * - Seemingly stable release candidate
- * - Major change: <a href="http://tmrh20.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
+ * - Major change: <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a> replaces RF24toTUN
  * - Now defaults to using RF24Mesh (TUN) interface
  * - Apr 16 - Use external buffer for uIP to save memory. Requires Updating RF24Network and RF24Mesh.
  *

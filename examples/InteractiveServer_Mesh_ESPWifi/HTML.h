@@ -75,7 +75,7 @@ static const char main_html_p2[] PROGMEM =
   "<td>Based on</td>"
   "<td><a href='https://github.com/ntruchsess/arduino_uip'> UIPEthernet</a></td>"
   "</tr><tr>"
-  "<td>Documentation:</td><td> <a href='http://tmrh20.github.io/RF24Ethernet/'>github.io</a></td>"
+  "<td>Documentation:</td><td> <a href='http://nRF24.github.io/RF24Ethernet/'>github.io</a></td>"
   "</tr>"
   "</tr><tr>"
   "<td>RF24toTUN creator:</td><td> <a href='https://github.com/reixd/'>Reixd</a></td>"

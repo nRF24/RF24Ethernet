@@ -7,14 +7,14 @@
    RF24 -> RF24Network -> UIP(TCP/IP) -> RF24Ethernet
                        -> RF24Mesh
 
-        Documentation: http://tmrh20.github.io/RF24Ethernet/
+        Documentation: http://nRF24.github.io/RF24Ethernet/
 
  *************************************************************************
  *
  **** EXAMPLE REQUIRES: PubSub MQTT library: https://github.com/knolleary/pubsubclient ***
- * 
+ *
  * Install using the Arduino library manager
- * 
+ *
  *************************************************************************
   Basic MQTT example
 
@@ -28,7 +28,7 @@
  It will reconnect to the server if the connection is lost using a blocking
  reconnect function. See the 'mqtt_reconnect_nonblocking' example for how to
  achieve the same result without blocking the main loop.
- 
+
 */
 
 #include <SPI.h>
@@ -99,13 +99,13 @@ void setup()
     Serial.println(" Failed");
   }
 
-   //Convert the last octet of the IP address to an identifier used 
+   //Convert the last octet of the IP address to an identifier used
    char str[4];
    int test = ip[3];
-   itoa(ip[3],str,10);   
+   itoa(ip[3],str,10);
    memcpy(&clientID[13],&str,strlen(str));
    Serial.println(clientID);
-  
+
 }
 
 uint32_t mesh_timer = 0;
@@ -114,7 +114,7 @@ uint32_t pub_timer = 0;
 void loop()
 {
   Ethernet.update();
-  
+
   if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
     if( ! mesh.checkConnection() ){
@@ -122,7 +122,7 @@ void loop()
           mesh.begin(MESH_DEFAULT_CHANNEL,RF24_1MBPS,5000);
         }
      }
-  }  
+  }
   if (!client.connected()) {
     reconnect();
   }
@@ -133,12 +133,12 @@ void loop()
     pub_timer = millis();
     char str[4];
     int test = ip[3];
-    itoa(ip[3],str,10);   
+    itoa(ip[3],str,10);
     char str1[] = "Node      \r\n";
     memcpy(&str1[5],&str,strlen(str));
-    
+
     client.publish("outTopic",str1);
   }
 
-  
+
 }
