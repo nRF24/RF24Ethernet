@@ -343,7 +343,7 @@ extern RF24EthernetClass RF24Ethernet;
  * @page RF24EthernetOverview RF24Ethernet Overview
  * @section Overview Overview
  *
- * The RF24Ethernet library was initially designed as an experiment and potential testing tool for <a href = http://tmrh20.github.io/RF24Network_Dev/RF24Network > RF24Network </a>, an OSI Layer 3 network driver, allowing a Raspberry Pi to
+ * The RF24Ethernet library was initially designed as an experiment and potential testing tool for <a href = http://nRF24.github.io/RF24Network > RF24Network </a>, an OSI Layer 3 network driver, allowing a Raspberry Pi to
  * act as a TCP/IP gateway or host for connected sensor nodes. An Arduino can interface with any Linux machine or SLIP capable device supporting USB, or
  * preferably, an RPi runs companion software, <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a>, which creates a network interface linked to the RF24 radio network. This interface can be
  * further linked to the local network or internet. This allows the RPi or Arduino-based gateway to perform automatic discovery and routing of TCP/IP data,
@@ -512,7 +512,7 @@ extern RF24EthernetClass RF24Ethernet;
  * @section Links Links
  *
  * See http://nRF24.github.io/RF24Mesh for more information on using RF24Mesh to create a dynamic network, with automatic RF24Network addressing <br>
- * See http://tmrh20.github.io/RF24Network_Dev for more information on using RF24Network as well as addressing and topology.
+ * See http://nRF24.github.io/RF24Network for more information on using RF24Network as well as addressing and topology.
  * <br><br><br>
  *
  *
