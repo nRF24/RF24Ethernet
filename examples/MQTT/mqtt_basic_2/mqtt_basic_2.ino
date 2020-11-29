@@ -7,13 +7,13 @@
    RF24 -> RF24Network -> UIP(TCP/IP) -> RF24Ethernet
                        -> RF24Mesh
 
-        Documentation: http://tmrh20.github.io/RF24Ethernet/
+        Documentation: http://nRF24.github.io/RF24Ethernet/
 
  *************************************************************************
  *
  **** EXAMPLE REQUIRES: Arduino MQTT library: https://github.com/256dpi/arduino-mqtt/ ***
  * Shown in Arduino Library Manager as 'MQTT' by Joel Gaehwiler
- * 
+ *
  *************************************************************************
   Basic MQTT example
 
@@ -21,13 +21,13 @@
  It connects to an MQTT server then:
   - publishes "hello world" to the topic "outTopic"
   - subscribes to the topic "inTopic", printing out any messages
-    it receives. 
+    it receives.
   - it assumes the received payloads are strings not binary
   - Continually publishes its nodeID to the outTopic
 
  It will reconnect to the server if the connection is lost using a blocking
  reconnect function.
- 
+
 */
 
 #include <SPI.h>
@@ -66,8 +66,8 @@ void connect() {
     if(millis() - clTimeout > 5001){
       Serial.println();
       return;
-    }    
-    uint32_t timer = millis(); 
+    }
+    uint32_t timer = millis();
     //Instead of delay, keep the RF24 stack updating
     while(millis() - timer < 1000){ Ethernet.update(); }
   }
@@ -90,17 +90,17 @@ void setup()
   } else {
     Serial.println(" Failed");
   }
-  
-   //Convert the last octet of the IP address to an identifier used 
+
+   //Convert the last octet of the IP address to an identifier used
    char str[4];
    int test = ip[3];
-   itoa(ip[3],str,10);   
+   itoa(ip[3],str,10);
    memcpy(&clientID[13],&str,strlen(str));
    Serial.println(clientID);
-  
+
    client.begin(server, ethClient);
    client.onMessage(messageReceived);
-    
+
 }
 
 uint32_t mesh_timer = 0;
@@ -109,7 +109,7 @@ uint32_t pub_timer = 0;
 void loop()
 {
   Ethernet.update();
-  
+
   if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
     if( ! mesh.checkConnection() ){
@@ -118,11 +118,11 @@ void loop()
         }
      }
     Serial.println();
-  }  
+  }
   if (!client.connected()) {
     connect();
   }
-  
+
   client.loop();
 
   // Every second, report to the MQTT server the Node ID of this node
@@ -130,12 +130,12 @@ void loop()
     pub_timer = millis();
     char str[4];
     int test = ip[3];
-    itoa(ip[3],str,10);   
+    itoa(ip[3],str,10);
     char str1[] = "Node      \r\n";
     memcpy(&str1[5],&str,strlen(str));
-    
+
     client.publish("outTopic",str1);
   }
 
-  
+
 }
