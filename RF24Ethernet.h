@@ -268,7 +268,7 @@ extern RF24EthernetClass RF24Ethernet;
  * This example demonstrates how to use an Arduino as a gateway to a SLIP enabled device.
  */
 
- /**
+/**
  * @example SLIP_InteractiveServer.ino
  *
  * This example demonstrates how to use RF24Mesh with RF24Ethernet when working with a SLIP or TUN interface.
@@ -276,12 +276,12 @@ extern RF24EthernetClass RF24Ethernet;
  * example's directory.
  */
 
- /**
+/**
  * @mainpage RF24Ethernet library: TCP/IP over RF24Network
  *
  * @section OpenSourceWireless Open & Open-Source IoT Wireless (not WiFi) Networks
  * **An experiment disconnected...**<br>
- * <img src="tmrh20/RF24EthernetOverviewImg.jpg" alt="RF24EthernetImage" style="width:70%;height:70%">
+ * @image html "images/RF24EthernetOverviewImg.jpg" width=70% height=70%
  *
  * @section Goals Goals:
  *
@@ -292,60 +292,42 @@ extern RF24EthernetClass RF24Ethernet;
  *
  *
  * @section News Update News
- *
- * \version <b>1.6.5 - Aug 2020</b>
+ * @version <b>1.6.5 - Aug 2020</b>
  * - Identified/Correct memory issue causing 'undefined behaviour' ie: A variety of symptoms depending on memory allocation etc.
  * - Update getting started simple client example
  *
- * \version <b>1.6.4 - Aug 2020 </b>
+ * @version <b>1.6.4 - Aug 2020 </b>
  * - Fix buggy behaviour on AVR devices. Remove hook to update RF24Ethernet during calls to delay.
  * - Fixes for MQTT example
  * - Major cleanup for warnings and minor issues
  *
- * \version <b>1.6.3 - April 2020 </b>
+ * @version <b>1.6.3 - April 2020 </b>
  * - Update & fix MQTT example
  * - Add dependencies for RF24, RF24Network & RF24Mesh
  *
- *
- * See <a href="VersionInfo.html"> version history </a> for more info
+ * See [version history](VersionInfo.html) for more info
  *
  * @section Config Configuration and Setup
- *
  * The hardest part of setting up is getting the first radio module connected properly. <br>
- * Scroll to the bottom of the RF24 <a href="http://nRF24.github.io/RF24/index.html"> radio documentation for pin connections </a> <br><br>
- * Once you have done that, see the <a href="ConfigAndSetup.html">Configuration and Set-Up</a> page for general installation and configuration information
- *  <br><br>
- *
+ * Scroll to the bottom of the [RF24 radio documentation for pin connections](http://nRF24.github.io/RF24/) <br><br>
+ * Once you have done that, see the [Configuration and Set-Up](ConfigAndSetup.html) page for general installation and configuration information
+ * <br><br>
  * @section DetailOverview Detailed Overview
- * See the <b><a href="Overview.html">Overview</a></b> page
- *
- * <br>
+ * See the <b>[Overview](Overview.html)</b> page
+ * <br><br>
  * @section BuildingANetwork Building a Network - Customizing your RF24 TCP/IP network
- *
- * See the <a href="CustomNetworks.html">Building a network</a> page
- *  <br>  <br>
+ * See the [Building a network](CustomNetworks.html) page
+ * <br><br>
  * @section AboutTroubleshooting About Troubleshooting
- *
  * The RF24 libraries are divided into layers, generally according to the OSI model, which allows specialized testing and troubleshooting of individual layers.
- * <br>See the <a href=Troubleshooting.html >Troubleshooting</a> section for general troubleshooting steps.
- *  <br>  <br>
- * @section AdditionalInfo Additional Information
- *
-
- *
- *
- *
- *
- *
- *
- *
+ * <br>See the [Troubleshooting section](Troubleshooting.html) for general troubleshooting steps.
  *
  * @page RF24EthernetOverview RF24Ethernet Overview
  * @section Overview Overview
  *
- * The RF24Ethernet library was initially designed as an experiment and potential testing tool for <a href = http://nRF24.github.io/RF24Network > RF24Network </a>, an OSI Layer 3 network driver, allowing a Raspberry Pi to
+ * The RF24Ethernet library was initially designed as an experiment and potential testing tool for [RF24Network](http://nRF24.github.io/RF24Network), an OSI Layer 3 network driver, allowing a Raspberry Pi to
  * act as a TCP/IP gateway or host for connected sensor nodes. An Arduino can interface with any Linux machine or SLIP capable device supporting USB, or
- * preferably, an RPi runs companion software, <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a>, which creates a network interface linked to the RF24 radio network. This interface can be
+ * preferably, an RPi runs companion software, [RF24Gateway](http://nRF24.github.io/RF24Gateway/), which creates a network interface linked to the RF24 radio network. This interface can be
  * further linked to the local network or internet. This allows the RPi or Arduino-based gateway to perform automatic discovery and routing of TCP/IP data,
  * with no required pre-configuration or interaction from the user beyond assigning appropriate addresses to the nodes initially.
  *
@@ -360,7 +342,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * @section How How does it work?
  *
- * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a> or Arduino
+ * RF24Ethernet utilizes the UIP TCP/IP stack, allowing Arduino devices to use a Raspberry Pi running [RF24Gateway](http://nRF24.github.io/RF24Gateway/) or Arduino
  * as a gateway to your network or the internet, or simply as a repository for sensor information. The RF24, RF24Network and optionally RF24Mesh libraries
  * handle the underlying routing, addressing etc. so users do not need to be familiar with the radio modules or libraries.
  *
@@ -370,7 +352,7 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * This provides a fairly seamless interaction, since users only need to configure standard IP forwarding and firewall rules as desired.
  *
- * The RF24 libraries are based on the <a href = http://en.wikipedia.org/wiki/OSI_model > OSI model</a>:<br>
+ * The RF24 libraries are based on the [OSI model](http://en.wikipedia.org/wiki/OSI_model):<br>
  * | System                 | OSI Layer              | Description |
  * |------------------------|------------------------|---------------------------------------------------------------------------|
  * | <b>NRF24L01 Radio Modules</b> | OSI Layer 1 (Physical) | Transmission and reception of the raw bit stream over the physical medium. |
@@ -409,14 +391,10 @@ extern RF24EthernetClass RF24Ethernet;
  *
  * <br><br>
  *
- *
- *
- *
- *
  * @page ConfigAndSetup Configuration and Set-Up
  *
- * RF24Ethernet requires the RF24 and RF24Network_DEV libraries (optionally RF24Mesh) <br>
- * See http://nRF24.github.io for documentation and downloads <br>
+ * RF24Ethernet requires the RF24 and RF24Network libraries (optionally RF24Mesh) <br>
+ * See http://tmrh20.github.io for documentation and downloads <br>
  *
  * See the video at https://www.youtube.com/watch?v=rBAIqAaRu0g for a walk-through of the software setup with Raspberry Pi and Arduino.
  *  <br><br>
