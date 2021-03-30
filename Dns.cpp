@@ -4,9 +4,7 @@
 
 #include "RF24Ethernet.h"
 
-
 #if UIP_CONF_UDP > 0
-
 
 #define SOCKET_NONE	255
 // Various flags and header field values for a DNS message
@@ -128,13 +126,13 @@ int DNSClient::getHostByName(const char* aHostname, IPAddress& aResult)
 	    IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24DNS Invalid DNS Server")) );
         return INVALID_SERVER;
     }
-	
+
     // Find a socket to use
     if (iUdp.begin(1024+(millis() & 0xF)) == 1)
     {
         // Try up to three times
         int retries = 0;
-//        while ((retries < 3) && (ret <= 0))
+        // while ((retries < 3) && (ret <= 0))
         {
             // Send DNS request
             ret = iUdp.beginPacket(iDNSServer, DNS_PORT);
@@ -258,7 +256,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     {
         if((millis() - startTime) > aTimeout){
             IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24 DNS - Request timed out")); );
-			return TIMED_OUT;			
+			return TIMED_OUT;
 		}
         //delay(50);
     }
@@ -267,7 +265,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     // Read the UDP header
     uint8_t header[DNS_HEADER_SIZE]; // Enough space to reuse for the DNS header
     // Check that it's a response from the right server and the right port
-    if ( (iDNSServer != iUdp.remoteIP()) || 
+    if ( (iDNSServer != iUdp.remoteIP()) ||
         (iUdp.remotePort() != DNS_PORT) )
     {
         // It's not from who we expected
@@ -283,7 +281,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     }
 	IF_RF24ETHERNET_DEBUG_DNS( Serial.print(F("RF24DNS - DNS Header Size: ")); Serial.println(DNS_HEADER_SIZE); );
     iUdp.read(header, DNS_HEADER_SIZE);
-    
+
     uint16_t header_flags = htons(*((uint16_t*)&header[2]));
     // Check that it's a response to this request
     if ( ( iRequestId != (*((uint16_t*)&header[0])) ) ||
@@ -315,7 +313,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     }
 
 	IF_RF24ETHERNET_DEBUG_DNS( Serial.print(F("RF24DNS OK, skipping questions ")); Serial.println(header[5]); );
-	
+
     // Skip over any questions
     for (uint16_t i =0; i < HTONS(*((uint16_t*)&header[4])); i++)
 //	for (uint16_t i =0; i < wtf; i++)
