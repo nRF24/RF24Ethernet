@@ -150,9 +150,9 @@
 #define UIP_CONF_EXTERNAL_BUFFER
 
 #if UIP_CONF_BUFFER_SIZE >= 512
-  #define OUTPUT_BUFFER_SIZE 511
+    #define OUTPUT_BUFFER_SIZE 511
 #else
-  #define OUTPUT_BUFFER_SIZE UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN
+    #define OUTPUT_BUFFER_SIZE UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN
 #endif
 
 /**
@@ -184,12 +184,11 @@
  * @note Must be an odd number or the TCP/IP sequence gets out of order with payloads larger than 511 bytes
  * I think this might be a bug or missing feature of the uip stack
  */
-
 #if UIP_CONF_BUFFER_SIZE >= 512
-  #define UIP_CONF_RECEIVE_WINDOW 511
+    #define UIP_CONF_RECEIVE_WINDOW 511
 #else
-//#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE *2 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
-#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
+    //#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE *2 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
+    #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
 #endif
 
 #define UIP_CONF_TCP_MSS OUTPUT_BUFFER_SIZE
@@ -218,15 +217,15 @@
 
 // Define config for TAP or TUN based on Link-layer header length
 #if UIP_CONF_LLH_LEN > 0
-  #define RF24_TAP
+    #define RF24_TAP
 #endif
 
 #if defined UIP_TIMER_DIVISOR
-  #if UIP_TIMER_DIVISOR > 5
-    #define UIP_CONF_RTO (UIP_TIMER_DIVISOR/2)
-  #else
-    #define UIP_CONF_RTO 3
-  #endif
+    #if UIP_TIMER_DIVISOR > 5
+        #define UIP_CONF_RTO (UIP_TIMER_DIVISOR/2)
+    #else
+        #define UIP_CONF_RTO 3
+    #endif
 #endif
 
 
@@ -280,5 +279,3 @@ void uip_log(char* msg);
 #endif
 
 #endif /* __UIP_CONF_H__ */
-
-

@@ -829,7 +829,8 @@ INPUT                  = ./ \
                          ./examples/InteractiveServer_Mesh/HTML.h \
                          ./examples/InteractiveServer_Mesh_ESPWifi/HTML.h \
                          ./examples/SLIP_InteractiveServer/HTML.h \
-                         ./examples/TAP/InteractiveServer/HTML.h
+                         ./examples/TAP/InteractiveServer/HTML.h \
+                         ./docs
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -942,7 +943,8 @@ EXCLUDE_PATTERNS       =
 
 EXCLUDE_SYMBOLS        = IP_ADDR* \
                          uip_userdata_* \
-                         uip_udp_userdata_*
+                         uip_udp_userdata_* \
+                         docs/README.md
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include
@@ -1024,7 +1026,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE =
+USE_MDFILE_AS_MAINPAGE = ./docs/main_page.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -2584,4 +2586,3 @@ GENERATE_LEGEND        = YES
 # This tag requires that the tag HAVE_DOT is set to YES.
 
 DOT_CLEANUP            = YES
-
