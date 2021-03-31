@@ -1,6 +1,6 @@
 /*
  RF24Server.cpp - Arduino implementation of a uIP wrapper class.
- Copyright (c) 2014 tmrh20@gmail.com, github.com/TMRh20 
+ Copyright (c) 2014 tmrh20@gmail.com, github.com/TMRh20
  Copyright (c) 2013 Norbert Truchsess <norbert.truchsess@t-online.de>
  All rights reserved.
 
@@ -20,8 +20,9 @@
 #include "RF24Ethernet.h"
 #include "RF24Server.h"
 
-extern "C" {
-  //#include "uip-conf.h"
+extern "C"
+{
+    //#include "uip-conf.h"
 }
 
 /*************************************************************/
@@ -34,43 +35,41 @@ RF24Server::RF24Server(uint16_t port) : _port(htons(port))
 
 RF24Client RF24Server::available()
 {
-  Ethernet.tick();
-  for ( uip_userdata_t* data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++ )
+    Ethernet.tick();
+    for (uip_userdata_t *data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++)
     {
-        if (data->packets_in != 0 && (((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport ==_port)
-              || ((data->state & UIP_CLIENT_REMOTECLOSED) && ((uip_userdata_closed_t *)data)->lport == _port))){
-			  return RF24Client(data);
-		}
-    }	
-  return RF24Client();
+        if (data->packets_in != 0 && (((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport == _port) || ((data->state & UIP_CLIENT_REMOTECLOSED) && ((uip_userdata_closed_t *)data)->lport == _port)))
+        {
+            return RF24Client(data);
+        }
+    }
+    return RF24Client();
 }
 
 /*************************************************************/
 
 void RF24Server::begin()
-{  
-  uip_listen(_port);
-  RF24Ethernet.tick();  
+{
+    uip_listen(_port);
+    RF24Ethernet.tick();
 }
 
 /*************************************************************/
 
 size_t RF24Server::write(uint8_t c)
 {
-  return write(&c,1);
+    return write(&c, 1);
 }
 
 /*************************************************************/
 
 size_t RF24Server::write(const uint8_t *buf, size_t size)
 {
-  size_t ret = 0;
-  for ( uip_userdata_t* data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++ )
+    size_t ret = 0;
+    for (uip_userdata_t *data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++)
     {
-      if ((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport ==_port)
-        ret += RF24Client::_write(data,buf,size);
+        if ((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport == _port)
+            ret += RF24Client::_write(data, buf, size);
     }
-  return ret;
+    return ret;
 }
-
-/*************************************************************/

@@ -44,4 +44,5 @@ Temporary Items
 .apdisk
 
 # ignore docs folder
-docs/
+docs/html/
+docs/xml/

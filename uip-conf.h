@@ -55,18 +55,18 @@
  * @{
  */
 
-/** Maximum number of TCP connections. */
+/** @brief Maximum number of TCP connections. */
 #define UIP_CONF_MAX_CONNECTIONS 1
 
-/** Maximum number of listening TCP ports. */
+/** @brief Maximum number of listening TCP ports. */
 #define UIP_CONF_MAX_LISTENPORTS 1
 
 /**
- * uIP buffer size.
+ * @brief uIP buffer size.
  * @note For simplicity, this is automatically set to the MAX_PAYLOAD_SIZE configured in the RF24Network_conf.h file, but can be configured independently
  * of RF24Network if desired.
  *
- * Notes:
+ * @remarks
  * 1. Nodes can use different buffer sizes, direct TCP communication is limited to the smallest
  *  ie: A RPi can be configured to use 1500byte TCP windows, with Arduino nodes using only 120byte TCP windows.
  * 2. Routing nodes handle traffic at the link-layer, so the MAX_PAYLOAD_SIZE is not important, unless they are
@@ -81,7 +81,7 @@
 
 #define UIP_CONF_BUFFER_SIZE MAX_PAYLOAD_SIZE - 2
 /**
- * <b>Optional:</b> Uncomment to disable
+ * @brief <b>Optional:</b> Uncomment to disable
  *
  * Adjust the length of time after which an open connection will be timed out.
  *
@@ -90,7 +90,7 @@
 #define UIP_CONNECTION_TIMEOUT 30000
 
 /**
- * SLIP/TUN - 14 for Ethernet/TAP & 0 for TUN/SLIP
+ * @brief SLIP/TUN - 14 for Ethernet/TAP & 0 for TUN/SLIP
  *
  * Ethernet headers add an additional 14 bytes to each payload.
  *
@@ -99,7 +99,7 @@
 #define UIP_CONF_LLH_LEN 0
 
 /**
- * UDP support on or off (required for DNS)
+ * @brief UDP support on or off (required for DNS)
  * @note DNS support typically requires larger payload sizes (250-300). It seems that DNS servers will typically respond
  * with a single address if requesting an address of www.google.com vs google.com, and this will work with the default payload size
  */
@@ -117,8 +117,8 @@
  */
 
 /**
+ * @brief Adjust the rate at which the IP stack performs periodic processing.
  *
- * Adjust the rate at which the IP stack performs periodic processing.
  * The periodic timer will be called at a rate of 1 second divided by this value
  *
  * Increase this value to reduce response times and increase throughput during user interactions.
@@ -132,13 +132,11 @@
  */
 #define UIP_CONF_ACTIVE_OPEN 1
 
-/**
- * UDP checksums on or off
- */
+/** @brief UDP checksums on or off */
 #define UIP_CONF_UDP_CHECKSUMS   0
 
 /**
- * uIP User Output buffer size
+ * @brief uIP User Output buffer size
  *
  * The output buffer size determines the max
  * length of strings that can be sent by the user, and depends on the uip buffer size
@@ -150,13 +148,13 @@
 #define UIP_CONF_EXTERNAL_BUFFER
 
 #if UIP_CONF_BUFFER_SIZE >= 512
-  #define OUTPUT_BUFFER_SIZE 511
+    #define OUTPUT_BUFFER_SIZE 511
 #else
-  #define OUTPUT_BUFFER_SIZE UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN
+    #define OUTPUT_BUFFER_SIZE UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN
 #endif
 
 /**
- * <b>Optional:</b> Used with UIP_CONNECTION_TIMEOUT
+ * @brief <b>Optional:</b> Used with UIP_CONNECTION_TIMEOUT
  *
  * If an open connection is not receiving data, the connection will be restarted.
  *
@@ -173,36 +171,35 @@
 /******************** END USER CONFIG ***********************************/
 
 /********** TMRh20: This option is not yet valid **********/
-/* for TCP */
+/* @brief for TCP */
 #define UIP_SOCKET_NUMPACKETS    1
 
 /**
- * The TCP receive window.
+ * @brief The TCP receive window.
  *
  * This is should not be to set to more than
  * UIP_BUFSIZE - UIP_LLH_LEN - UIP_TCPIP_HLEN.
  * @note Must be an odd number or the TCP/IP sequence gets out of order with payloads larger than 511 bytes
  * I think this might be a bug or missing feature of the uip stack
  */
-
 #if UIP_CONF_BUFFER_SIZE >= 512
-  #define UIP_CONF_RECEIVE_WINDOW 511
+    #define UIP_CONF_RECEIVE_WINDOW 511
 #else
-//#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE *2 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
-#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
+    //#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE *2 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
+    #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
 #endif
 
 #define UIP_CONF_TCP_MSS OUTPUT_BUFFER_SIZE
 
 /**
- * CPU byte order.
+ * @brief CPU byte order.
  *
  * \hideinitializer
  */
 #define UIP_CONF_BYTE_ORDER      LITTLE_ENDIAN
 
 /**
- * Logging on or off
+ * @brief Logging on or off
  *
  * \hideinitializer
  */
@@ -210,7 +207,7 @@
 #define UIP_CONF_LOGGING         0
 
 /**
- * uIP statistics on or off
+ * @brief uIP statistics on or off
  *
  * \hideinitializer
  */
@@ -218,20 +215,20 @@
 
 // Define config for TAP or TUN based on Link-layer header length
 #if UIP_CONF_LLH_LEN > 0
-  #define RF24_TAP
+    #define RF24_TAP
 #endif
 
 #if defined UIP_TIMER_DIVISOR
-  #if UIP_TIMER_DIVISOR > 5
-    #define UIP_CONF_RTO (UIP_TIMER_DIVISOR/2)
-  #else
-    #define UIP_CONF_RTO 3
-  #endif
+    #if UIP_TIMER_DIVISOR > 5
+        #define UIP_CONF_RTO (UIP_TIMER_DIVISOR/2)
+    #else
+        #define UIP_CONF_RTO 3
+    #endif
 #endif
 
 
 /**
- * 8 bit datatype
+ * @brief 8 bit datatype
  *
  * This typedef defines the 8-bit type used throughout uIP.
  *
@@ -240,7 +237,7 @@
 typedef uint8_t u8_t;
 
 /**
- * 16 bit datatype
+ * @brief 16 bit datatype
  *
  * This typedef defines the 16-bit type used throughout uIP.
  *
@@ -249,7 +246,7 @@ typedef uint8_t u8_t;
 typedef uint16_t u16_t;
 
 /**
- * Statistics datatype
+ * @brief Statistics datatype
  *
  * This typedef defines the dataype used for keeping statistics in
  * uIP.
@@ -280,5 +277,3 @@ void uip_log(char* msg);
 #endif
 
 #endif /* __UIP_CONF_H__ */
-
-
