@@ -94,7 +94,6 @@ jobs:
             - examples/MQTT/mqtt_basic
             - examples/MQTT/mqtt_basic_2
             - examples/SimpleClient_Mesh
-            - examples/SLIP_Gateway
 
           # these need RF24_TAP defined
           # - examples/SLIP_InteractiveServer  # also requires EEPROM.h
@@ -104,6 +103,8 @@ jobs:
           # - examples/TAP/Getting_Started_SimpleServer
           # - examples/TAP/Getting_Started_SimpleServer_Minimal
 
+          # other reasons we exclude the following examples
+          # - examples/SLIP_Gateway  # hardcoded to use HardwareSerial
           # - examples/TAP/InteractiveServer  # specific to AVR boards
           # - examples/InteractiveServer_Mesh_ESPWifi  # needs ESP8266WiFi.h
           libraries: |

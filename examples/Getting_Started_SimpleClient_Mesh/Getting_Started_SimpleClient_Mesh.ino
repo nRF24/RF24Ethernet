@@ -142,7 +142,7 @@ void loop() {
 
   size_t size;
 
-  if (size = client.available() > 0) {
+  if ((size = client.available()) > 0) {
     char c = client.read();
     Serial.print(c);
     counter++;

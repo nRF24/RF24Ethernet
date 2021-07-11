@@ -83,7 +83,6 @@ jobs:
           - "examples/MQTT/mqtt_basic/mqtt_basic.ino"
           - "examples/MQTT/mqtt_basic_2/mqtt_basic_2.ino"
           - "examples/SimpleClient_Mesh/SimpleClient_Mesh.ino"
-          - "examples/SLIP_Gateway/SLIP_Gateway.ino"
 
         # these need RF24_TAP defined
         # - "examples/SLIP_InteractiveServer/SLIP_InteractiveServer.ino"  # also requires EEPROM.h
@@ -93,15 +92,12 @@ jobs:
         # - "examples/TAP/Getting_Started_SimpleServer/Getting_Started_SimpleServer.ino"
         # - "examples/TAP/Getting_Started_SimpleServer_Minimal/Getting_Started_SimpleServer_Minimal.ino"
 
+        # other reasons we exclude the following examples
+        # - "examples/SLIP_Gateway/SLIP_Gateway.ino"  # hardcoded to use HardwareSerial
         # - "examples/TAP/InteractiveServer/InteractiveServer.ino"  # specific to AVR boards
         # - "examples/InteractiveServer_Mesh_ESPWifi/InteractiveServer_Mesh_ESPWifi.ino"  # requires ESP8266WiFi.h
         board:
-          - "teensy31"
-          - "teensy35"
-          - "teensy36"
-          - "teensy40"
-          - "teensy41"
-          - "teensylc"
+          - "tinypico"
 
     steps:
       - uses: actions/checkout@v2

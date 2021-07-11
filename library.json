@@ -38,7 +38,6 @@
     "platforms": [
         "atmelavr",
         "atmelsam",
-        "teensy",
         "atmelmegaavr",
         "espressif32",
         "espressif8266",
