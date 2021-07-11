@@ -72,10 +72,7 @@ extern "C" {
                               uip_ethaddr.addr[3] = eaddr[3];\
                               uip_ethaddr.addr[4] = eaddr[4];\
                               uip_ethaddr.addr[5] = eaddr[5];} while(0)
-#define uip_ip_addr(addr, ip) do { \
-                     ((u16_t *)(addr))[0] = HTONS(((ip[0]) << 8) | (ip[1])); \
-                     ((u16_t *)(addr))[1] = HTONS(((ip[2]) << 8) | (ip[3])); \
-                  } while(0)
+#define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
 
 #define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8 , a[1] & 0xFF, a[1] >> 8) //TODO this is not IPV6 capable
 
