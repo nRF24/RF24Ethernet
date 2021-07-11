@@ -35,7 +35,7 @@ jobs:
           pip install --upgrade platformio
 
       - name: package lib
-        run: pio package pack -o PlatformIO-RF24Mesh-${{ steps.latest_ver.outputs.release }}.tar.gz
+        run: pio package pack -o PlatformIO-RF24Ethernet-${{ steps.latest_ver.outputs.release }}.tar.gz
 
       - name: Save artifact
         uses: actions/upload-artifact@v2
