@@ -28,6 +28,10 @@ public:
     RF24Server(uint16_t);
     RF24Client available();
     void begin();
+    #if defined (ESP32)
+    /* on esp32 this is a pure virtual func */
+    void begin(uint16_t port);
+    #endif
     size_t write(uint8_t);
     size_t write(const uint8_t *buf, size_t size);
     using Print::write;

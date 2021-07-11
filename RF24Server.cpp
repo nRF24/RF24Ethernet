@@ -55,6 +55,15 @@ void RF24Server::begin()
 }
 
 /*************************************************************/
+#if defined (ESP32)
+void RF24Server::begin(uint16_t port)
+{
+    _port = port;
+    begin();
+}
+#endif
+
+/*************************************************************/
 
 size_t RF24Server::write(uint8_t c)
 {

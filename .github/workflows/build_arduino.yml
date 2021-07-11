@@ -55,7 +55,7 @@ jobs:
           # - "arduino:avr:LilyPad"  # board not found
           - "arduino:avr:LilyPadUSB"
           - "arduino:avr:pro"
-          - "arduino:avr:atmegang"
+          # - "arduino:avr:atmegang" # not enough memory for examples
           - "arduino:avr:robotControl"
           # - "arduino:avr:gemma"   # does not support SPI
           - "arduino:avr:circuitplay32u4cat"
