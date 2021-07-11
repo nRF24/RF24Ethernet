@@ -69,7 +69,7 @@ HardwareSerial *slip_device;
 // Put a character on the serial device.
 void slipdev_char_put(uint8_t c)
 {
-    slip_device->write((char)c);
+  slip_device->write((char)c);
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -77,11 +77,11 @@ void slipdev_char_put(uint8_t c)
 // Poll the serial device for a character.
 uint8_t slipdev_char_poll(uint8_t *c)
 {
-    if (slip_device->available()) {
-        *c = slip_device->read();
-        return 1;
-    }
-    return 0;
+  if (slip_device->available()) {
+    *c = slip_device->read();
+    return 1;
+  }
+  return 0;
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -99,34 +99,34 @@ uint8_t slipdev_char_poll(uint8_t *c)
 /*-----------------------------------------------------------------------------------*/
 void slipdev_send(uint8_t *ptr, size_t len)
 {
-    uint16_t i;
-    uint8_t c;
+  uint16_t i;
+  uint8_t c;
 
-    slipdev_char_put(SLIP_END);
+  slipdev_char_put(SLIP_END);
 
 #if defined (LED_TXRX)
-    digitalWrite(DEBUG_LED_PIN,HIGH);
+  digitalWrite(DEBUG_LED_PIN, HIGH);
 #endif
 
-    for(i = 0; i < len; ++i) {
-        c = *ptr++;
-        switch(c) {
-        case SLIP_END:
-            slipdev_char_put(SLIP_ESC);
-            slipdev_char_put(SLIP_ESC_END);
-            break;
-        case SLIP_ESC:
-            slipdev_char_put(SLIP_ESC);
-            slipdev_char_put(SLIP_ESC_ESC);
-            break;
-        default:
-            slipdev_char_put(c);
-            break;
-        }
+  for (i = 0; i < len; ++i) {
+    c = *ptr++;
+    switch (c) {
+      case SLIP_END:
+        slipdev_char_put(SLIP_ESC);
+        slipdev_char_put(SLIP_ESC_END);
+        break;
+      case SLIP_ESC:
+        slipdev_char_put(SLIP_ESC);
+        slipdev_char_put(SLIP_ESC_ESC);
+        break;
+      default:
+        slipdev_char_put(c);
+        break;
     }
-    slipdev_char_put(SLIP_END);
+  }
+  slipdev_char_put(SLIP_END);
 #if defined (LED_TXRX)
-    digitalWrite(DEBUG_LED_PIN,LOW);
+  digitalWrite(DEBUG_LED_PIN, LOW);
 #endif
 }
 /*-----------------------------------------------------------------------------------*/
@@ -145,59 +145,59 @@ void slipdev_send(uint8_t *ptr, size_t len)
 /*-----------------------------------------------------------------------------------*/
 uint16_t slipdev_poll(void)
 {
-    uint8_t c;
+  uint8_t c;
 
 
-// Create a new RF24Network header if there is data available, and possibly ready to send
-    if(slip_device->available()) {
+  // Create a new RF24Network header if there is data available, and possibly ready to send
+  if (slip_device->available()) {
 
-        while((uint8_t)slipdev_char_poll(&c)) {
-            switch(c) {
-            case SLIP_ESC:
-                lastc = c;
+    while ((uint8_t)slipdev_char_poll(&c)) {
+      switch (c) {
+        case SLIP_ESC:
+          lastc = c;
+          break;
+
+        case SLIP_END:
+          lastc = c;
+          /* End marker found, we copy our input buffer to the uip_buf
+          buffer and return the size of the packet we copied. */
+
+          // Ensure the data is no longer than the configured UIP buffer size
+          len = min(len, UIP_BUFFER_SIZE);
+
+          tmplen = len;
+          len = 0;
+          return tmplen;
+
+        default:
+          if (lastc == SLIP_ESC) {
+            lastc = c;
+            /* Previous read byte was an escape byte, so this byte will be
+               interpreted differently from others. */
+            switch (c) {
+              case SLIP_ESC_END:
+                c = SLIP_END;
                 break;
-
-            case SLIP_END:
-                lastc = c;
-                /* End marker found, we copy our input buffer to the uip_buf
-                buffer and return the size of the packet we copied. */
-
-                // Ensure the data is no longer than the configured UIP buffer size
-                len = min(len,UIP_BUFFER_SIZE);
-
-                tmplen = len;
-                len = 0;
-                return tmplen;
-
-            default:
-                if(lastc == SLIP_ESC) {
-                    lastc = c;
-                    /* Previous read byte was an escape byte, so this byte will be
-                       interpreted differently from others. */
-                    switch(c) {
-                    case SLIP_ESC_END:
-                        c = SLIP_END;
-                        break;
-                    case SLIP_ESC_ESC:
-                        c = SLIP_ESC;
-                        break;
-                    }
-                } else {
-                    lastc = c;
-                }
-
-                slip_buf[len] = c;
-                ++len;
-
-                if(len > UIP_BUFFER_SIZE) {
-                    len = 0;
-                }
-
+              case SLIP_ESC_ESC:
+                c = SLIP_ESC;
                 break;
             }
-        }
+          } else {
+            lastc = c;
+          }
+
+          slip_buf[len] = c;
+          ++len;
+
+          if (len > UIP_BUFFER_SIZE) {
+            len = 0;
+          }
+
+          break;
+      }
     }
-    return 0;
+  }
+  return 0;
 }
 /*-----------------------------------------------------------------------------------*/
 /**
@@ -208,8 +208,8 @@ uint16_t slipdev_poll(void)
  */
 /*-----------------------------------------------------------------------------------*/
 void slipdev_init(HardwareSerial &dev) {
-    lastc = len = 0;
-    slip_device = &dev;
+  lastc = len = 0;
+  slip_device = &dev;
 }
 /*-----------------------------------------------------------------------------------*/
 

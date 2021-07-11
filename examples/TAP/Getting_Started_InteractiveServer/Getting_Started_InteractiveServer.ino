@@ -24,9 +24,9 @@
 
 
 /*** Configure the radio CE & CS pins ***/
-RF24 radio(7,8);
+RF24 radio(7, 8);
 RF24Network network(radio);
-RF24EthernetClass RF24Ethernet(radio,network);
+RF24EthernetClass RF24Ethernet(radio, network);
 
 #define LED_PIN A3 //Analog pin A3
 
@@ -35,41 +35,41 @@ RF24EthernetClass RF24Ethernet(radio,network);
 EthernetServer server = EthernetServer(1000);
 
 void setup() {
-    // Set up the speed of our serial link.
-    Serial.begin(115200);
-    //printf_begin();
-    Serial.println(F("start"));
-    pinMode(LED_PIN,OUTPUT);
+  // Set up the speed of our serial link.
+  Serial.begin(115200);
+  //printf_begin();
+  Serial.println(F("start"));
+  pinMode(LED_PIN, OUTPUT);
 
-    // Tell RF24Ethernet which channel to use. This step is not that important, but it
-    // is important to set the channel this way, not directly via the radio
-    //Ethernet.setChannel(97);
+  // Tell RF24Ethernet which channel to use. This step is not that important, but it
+  // is important to set the channel this way, not directly via the radio
+  //Ethernet.setChannel(97);
 
-    // This step is very important. The address of the node needs to be set both
-    // on the radio and in the UIP layer
-    // This is the RF24Network address and needs to be configured accordingly if
-    // using more than 4 nodes with the master node. Otherwise, 01-04 can be used.
-    uint16_t myRF24NetworkAddress = 01;
-    Ethernet.setMac(myRF24NetworkAddress);
+  // This step is very important. The address of the node needs to be set both
+  // on the radio and in the UIP layer
+  // This is the RF24Network address and needs to be configured accordingly if
+  // using more than 4 nodes with the master node. Otherwise, 01-04 can be used.
+  uint16_t myRF24NetworkAddress = 01;
+  Ethernet.setMac(myRF24NetworkAddress);
 
-    //Optional
-    //radio.setPALevel(RF24_PA_HIGH);
-    //radio.printDetails();
+  //Optional
+  //radio.setPALevel(RF24_PA_HIGH);
+  //radio.printDetails();
 
-    // Set the IP address we'll be using.  Make sure this doesn't conflict with
-    // any IP addresses or subnets on your LAN or you won't be able to connect to
-    // either the Arduino or your LAN...
-    IPAddress myIP(10,10,2,4);
-    Ethernet.begin(myIP);
+  // Set the IP address we'll be using.  Make sure this doesn't conflict with
+  // any IP addresses or subnets on your LAN or you won't be able to connect to
+  // either the Arduino or your LAN...
+  IPAddress myIP(10, 10, 2, 4);
+  Ethernet.begin(myIP);
 
-    // If you'll be making outgoing connections from the Arduino to the rest of
-    // the world, you'll need a gateway set up.
-    IPAddress gwIP(10,10,2,2);
-    Ethernet.set_gateway(gwIP);
+  // If you'll be making outgoing connections from the Arduino to the rest of
+  // the world, you'll need a gateway set up.
+  IPAddress gwIP(10, 10, 2, 2);
+  Ethernet.set_gateway(gwIP);
 
-    // Listen for incoming connections on TCP port 1000.  Each incoming
-    // connection will result in the uip_callback() function being called.
-    server.begin();
+  // Listen for incoming connections on TCP port 1000.  Each incoming
+  // connection will result in the uip_callback() function being called.
+  server.begin();
 }
 
 
@@ -78,50 +78,50 @@ uint32_t timer = 0;
 
 void loop() {
 
-    size_t size;
+  size_t size;
 
-    if(EthernetClient client = server.available())
+  if (EthernetClient client = server.available())
+  {
+    while ((size = client.available()) > 0)
     {
-        while((size = client.available()) > 0)
-        {
-            // If a request is received with enough characters, search for the / character
-            if(size >= 7) {
-                client.findUntil("/","/");
-                char buf[3] = {"  "};
-                buf[0] = client.read();  // Read in the first two characters from the request
-                buf[1] = client.read();
+      // If a request is received with enough characters, search for the / character
+      if (size >= 7) {
+        client.findUntil("/", "/");
+        char buf[3] = {"  "};
+        buf[0] = client.read();  // Read in the first two characters from the request
+        buf[1] = client.read();
 
-                if(strcmp(buf,"ON")==0) { // If the user requested http://ip-of-node:1000/ON
-                    Serial.println(F("TURN ON"));
-                    led_state = 1;
-                    digitalWrite(LED_PIN,led_state);
-                } else if(strcmp(buf,"OF")==0) { // If the user requested http://ip-of-node:1000/OF
-                    Serial.println(F("TURN OFF"));
-                    led_state = 0;
-                    digitalWrite(LED_PIN,led_state);
-                }
-            }
-            // Empty the rest of the data from the client
-            while(client.waitAvailable()) {
-                client.read();
-            }
+        if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
+          Serial.println(F("TURN ON"));
+          led_state = 1;
+          digitalWrite(LED_PIN, led_state);
+        } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+          Serial.println(F("TURN OFF"));
+          led_state = 0;
+          digitalWrite(LED_PIN, led_state);
         }
-
-        char stateLine[24];
-        int len = sprintf(stateLine, "The LED state is %d\n<br>",led_state);
-
-        client.write( "HTTP/1.1 200 OK\nContent-Type: text/html\n Connection: close\n\n<!DOCTYPE HTML>\n<html>\n");
-        client.write( "Hello From Arduino!<br>\n");
-        client.write( stateLine );
-        client.write( "<a href='/ON'>Turn LED On</a><br>\n <a href='/OF'>Turn LED Off</a><br>\n</html>\n");
-
-        client.stop();
-        Serial.println(F("********"));
-
+      }
+      // Empty the rest of the data from the client
+      while (client.waitAvailable()) {
+        client.read();
+      }
     }
 
-    // We can do other things in the loop, but be aware that the loop will
-    // briefly pause while IP data is being processed.
+    char stateLine[24];
+    int len = sprintf(stateLine, "The LED state is %d\n<br>", led_state);
+
+    client.write( "HTTP/1.1 200 OK\nContent-Type: text/html\n Connection: close\n\n<!DOCTYPE HTML>\n<html>\n");
+    client.write( "Hello From Arduino!<br>\n");
+    client.write( stateLine );
+    client.write( "<a href='/ON'>Turn LED On</a><br>\n <a href='/OF'>Turn LED Off</a><br>\n</html>\n");
+
+    client.stop();
+    Serial.println(F("********"));
+
+  }
+
+  // We can do other things in the loop, but be aware that the loop will
+  // briefly pause while IP data is being processed.
 }
 
 

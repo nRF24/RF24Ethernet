@@ -82,34 +82,34 @@
 //#include <printf.h>
 
 /*** Configure the radio CE & CS pins ***/
-RF24 radio(7,8);
+RF24 radio(7, 8);
 RF24Network network(radio);
-RF24Mesh mesh(radio,network);
-RF24EthernetClass RF24Ethernet(radio,network,mesh);
+RF24Mesh mesh(radio, network);
+RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
 EthernetClient client;
 
 // The hosts we will be connecting to
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
-IPAddress guten(152,19,134,47); //http://www.gutenberg.org/files/2591/2591-0.txt
-IPAddress pizza(94,199,58,243); //http://fiikus.net/asciiart/pizza.txt
+IPAddress guten(152, 19, 134, 47); //http://www.gutenberg.org/files/2591/2591-0.txt
+IPAddress pizza(94, 199, 58, 243); //http://fiikus.net/asciiart/pizza.txt
 IPAddress host(pizza);
 
 void setup() {
 
-    Serial.begin(115200);
-    //printf_begin();
-    Serial.println(F("Start"));
+  Serial.begin(115200);
+  //printf_begin();
+  Serial.println(F("Start"));
 
-    // Set the IP address we'll be using. The last octet mast match the nodeID (9)
-    IPAddress myIP(10,10,2,4);
-    Ethernet.begin(myIP);
-    mesh.begin();
+  // Set the IP address we'll be using. The last octet mast match the nodeID (9)
+  IPAddress myIP(10, 10, 2, 4);
+  Ethernet.begin(myIP);
+  mesh.begin();
 
-    // If you'll be making outgoing connections from the Arduino to the rest of
-    // the world, you'll need a gateway set up.
-    IPAddress gwIP(10,10,2,2);
-    Ethernet.set_gateway(gwIP);
+  // If you'll be making outgoing connections from the Arduino to the rest of
+  // the world, you'll need a gateway set up.
+  IPAddress gwIP(10, 10, 2, 2);
+  Ethernet.set_gateway(gwIP);
 }
 
 uint32_t counter = 0;
@@ -118,71 +118,71 @@ uint32_t mesh_timer = 0;
 
 void loop() {
 
-    // Send a p or g character over serial to switch between hosts
-    if(Serial.available()) {
-        char c = Serial.read();
-        if(c == 'p') {
-            host = pizza;
-        } else if(c == 'g') {
-            host = guten;
-        }
+  // Send a p or g character over serial to switch between hosts
+  if (Serial.available()) {
+    char c = Serial.read();
+    if (c == 'p') {
+      host = pizza;
+    } else if (c == 'g') {
+      host = guten;
     }
+  }
 
-    // Optional: If the node needs to move around physically, or using failover nodes etc.,
-    // enable address renewal
-    if(millis()-mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
-        mesh_timer = millis();
-        if( ! mesh.checkConnection() ) {
-            //refresh the network address
-            if(!mesh.renewAddress()) {
-                mesh.begin();
-            }
-        }
+  // Optional: If the node needs to move around physically, or using failover nodes etc.,
+  // enable address renewal
+  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
+    mesh_timer = millis();
+    if ( ! mesh.checkConnection() ) {
+      //refresh the network address
+      if (!mesh.renewAddress()) {
+        mesh.begin();
+      }
     }
+  }
 
-    size_t size;
+  size_t size;
 
-    if(size = client.available() > 0) {
-        char c = client.read();
-        Serial.print(c);
-        counter++;
-    }
+  if (size = client.available() > 0) {
+    char c = client.read();
+    Serial.print(c);
+    counter++;
+  }
 
-    // if the server's disconnected, stop the client:
-    if (!client.connected()) {
-        Serial.println();
-        Serial.println(F("Disconnect. Waiting for disconnect timeout"));
-        client.stop();
+  // if the server's disconnected, stop the client:
+  if (!client.connected()) {
+    Serial.println();
+    Serial.println(F("Disconnect. Waiting for disconnect timeout"));
+    client.stop();
 
-        // Wait 5 seconds between requests
-        // Calling client.available(); or Ethernet.update(); is required during delays
-        // to keep the stack updated
-        reqTimer = millis();
-        while(millis() - reqTimer < 5000 && !client.available() ) { }
-        connect();
+    // Wait 5 seconds between requests
+    // Calling client.available(); or Ethernet.update(); is required during delays
+    // to keep the stack updated
+    reqTimer = millis();
+    while (millis() - reqTimer < 5000 && !client.available() ) { }
+    connect();
+  }
 
-    }
-    // We can do other things in the loop, but be aware that the loop will
-    // briefly pause while IP data is being processed.
+  // We can do other things in the loop, but be aware that the loop will
+  // briefly pause while IP data is being processed.
 }
 
 void connect() {
-    Serial.println(F("connecting"));
+  Serial.println(F("connecting"));
 
-    if (client.connect(host, 80)) {
-        Serial.println(F("connected"));
+  if (client.connect(host, 80)) {
+    Serial.println(F("connected"));
 
-        // Make an HTTP request:
-        if(host == pizza) {
-            client.write("GET /asciiart/pizza.txt HTTP/1.1\nHost: fiikus.net\n");
-        } else {
-            client.write("GET /files/2591/2591-0.txt HTTP/1.1\nHost: gutenberg.org\n");
-        }
-
-        client.write("Connection: close\n\n");
-
+    // Make an HTTP request:
+    if (host == pizza) {
+      client.write("GET /asciiart/pizza.txt HTTP/1.1\nHost: fiikus.net\n");
     } else {
-        // if you didn't get a connection to the server:
-        Serial.println(F("connection failed"));
+      client.write("GET /files/2591/2591-0.txt HTTP/1.1\nHost: gutenberg.org\n");
     }
+
+    client.write("Connection: close\n\n");
+
+  } else {
+    // if you didn't get a connection to the server:
+    Serial.println(F("connection failed"));
+  }
 }

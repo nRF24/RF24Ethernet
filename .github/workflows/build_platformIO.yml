@@ -7,15 +7,11 @@ on:
       - ".github/workflows/build_platformIO.yml"
       - "library.json"
       - "examples/**"
-      - "!examples/old_backups/**"
-      - "!examples/rf24_ATTiny/**"
   push:
     paths:
       - ".github/workflows/build_platformIO.yml"
       - "library.json"
       - "examples/**"
-      - "!examples/old_backups/**"
-      - "!examples/rf24_ATTiny/**"
   release:
     types: [published, edited]
 

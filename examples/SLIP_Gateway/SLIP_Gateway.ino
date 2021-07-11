@@ -61,112 +61,112 @@ void networkToSLIP();
 
 void setup() {
 
-    Serial.begin(115200);
+  Serial.begin(115200);
 
-    // Set this to the master node (nodeID 0)
-    mesh.setNodeID(0);
-    mesh.begin();
+  // Set this to the master node (nodeID 0)
+  mesh.setNodeID(0);
+  mesh.begin();
 
-    // Use the serial port as the SLIP device
-    slipdev_init(Serial);
+  // Use the serial port as the SLIP device
+  slipdev_init(Serial);
 
-    // LED stuff
-    pinMode(DEBUG_LED_PIN, OUTPUT);
+  // LED stuff
+  pinMode(DEBUG_LED_PIN, OUTPUT);
 #if defined (SLIP_DEBUG)
-    digitalWrite(DEBUG_LED_PIN, HIGH);
-    delay(200);
-    digitalWrite(DEBUG_LED_PIN, LOW);
+  digitalWrite(DEBUG_LED_PIN, HIGH);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, LOW);
 #endif
 }
 
 
-uint32_t active_timer =0;
+uint32_t active_timer = 0;
 
 void loop() {
 
-    // Provide RF24Network addresses to connecting & reconnecting nodes
-    if(millis() > 10000) {
-        mesh.DHCP();
+  // Provide RF24Network addresses to connecting & reconnecting nodes
+  if (millis() > 10000) {
+    mesh.DHCP();
+  }
+
+  //Ensure any incoming user payloads are read from the buffer
+  while (network.available()) {
+    RF24NetworkHeader header;
+    network.read(header, 0, 0);
+  }
+
+  // Handle external (TCP) data
+  // Note: If not utilizing RF24Network payloads directly, users can edit the RF24Network_config.h file
+  // and uncomment #define DISABLE_USER_PAYLOADS. This can save a few hundred bytes of RAM.
+
+  if (mesh.update() == EXTERNAL_DATA_TYPE) {
+    networkToSLIP();
+  }
+
+
+  // Poll the SLIP device for incoming data
+  //uint16_t len = slipdev_poll();
+  uint16_t len;
+
+  if ( (len = slipdev_poll()) > 0 ) {
+    if (len > MAX_PAYLOAD_SIZE) {
+      return;
     }
+    RF24NetworkHeader header(01, EXTERNAL_DATA_TYPE);
+    uint8_t meshAddr;
 
-    //Ensure any incoming user payloads are read from the buffer
-    while(network.available()) {
-        RF24NetworkHeader header;
-        network.read(header,0,0);
-    }
+    // Get the last octet of the destination IP address
+    uint8_t lastOctet = slip_buf[19];
 
-    // Handle external (TCP) data
-    // Note: If not utilizing RF24Network payloads directly, users can edit the RF24Network_config.h file
-    // and uncomment #define DISABLE_USER_PAYLOADS. This can save a few hundred bytes of RAM.
-
-    if(mesh.update() == EXTERNAL_DATA_TYPE) {
-        networkToSLIP();
-    }
-
-
-    // Poll the SLIP device for incoming data
-    //uint16_t len = slipdev_poll();
-    uint16_t len;
-
-    if( (len = slipdev_poll()) > 0 ) {
-        if(len > MAX_PAYLOAD_SIZE) {
-            return;
-        }
-        RF24NetworkHeader header(01, EXTERNAL_DATA_TYPE);
-        uint8_t meshAddr;
-
-        // Get the last octet of the destination IP address
-        uint8_t lastOctet = slip_buf[19];
-
-        //Convert the IP into an RF24Network Mac address
-        if ( (meshAddr = mesh.getAddress(lastOctet)) > 0) {
-            // Set the RF24Network address in the header
-            header.to_node = meshAddr;
+    //Convert the IP into an RF24Network Mac address
+    if ( (meshAddr = mesh.getAddress(lastOctet)) > 0) {
+      // Set the RF24Network address in the header
+      header.to_node = meshAddr;
 
 #if defined (LED_TXRX)
-            digitalWrite(DEBUG_LED_PIN, HIGH);
+      digitalWrite(DEBUG_LED_PIN, HIGH);
 #endif
 
-            network.write(header, &slip_buf, len);
+      network.write(header, &slip_buf, len);
 
 #if defined (LED_TXRX)
-            digitalWrite(DEBUG_LED_PIN, LOW);
+      digitalWrite(DEBUG_LED_PIN, LOW);
 #endif
-        } else {
-            // If nodeID/IP not found in address list, the node would need to renew its address
-            // Flash the LED 3 times slowly
-            flashLED();
-        }
-
+    } else {
+      // If nodeID/IP not found in address list, the node would need to renew its address
+      // Flash the LED 3 times slowly
+      flashLED();
     }
+
+  }
 
 }
 
 
 void networkToSLIP() {
 
-    RF24NetworkFrame *frame = network.frag_ptr;
-    size_t size = frame->message_size;
-    uint8_t *pointer = frame->message_buffer;
-    slipdev_send(pointer, size);
-    //digitalWrite(DEBUG_LED_PIN, !digitalRead(DEBUG_LED_PIN));
+  RF24NetworkFrame *frame = network.frag_ptr;
+  size_t size = frame->message_size;
+  uint8_t *pointer = frame->message_buffer;
+  slipdev_send(pointer, size);
+  //digitalWrite(DEBUG_LED_PIN, !digitalRead(DEBUG_LED_PIN));
 
 }
 
 void flashLED() {
 #if defined (SLIP_DEBUG)
-    digitalWrite(DEBUG_LED_PIN, HIGH);
-    delay(200);
-    digitalWrite(DEBUG_LED_PIN, LOW);
-    delay(200);
-    digitalWrite(DEBUG_LED_PIN, HIGH);
-    delay(200);
-    digitalWrite(DEBUG_LED_PIN, LOW);
-    delay(200);
-    digitalWrite(DEBUG_LED_PIN, HIGH);
-    delay(200);
-    digitalWrite(DEBUG_LED_PIN, LOW);
-    delay(200);
+  digitalWrite(DEBUG_LED_PIN, HIGH);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, LOW);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, HIGH);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, LOW);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, HIGH);
+  delay(200);
+  digitalWrite(DEBUG_LED_PIN, LOW);
+  delay(200);
 #endif
 
 }
