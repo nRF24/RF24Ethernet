@@ -79,7 +79,7 @@ jobs:
         example:
           - "examples/Getting_Started_SimpleClient_Mesh/Getting_Started_SimpleClient_Mesh.ino"
           - "examples/Getting_Started_SimpleServer_Mesh/Getting_Started_SimpleServer_Mesh.ino"
-          - "examples/InteractiveServer_Mesh/InteractiveServer_Mesh.ino examples/InteractiveServer_Mesh/HTML.h"
+          - "examples/InteractiveServer_Mesh/*"
           - "examples/MQTT/mqtt_basic/mqtt_basic.ino"
           - "examples/MQTT/mqtt_basic_2/mqtt_basic_2.ino"
           - "examples/SimpleClient_Mesh/SimpleClient_Mesh.ino"
