@@ -100,59 +100,59 @@ RF24EthernetClass RF24Ethernet(radio,network,mesh);
 EthernetServer server = EthernetServer(1000);
 
 void setup() {
-  // Set up the speed of our serial link.
-  Serial.begin(115200);
-  //printf_begin();
-  Serial.println(F("start"));
+    // Set up the speed of our serial link.
+    Serial.begin(115200);
+    //printf_begin();
+    Serial.println(F("start"));
 
-  // Set the IP address we'll be using. The last octet of the IP must be equal
-  // to the designated mesh nodeID
-  IPAddress myIP(10,10,2,4);
-  Ethernet.begin(myIP);
-  mesh.begin();
+    // Set the IP address we'll be using. The last octet of the IP must be equal
+    // to the designated mesh nodeID
+    IPAddress myIP(10,10,2,4);
+    Ethernet.begin(myIP);
+    mesh.begin();
 
-  // If you'll be making outgoing connections from the Arduino to the rest of
-  // the world, you'll need a gateway set up.
-  IPAddress gwIP(10,10,2,2);
-  Ethernet.set_gateway(gwIP);
+    // If you'll be making outgoing connections from the Arduino to the rest of
+    // the world, you'll need a gateway set up.
+    IPAddress gwIP(10,10,2,2);
+    Ethernet.set_gateway(gwIP);
 
-  // Listen for incoming connections on TCP port 1000.  Each incoming
-  // connection will result in the uip_callback() function being called.
-  server.begin();
+    // Listen for incoming connections on TCP port 1000.  Each incoming
+    // connection will result in the uip_callback() function being called.
+    server.begin();
 }
 
 uint32_t mesh_timer = 0;
 
 void loop() {
 
-  // Optional: If the node needs to move around physically, or using failover nodes etc.,
-  // enable address renewal
-  if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
-    mesh_timer = millis();
-    if( ! mesh.checkConnection() ){
-        Serial.println("*** RENEW ***");
-        //refresh the network address
-        mesh.renewAddress();
+    // Optional: If the node needs to move around physically, or using failover nodes etc.,
+    // enable address renewal
+    if(millis()-mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
+        mesh_timer = millis();
+        if( ! mesh.checkConnection() ) {
+            Serial.println("*** RENEW ***");
+            //refresh the network address
+            mesh.renewAddress();
 
-     }else{
+        } else {
 
-        Serial.println("*** MESH OK ***");
-     }
-  }
+            Serial.println("*** MESH OK ***");
+        }
+    }
 
-  if(EthernetClient client = server.available())
-  {
-     while( client.waitAvailable() > 0){
-        Serial.print((char)client.read());
-     }
-    // Send an HTML response to the client. Default max size/characters per write is 90
-    client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
-    client.write( "<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");
-    client.stop();
+    if(EthernetClient client = server.available())
+    {
+        while( client.waitAvailable() > 0) {
+            Serial.print((char)client.read());
+        }
+        // Send an HTML response to the client. Default max size/characters per write is 90
+        client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
+        client.write( "<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");
+        client.stop();
 
-    Serial.println(F("********"));
-  }
+        Serial.println(F("********"));
+    }
 
-  // We can do other things in the loop, but be aware that the loop will
-  // briefly pause while IP data is being processed.
+    // We can do other things in the loop, but be aware that the loop will
+    // briefly pause while IP data is being processed.
 }
