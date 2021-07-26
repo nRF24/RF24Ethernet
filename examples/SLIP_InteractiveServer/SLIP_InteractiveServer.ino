@@ -18,7 +18,7 @@
  * 5. Run   sudo slattach -L -s 115200 -p slip /dev/ttyUSB<X> &
  * 6. Run   sudo ifconfig s<X> 10.10.3.1 dstaddr 10.10.3.2
  * 7. Run   sudo route add -net 10.10.3.0/24 gw 10.10.3.1
- 
+
  * RF24Ethernet uses the uIP stack by Adam Dunkels <adam@sics.se>
  *
  * This example demonstrates how to configure a sensor node to act as a webserver and
@@ -39,12 +39,12 @@
 #include "EEPROM.h"
 
 /*** Configure the radio CE & CS pins ***/
-RF24 radio(7,8);
+RF24 radio(7, 8);
 RF24Network network(radio);
 RF24EthernetClass RF24Ethernet(radio, network);
 
 // Create an instance of RF24Mesh
-RF24Mesh mesh(radio,network);
+RF24Mesh mesh(radio, network);
 
 #define LED_PIN A3 //Analog pin A3
 
@@ -63,7 +63,7 @@ void setup() {
 
   // This step is very important. When using TUN or SLIP, the IP of the device
   // must be configured as the NodeID in the RF24Mesh layer
-  
+
   mesh.setNodeID(2);
   mesh.begin();
 
@@ -73,7 +73,7 @@ void setup() {
   // Set the IP address we'll be using.  Make sure this doesn't conflict with
   // any IP addresses or subnets on your LAN or you won't be able to connect to
   // either the Arduino or your LAN...
-  
+
   // NOTE: The last octet/last digit of the IP must match the RF24Mesh nodeID above
   IPAddress myIP(10, 10, 3, 2);
   Ethernet.begin(myIP);
@@ -96,14 +96,14 @@ void loop() {
 
   // This is the last of the differences between this and the regular Interactive Server example
   // If the master node is completely down, and unresponsive for 30 seconds, renew the address
-  if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if( ! mesh.checkConnection() ){
-        //refresh the network address        
-        mesh.renewAddress();
-     }
+    if ( ! mesh.checkConnection() ) {
+      //refresh the network address
+      mesh.renewAddress();
+    }
   }
-  
+
   size_t size;
 
   if (EthernetClient client = server.available())
@@ -124,20 +124,20 @@ void loop() {
           led_state = 1;
           pageReq = 1;
           digitalWrite(LED_PIN, led_state);
-          
-        }else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+
+        } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
           led_state = 0;
           pageReq = 1;
           digitalWrite(LED_PIN, led_state);
-          
-        }else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/OF
+
+        } else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/OF
           pageReq = 2;
-          
-        }else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/OF
+
+        } else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/OF
           pageReq = 3;
-          
-        }else if(buf[0] == ' '){
-          pageReq = 4; 
+
+        } else if (buf[0] == ' ') {
+          pageReq = 4;
         }
       }
       // Empty the rest of the data from the client
@@ -145,18 +145,27 @@ void loop() {
         client.read();
       }
     }
-    
+
     /**
     * Based on the incoming URL request, send the correct page to the client
     * see HTML.h
     */
-    switch(pageReq){
-       case 2: stats_page(client); break;
-       case 3: credits_page(client); break;
-       case 4: main_page(client); break;
-       case 1: main_page(client); break;
-       default: break; 
-    }    
+    switch (pageReq) {
+      case 2:
+        stats_page(client);
+        break;
+      case 3:
+        credits_page(client);
+        break;
+      case 4:
+        main_page(client);
+        break;
+      case 1:
+        main_page(client);
+        break;
+      default:
+        break;
+    }
 
     client.stop();
     Serial.println(F("********"));

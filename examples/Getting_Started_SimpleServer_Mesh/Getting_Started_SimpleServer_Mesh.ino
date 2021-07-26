@@ -90,10 +90,10 @@
 #include "RF24Mesh.h"
 
 /** Configure the radio CE & CS pins **/
-RF24 radio(7,8);
+RF24 radio(7, 8);
 RF24Network network(radio);
-RF24Mesh mesh(radio,network);
-RF24EthernetClass RF24Ethernet(radio,network,mesh);
+RF24Mesh mesh(radio, network);
+RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
 
 // Set up the server to listen on port 1000
@@ -107,13 +107,13 @@ void setup() {
 
   // Set the IP address we'll be using. The last octet of the IP must be equal
   // to the designated mesh nodeID
-  IPAddress myIP(10,10,2,4);
+  IPAddress myIP(10, 10, 2, 4);
   Ethernet.begin(myIP);
   mesh.begin();
 
   // If you'll be making outgoing connections from the Arduino to the rest of
   // the world, you'll need a gateway set up.
-  IPAddress gwIP(10,10,2,2);
+  IPAddress gwIP(10, 10, 2, 2);
   Ethernet.set_gateway(gwIP);
 
   // Listen for incoming connections on TCP port 1000.  Each incoming
@@ -127,24 +127,24 @@ void loop() {
 
   // Optional: If the node needs to move around physically, or using failover nodes etc.,
   // enable address renewal
-  if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if( ! mesh.checkConnection() ){
-        Serial.println("*** RENEW ***");
-        //refresh the network address
-        mesh.renewAddress();
+    if ( ! mesh.checkConnection() ) {
+      Serial.println("*** RENEW ***");
+      //refresh the network address
+      mesh.renewAddress();
 
-     }else{
+    } else {
 
-        Serial.println("*** MESH OK ***");
-     }
+      Serial.println("*** MESH OK ***");
+    }
   }
 
-  if(EthernetClient client = server.available())
+  if (EthernetClient client = server.available())
   {
-     while( client.waitAvailable() > 0){
-        Serial.print((char)client.read());
-     }
+    while ( client.waitAvailable() > 0) {
+      Serial.print((char)client.read());
+    }
     // Send an HTML response to the client. Default max size/characters per write is 90
     client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
     client.write( "<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");

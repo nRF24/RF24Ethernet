@@ -97,8 +97,10 @@ void loop() {
       }
       if (counter == contentLength) {
         gotHeader = false;
-        Serial.print("Content length "); Serial.println(contentLength);
-        Serial.print("Received length "); Serial.println(counter);
+        Serial.print("Content length ");
+        Serial.println(contentLength);
+        Serial.print("Received length ");
+        Serial.println(counter);
       }
     }
   }

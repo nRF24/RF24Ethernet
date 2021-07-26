@@ -14,9 +14,9 @@
  * 3. Un-comment #define DISABLE_USER_PAYLOADS
  *
  *
- * This example uses RF24Mesh. 
- * Set #define UIP_CONF_LLH_LEN 0 in uip_conf.h if used with a TUN(RF24Mesh) or SLIP interface 
- * 
+ * This example uses RF24Mesh.
+ * Set #define UIP_CONF_LLH_LEN 0 in uip_conf.h if used with a TUN(RF24Mesh) or SLIP interface
+ *
  */
 
 
@@ -31,13 +31,13 @@
 /*** Configure the radio CE & CS pins ***/
 RF24 radio(7, 8);
 RF24Network network(radio);
-RF24Mesh mesh(radio,network);
-RF24EthernetClass RF24Ethernet(radio, network,mesh);
+RF24Mesh mesh(radio, network);
+RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
 #if defined (ARDUINO_ARCH_ESP8266)
-  #define LED_PIN BUILTIN_LED
+#define LED_PIN BUILTIN_LED
 #else
-  #define LED_PIN A3 //Analog pin A3
+#define LED_PIN A3 //Analog pin A3
 #endif
 
 // Configure the server to listen on port 1000
@@ -52,7 +52,7 @@ void setup() {
   //printf_begin();
   Serial.println("start");
   pinMode(LED_PIN, OUTPUT);
-  
+
   IPAddress myIP(10, 10, 2, 4);
   Ethernet.begin(myIP);
   mesh.begin();
@@ -74,12 +74,12 @@ void loop() {
 
   // Optional: If the node needs to move around physically, or using failover nodes etc.,
   // enable address renewal
-  if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if( ! mesh.checkConnection() ){
-        //refresh the network address        
-        mesh.renewAddress();
-     }
+    if ( ! mesh.checkConnection() ) {
+      //refresh the network address
+      mesh.renewAddress();
+    }
   }
 
   size_t size;
@@ -95,48 +95,57 @@ void loop() {
         char slash[] = {"/"};
         client.findUntil(slash, slash);
         char buf[3] = {"  "};
-        if(client.available() >= 2){
-        buf[0] = client.read();  // Read in the first two characters from the request
-        buf[1] = client.read();
+        if (client.available() >= 2) {
+          buf[0] = client.read();  // Read in the first two characters from the request
+          buf[1] = client.read();
 
-        if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
-          led_state = 1;
-          pageReq = 1;
-          digitalWrite(LED_PIN, led_state);
-          
-        }else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
-          led_state = 0;
-          pageReq = 1;
-          digitalWrite(LED_PIN, led_state);
-          
-        }else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/ST
-          pageReq = 2;
-          
-        }else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/CR
-          pageReq = 3;
-          
-        }else if(buf[0] == ' '){
-          pageReq = 4; 
+          if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
+            led_state = 1;
+            pageReq = 1;
+            digitalWrite(LED_PIN, led_state);
+
+          } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+            led_state = 0;
+            pageReq = 1;
+            digitalWrite(LED_PIN, led_state);
+
+          } else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/ST
+            pageReq = 2;
+
+          } else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/CR
+            pageReq = 3;
+
+          } else if (buf[0] == ' ') {
+            pageReq = 4;
+          }
         }
-      }
       }
       // Empty the rest of the data from the client
       //while (client.waitAvailable()) {
-        client.flush();
+      client.flush();
       //}
     }
-    
+
     /**
     * Based on the incoming URL request, send the correct page to the client
     * see HTML.h
     */
-    switch(pageReq){
-       case 2: stats_page(client); break;
-       case 3: credits_page(client); break;
-       case 4: main_page(client); break;
-       case 1: main_page(client); break;
-       default: break; 
-    }    
+    switch (pageReq) {
+      case 2:
+        stats_page(client);
+        break;
+      case 3:
+        credits_page(client);
+        break;
+      case 4:
+        main_page(client);
+        break;
+      case 1:
+        main_page(client);
+        break;
+      default:
+        break;
+    }
 
     client.stop();
     Serial.println(F("********"));

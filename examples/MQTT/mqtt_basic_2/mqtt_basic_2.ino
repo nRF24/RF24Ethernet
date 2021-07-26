@@ -37,14 +37,14 @@
 #include <RF24Ethernet.h>
 #include <MQTT.h>
 
-RF24 radio(7,8);
+RF24 radio(7, 8);
 RF24Network network(radio);
-RF24Mesh mesh(radio,network);
-RF24EthernetClass RF24Ethernet(radio,network,mesh);
+RF24Mesh mesh(radio, network);
+RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
-IPAddress ip(10,10,2,4);
-IPAddress gateway(10,10,2,2); //Specify the gateway in case different from the server
-IPAddress server(10,10,2,2);  //The ip of the MQTT server
+IPAddress ip(10, 10, 2, 4);
+IPAddress gateway(10, 10, 2, 2); //Specify the gateway in case different from the server
+IPAddress server(10, 10, 2, 2); //The ip of the MQTT server
 char clientID[] = {"arduinoClient   "};
 
 void messageReceived(String &topic, String &payload) {
@@ -63,18 +63,20 @@ void connect() {
   uint32_t clTimeout = millis();
   while (!client.connect(clientID)) {
     Serial.print(".");
-    if(millis() - clTimeout > 5001){
+    if (millis() - clTimeout > 5001) {
       Serial.println();
       return;
     }
     uint32_t timer = millis();
     //Instead of delay, keep the RF24 stack updating
-    while(millis() - timer < 1000){ Ethernet.update(); }
+    while (millis() - timer < 1000) {
+      Ethernet.update();
+    }
   }
 
   Serial.println("\nconnected!");
-  client.publish("outTopic","hello world");
-  client.subscribe("inTopic",2);
+  client.publish("outTopic", "hello world");
+  client.subscribe("inTopic", 2);
 }
 
 
@@ -91,15 +93,15 @@ void setup()
     Serial.println(" Failed");
   }
 
-   //Convert the last octet of the IP address to an identifier used
-   char str[4];
-   int test = ip[3];
-   itoa(ip[3],str,10);
-   memcpy(&clientID[13],&str,strlen(str));
-   Serial.println(clientID);
+  //Convert the last octet of the IP address to an identifier used
+  char str[4];
+  int test = ip[3];
+  itoa(ip[3], str, 10);
+  memcpy(&clientID[13], &str, strlen(str));
+  Serial.println(clientID);
 
-   client.begin(server, ethClient);
-   client.onMessage(messageReceived);
+  client.begin(server, ethClient);
+  client.onMessage(messageReceived);
 
 }
 
@@ -110,13 +112,13 @@ void loop()
 {
   Ethernet.update();
 
-  if(millis()-mesh_timer > 30000){ //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if( ! mesh.checkConnection() ){
-        if(!mesh.renewAddress()){
-          mesh.begin();
-        }
-     }
+    if ( ! mesh.checkConnection() ) {
+      if (!mesh.renewAddress()) {
+        mesh.begin();
+      }
+    }
     Serial.println();
   }
   if (!client.connected()) {
@@ -126,15 +128,15 @@ void loop()
   client.loop();
 
   // Every second, report to the MQTT server the Node ID of this node
-  if(client.connected() && millis() - pub_timer > 3000){
+  if (client.connected() && millis() - pub_timer > 3000) {
     pub_timer = millis();
     char str[4];
     int test = ip[3];
-    itoa(ip[3],str,10);
+    itoa(ip[3], str, 10);
     char str1[] = "Node      \r\n";
-    memcpy(&str1[5],&str,strlen(str));
+    memcpy(&str1[5], &str, strlen(str));
 
-    client.publish("outTopic",str1);
+    client.publish("outTopic", str1);
   }
 
 

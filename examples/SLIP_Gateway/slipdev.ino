@@ -28,26 +28,26 @@
  * - Modified for RF24Ethernet/RF24Network
  *
  * Copyright (c) 2001, Adam Dunkels.
- * All rights reserved. 
+ * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions 
- * are met: 
- * 1. Redistributions of source code must retain the above copyright 
- *    notice, this list of conditions and the following disclaimer. 
- * 2. Redistributions in binary form must reproduce the above copyright 
- *    notice, this list of conditions and the following disclaimer in the 
- *    documentation and/or other materials provided with the distribution. 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote
  *    products derived from this software without specific prior
- *    written permission.  
+ *    written permission.
  *
  *
  */
 
 /*
  * This is a generic implementation of the SLIP protocol over an RS232
- * (serial) device. 
+ * (serial) device.
  *
  * Huge thanks to Ullrich von Bassewitz <uz@cc65.org> of cc65 fame for
  * and endless supply of bugfixes, insightsful comments and
@@ -69,7 +69,7 @@ HardwareSerial *slip_device;
 // Put a character on the serial device.
 void slipdev_char_put(uint8_t c)
 {
-	slip_device->write((char)c);
+  slip_device->write((char)c);
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -77,11 +77,11 @@ void slipdev_char_put(uint8_t c)
 // Poll the serial device for a character.
 uint8_t slipdev_char_poll(uint8_t *c)
 {
-	if (slip_device->available()) {
-		*c = slip_device->read();
-		return 1;
-	}
-	return 0;
+  if (slip_device->available()) {
+    *c = slip_device->read();
+    return 1;
+  }
+  return 0;
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -103,34 +103,34 @@ void slipdev_send(uint8_t *ptr, size_t len)
   uint8_t c;
 
   slipdev_char_put(SLIP_END);
-  
-  #if defined (LED_TXRX)
-  digitalWrite(DEBUG_LED_PIN,HIGH);
-  #endif
-  
-  for(i = 0; i < len; ++i) {
+
+#if defined (LED_TXRX)
+  digitalWrite(DEBUG_LED_PIN, HIGH);
+#endif
+
+  for (i = 0; i < len; ++i) {
     c = *ptr++;
-    switch(c) {
-    case SLIP_END:
-      slipdev_char_put(SLIP_ESC);
-      slipdev_char_put(SLIP_ESC_END);
-      break;
-    case SLIP_ESC:
-      slipdev_char_put(SLIP_ESC);
-      slipdev_char_put(SLIP_ESC_ESC);
-      break;
-    default:
-      slipdev_char_put(c);
-      break;
+    switch (c) {
+      case SLIP_END:
+        slipdev_char_put(SLIP_ESC);
+        slipdev_char_put(SLIP_ESC_END);
+        break;
+      case SLIP_ESC:
+        slipdev_char_put(SLIP_ESC);
+        slipdev_char_put(SLIP_ESC_ESC);
+        break;
+      default:
+        slipdev_char_put(c);
+        break;
     }
   }
   slipdev_char_put(SLIP_END);
-  #if defined (LED_TXRX)
-  digitalWrite(DEBUG_LED_PIN,LOW);
-  #endif
+#if defined (LED_TXRX)
+  digitalWrite(DEBUG_LED_PIN, LOW);
+#endif
 }
 /*-----------------------------------------------------------------------------------*/
-/** 
+/**
  * Poll the SLIP device for an available packet.
  *
  * This function will poll the SLIP device to see if a packet is
@@ -148,55 +148,55 @@ uint16_t slipdev_poll(void)
   uint8_t c;
 
 
- // Create a new RF24Network header if there is data available, and possibly ready to send
- if(slip_device->available()){  
-  
-  while((uint8_t)slipdev_char_poll(&c)) {
-    switch(c) {
-    case SLIP_ESC:
-      lastc = c;
-      break;
+  // Create a new RF24Network header if there is data available, and possibly ready to send
+  if (slip_device->available()) {
 
-    case SLIP_END:
-      lastc = c;
-      /* End marker found, we copy our input buffer to the uip_buf
-	 buffer and return the size of the packet we copied. */
+    while ((uint8_t)slipdev_char_poll(&c)) {
+      switch (c) {
+        case SLIP_ESC:
+          lastc = c;
+          break;
 
-      // Ensure the data is no longer than the configured UIP buffer size
-      len = min(len,UIP_BUFFER_SIZE);
-      
-      tmplen = len;
-      len = 0;
-      return tmplen;
+        case SLIP_END:
+          lastc = c;
+          /* End marker found, we copy our input buffer to the uip_buf
+          buffer and return the size of the packet we copied. */
 
-    default:
-      if(lastc == SLIP_ESC) {
-	lastc = c;
-	/* Previous read byte was an escape byte, so this byte will be
-	   interpreted differently from others. */
-	switch(c) {
-	case SLIP_ESC_END:
-	  c = SLIP_END;
-	  break;
-	case SLIP_ESC_ESC:
-	  c = SLIP_ESC;
-	  break;
-	}
-      } else {
-	lastc = c;
+          // Ensure the data is no longer than the configured UIP buffer size
+          len = min(len, UIP_BUFFER_SIZE);
+
+          tmplen = len;
+          len = 0;
+          return tmplen;
+
+        default:
+          if (lastc == SLIP_ESC) {
+            lastc = c;
+            /* Previous read byte was an escape byte, so this byte will be
+               interpreted differently from others. */
+            switch (c) {
+              case SLIP_ESC_END:
+                c = SLIP_END;
+                break;
+              case SLIP_ESC_ESC:
+                c = SLIP_ESC;
+                break;
+            }
+          } else {
+            lastc = c;
+          }
+
+          slip_buf[len] = c;
+          ++len;
+
+          if (len > UIP_BUFFER_SIZE) {
+            len = 0;
+          }
+
+          break;
       }
-
-      slip_buf[len] = c;
-      ++len;
-
-      if(len > UIP_BUFFER_SIZE) {
-	len = 0;
-      }
-
-      break;
     }
   }
- }
   return 0;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -205,9 +205,9 @@ uint16_t slipdev_poll(void)
  *
  * This function does not initialize the underlying RS232 device, but
  * only the SLIP part.
- */ 
+ */
 /*-----------------------------------------------------------------------------------*/
-void slipdev_init(HardwareSerial &dev){
+void slipdev_init(HardwareSerial &dev) {
   lastc = len = 0;
   slip_device = &dev;
 }

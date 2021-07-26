@@ -1,0 +1,45 @@
+{
+    "name": "RF24Ethernet",
+    "keywords": "rf, radio, wireless, spi, mesh, network",
+    "description": "Automated, wireless(not WiFi), sensor/IoT networks that communicate/link together using standard protocols & networking. Typically requires Raspberry Pi/Linux device as gateway. An experiment disconnected...",
+    "license": "GPL-2.0-only",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nRF24/RF24Ethernet.git"
+    },
+    "version": "1.6.8",
+    "dependencies":
+    [
+        {
+            "name": "RF24",
+            "authors": "nRF24",
+            "frameworks": "arduino"
+        },
+        {
+            "name": "RF24Network",
+            "authors": "nRF24",
+            "frameworks": "arduino"
+        },
+        {
+            "name": "RF24Mesh",
+            "authors": "nRF24",
+            "frameworks": "arduino"
+        }
+    ],
+    "export":
+    {
+        "exclude": [
+            ".github/*",
+            "keywords.txt",
+            "examples/examples_formatter.conf"
+        ]
+    },
+    "frameworks": "arduino",
+    "platforms": [
+        "atmelavr",
+        "atmelsam",
+        "atmelmegaavr",
+        "espressif32",
+        "espressif8266"
+    ]
+}

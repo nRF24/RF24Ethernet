@@ -1,4 +1,4 @@
-# RF24EthernetOverview RF24Ethernet Overview
+# RF24Ethernet Overview
 
 ## Overview
 The RF24Ethernet library was initially designed as an experiment and potential testing tool for [RF24Network](http://nRF24.github.io/RF24Network), an OSI Layer 3 network driver, allowing a Raspberry Pi to

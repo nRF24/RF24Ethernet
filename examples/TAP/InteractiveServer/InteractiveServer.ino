@@ -29,7 +29,7 @@
 RF24 radio(7, 8);
 RF24Network network(radio);
 RF24EthernetClass RF24Ethernet(radio, network);
-RF24Mesh mesh(radio,network);
+RF24Mesh mesh(radio, network);
 #define LED_PIN A3 //Analog pin A3
 
 // Configure the server to listen on port 1000
@@ -44,17 +44,17 @@ void setup() {
   Serial.println("start");
   pinMode(LED_PIN, OUTPUT);
 
-//  uint16_t myRF24NetworkAddress = 01;
-//  Ethernet.setMac(myRF24NetworkAddress);
+  //  uint16_t myRF24NetworkAddress = 01;
+  //  Ethernet.setMac(myRF24NetworkAddress);
   mesh.setNodeID(7);
   mesh.begin();
-  Serial.println(mesh.mesh_address,HEX);
+  Serial.println(mesh.mesh_address, HEX);
   Ethernet.setMac(mesh.mesh_address);
-  
-  IPAddress myIP(10, 10, 3,7);
+
+  IPAddress myIP(10, 10, 3, 7);
   Ethernet.begin(myIP);
 
-  IPAddress gwIP(10, 10, 3,1);
+  IPAddress gwIP(10, 10, 3, 1);
   Ethernet.set_gateway(gwIP);
 
   server.begin();
@@ -84,20 +84,20 @@ void loop() {
           led_state = 1;
           pageReq = 1;
           digitalWrite(LED_PIN, led_state);
-          
-        }else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+
+        } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
           led_state = 0;
           pageReq = 1;
           digitalWrite(LED_PIN, led_state);
-          
-        }else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/OF
+
+        } else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/OF
           pageReq = 2;
-          
-        }else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/OF
+
+        } else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/OF
           pageReq = 3;
-          
-        }else if(buf[0] == ' '){
-          pageReq = 4; 
+
+        } else if (buf[0] == ' ') {
+          pageReq = 4;
         }
       }
       // Empty the rest of the data from the client
@@ -105,18 +105,27 @@ void loop() {
         client.flush();
       }
     }
-    
+
     /**
     * Based on the incoming URL request, send the correct page to the client
     * see HTML.h
     */
-    switch(pageReq){
-       case 2: stats_page(client); break;
-       case 3: credits_page(client); break;
-       case 4: main_page(client); break;
-       case 1: main_page(client); break;
-       default: break; 
-    }    
+    switch (pageReq) {
+      case 2:
+        stats_page(client);
+        break;
+      case 3:
+        credits_page(client);
+        break;
+      case 4:
+        main_page(client);
+        break;
+      case 1:
+        main_page(client);
+        break;
+      default:
+        break;
+    }
 
     client.stop();
     Serial.println(F("********"));

@@ -1,5 +1,8 @@
 # Ethernet and TCP/IP Networking for RF24Network
 
+[![Arduino CLI build](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_arduino.yml/badge.svg)](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_arduino.yml)
+[![PlatformIO build](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_platformIO.yml/badge.svg)](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_platformIO.yml)
+
 ## Access your RF24Network sensors using a web browser
 
 ### Current stage: Functional & Mostly Stable (Updated 2020)
