@@ -29,7 +29,8 @@ Ensure proper library installation.
 @note Troubleshooting steps assume a fresh library install with the default configuration, using RF24Mesh/TUN
 @warning The maximum payload size configured in RF24Network_config.h will determine the maximum size of TCP or UDP segments. Set to 1514 (TAP) or 1500 (TUN) on Raspberry Pi/Linux devices for full TCP/IP capabilities. TCP+IP+LL headers add 54 bytes of overhead to each payload with TAP/Ethernet, and 40 bytes with TUN/RF24Mesh
 
-### RPi ([RF24Gateway]http://nRF24.github.io/RF24Gateway/)
+### RPi (RF24Gateway)
+@see [Documentation for RF24Gateway](http://nRF24.github.io/RF24Gateway/)
 1. Run the included RF24Gateway_ncurses example `sudo ./RF24Gateway_ncurses`
 2. Test connectivity: `ping 10.10.3.<IP_TO_PING-last-octet>`
 3. If connectivity fails, ensure IP information is accurate. Forwarding is required if pinging from a device other than the RPi.
