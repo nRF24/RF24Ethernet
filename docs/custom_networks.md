@@ -8,7 +8,7 @@ RF24Mesh allows dynamic configuration of RF24Network addresses, and allows the c
 to move around physically, releasing and renewing their RF24Network address as required. Once configured with a unique nodeID, nodes using RF24Mesh
 can automatically configure themselves and join the network as required, with no user interaction.
 
-See the included [SimpleServer_Mesh](SimpleServer_mesh_8ino-example.html) example for general usage and configuration information
+See the included [Getting_Started_SimpleServer_Mesh example](Getting_Started_SimpleServer_Mesh_8ino-example.html) for general usage and configuration information
 with RF24Ethernet.
 
 ### RF24Mesh - Additional Information
