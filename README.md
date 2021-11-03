@@ -5,7 +5,7 @@
 
 ## Access your RF24Network sensors using a web browser
 
-### Current stage: Functional & Mostly Stable (Updated 2020)
+### Current stage: Functional & Stable (Updated 2021)
 
 RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries
 
