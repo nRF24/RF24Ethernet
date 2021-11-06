@@ -28,7 +28,7 @@
 
 #include <RF24.h>
 #include <RF24Network.h>
-#include "RF24Mesh.h"
+#include <RF24Mesh.h>
 #include <RF24Ethernet.h>
 #include "HTML.h"
 #include <printf.h>
@@ -38,7 +38,7 @@
 RF24 radio(7, 8);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
-RF24EthernetClass RF24Ethernet(radio,network,mesh);
+RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
 #define LED_PIN A3 //Analog pin A3
 
@@ -207,4 +207,3 @@ static unsigned short generate_tcp_stats()
   }
   return 1;
 }
-
