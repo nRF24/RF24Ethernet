@@ -26,25 +26,19 @@
  * The requested URL is used as input, to determine whether to turn the LED off or on
  */
 
-
-#include <RF24Network.h>
 #include <RF24.h>
-#include <SPI.h>
-#include <printf.h>
+#include <RF24Network.h>
+#include "RF24Mesh.h"
 #include <RF24Ethernet.h>
 #include "HTML.h"
+#include <printf.h>
 
-// Include RF24Mesh and the EEPROM libs
-#include "RF24Mesh.h"
-#include "EEPROM.h"
 
 /*** Configure the radio CE & CS pins ***/
 RF24 radio(7, 8);
 RF24Network network(radio);
-RF24EthernetClass RF24Ethernet(radio, network);
-
-// Create an instance of RF24Mesh
 RF24Mesh mesh(radio, network);
+RF24EthernetClass RF24Ethernet(radio,network,mesh);
 
 #define LED_PIN A3 //Analog pin A3
 
