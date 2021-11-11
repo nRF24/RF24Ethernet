@@ -91,7 +91,7 @@ EthernetClient client;
 
 // The hosts we will be connecting to
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
-IPAddress graph(128,163,35,46); //http://www.uky.edu/~agrdanny/flyfish/ljdecuir/graphsig.txt
+IPAddress graph(128, 163, 35, 46); //http://www.uky.edu/~agrdanny/flyfish/ljdecuir/graphsig.txt
 IPAddress pizza(94, 199, 58, 243); //http://fiikus.net/asciiart/pizza.txt
 IPAddress host(pizza);
 
