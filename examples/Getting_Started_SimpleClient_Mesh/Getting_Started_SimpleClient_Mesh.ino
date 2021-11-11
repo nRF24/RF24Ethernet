@@ -91,7 +91,7 @@ EthernetClient client;
 
 // The hosts we will be connecting to
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
-IPAddress guten(152, 19, 134, 47); //http://www.gutenberg.org/files/2591/2591-0.txt
+IPAddress light(68, 67, 106, 101); //http://www.lightsecond.com/bbt8/ascii_art.txt
 IPAddress pizza(94, 199, 58, 243); //http://fiikus.net/asciiart/pizza.txt
 IPAddress host(pizza);
 
@@ -123,8 +123,8 @@ void loop() {
     char c = Serial.read();
     if (c == 'p') {
       host = pizza;
-    } else if (c == 'g') {
-      host = guten;
+    } else if (c == 'l') {
+      host = light;
     }
   }
 
@@ -176,7 +176,9 @@ void connect() {
     if (host == pizza) {
       client.write("GET /asciiart/pizza.txt HTTP/1.1\nHost: fiikus.net\n");
     } else {
-      client.write("GET /files/2591/2591-0.txt HTTP/1.1\nHost: gutenberg.org\n");
+      client.println("GET /bbt8/ascii_art.txt HTTP/1.1");
+      client.println("Host: lightsecond.com");
+      client.println();
     }
 
     client.write("Connection: close\n\n");
