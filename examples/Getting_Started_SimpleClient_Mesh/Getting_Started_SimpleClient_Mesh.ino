@@ -177,7 +177,7 @@ void connect() {
       client.write("GET /asciiart/pizza.txt HTTP/1.1\nHost: fiikus.net\n");
     } else {
       client.println("GET /~agrdanny/flyfish/ljdecuir/graphsig.txt HTTP/1.1");
-      client.println("Host: gutenberg.org");
+      client.println("Host: www.uky.edu");
       client.println();
     }
 
