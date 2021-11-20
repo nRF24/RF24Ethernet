@@ -178,7 +178,6 @@ void connect() {
     } else {
       client.println("GET /~agrdanny/flyfish/ljdecuir/graphsig.txt HTTP/1.1");
       client.println("Host: www.uky.edu");
-      client.println();
     }
 
     client.println("Connection: close");
