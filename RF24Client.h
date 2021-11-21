@@ -63,7 +63,6 @@ typedef struct {
     uint32_t restartInterval;
     uint32_t connAbortTime;
     uint8_t myData[OUTPUT_BUFFER_SIZE];
-    uint8_t myDataIn[OUTPUT_BUFFER_SIZE];
     uint16_t dataPos;
     uint16_t dataCnt;
     bool hold;

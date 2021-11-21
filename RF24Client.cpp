@@ -275,7 +275,7 @@ void serialip_appcall(void)
                 u->state &= ~UIP_CLIENT_RESTART;
                 u->windowOpened = false;
                 u->connAbortTime = u->restartTime = millis();
-                memcpy(&u->myDataIn[u->dataPos + u->dataCnt], uip_appdata, uip_datalen());
+                memcpy(&u->myData[u->dataPos + u->dataCnt], uip_appdata, uip_datalen());
                 u->dataCnt += uip_datalen();
 
                 u->packets_in = 1;
@@ -481,7 +481,7 @@ int RF24Client::read(uint8_t *buf, size_t size)
         }
 
         size = rf24_min(data->dataCnt, size);
-        memcpy(buf, &data->myDataIn[data->dataPos], size);
+        memcpy(buf, &data->myData[data->dataPos], size);
         data->dataCnt -= size;
 
         data->dataPos += size;
@@ -534,7 +534,7 @@ int RF24Client::peek()
 {
     if (available())
     {
-        return data->myDataIn[data->dataPos];
+        return data->myData[data->dataPos];
     }
     return -1;
 }

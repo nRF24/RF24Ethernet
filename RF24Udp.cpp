@@ -255,7 +255,7 @@ int RF24UDP::read(unsigned char *buffer, size_t len)
 
     if (appdata.packet_in != 0)
     {
-        memcpy(buffer, RF24Client::all_data[0].myDataIn + appdata.in_pos, len);
+        memcpy(buffer, RF24Client::all_data[0].myData + appdata.in_pos, len);
         appdata.in_pos += len;
         appdata.packet_in_size -= len;
 
@@ -278,7 +278,7 @@ int RF24UDP::peek()
 
     if (appdata.packet_in != 0)
     {
-        return RF24Client::all_data[0].myDataIn[appdata.in_pos];
+        return RF24Client::all_data[0].myData[appdata.in_pos];
     }
     return -1;
 }
@@ -325,11 +325,11 @@ void uipudp_appcall(void)
                 uip_ipaddr_copy(uip_udp_conn->ripaddr, UDPBUF->srcipaddr);
 
                 //discard Linklevel and IP and udp-header and any trailing bytes:
-                memcpy(RF24Client::all_data[0].myDataIn, uip_appdata, uip_len);
+                memcpy(RF24Client::all_data[0].myData, uip_appdata, uip_len);
                 data->packet_in_size += uip_len;
                 data->packet_in = 1;
 
-                IF_RF24ETHERNET_DEBUG_UDP(Serial.print(F("RF24UDP udp, uip_newdata received packet: ")); Serial.print(data->packet_next); Serial.print(F(", size: ")); Serial.println(data->packet_in_size); for (int i = 0; i < data->packet_in_size; i++) {  Serial.print(RF24Client::all_data[0].myDataIn[i],HEX); Serial.print(F(" : ")); } Serial.println(););
+                IF_RF24ETHERNET_DEBUG_UDP(Serial.print(F("RF24UDP udp, uip_newdata received packet: ")); Serial.print(data->packet_next); Serial.print(F(", size: ")); Serial.println(data->packet_in_size); for (int i = 0; i < data->packet_in_size; i++) {  Serial.print(RF24Client::all_data[0].myData[i],HEX); Serial.print(F(" : ")); } Serial.println(););
             }
         }
         if (uip_poll() && data->send)
