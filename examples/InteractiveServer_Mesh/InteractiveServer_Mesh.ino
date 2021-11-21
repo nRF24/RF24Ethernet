@@ -78,7 +78,9 @@ void loop() {
     mesh_timer = millis();
     if ( ! mesh.checkConnection() ) {
       //refresh the network address
-      mesh.renewAddress();
+      if ( ! mesh.renewAddress() ) {
+        mesh.begin();
+      }
     }
   }
 
@@ -93,6 +95,7 @@ void loop() {
       // If a request is received with enough characters, search for the / character
       if (size >= 7) {
         char slash[] = {"/"};
+        client.setTimeout(10000);
         client.findUntil(slash, slash);
         char buf[3] = {"  "};
         if (client.available() >= 2) {
@@ -121,9 +124,7 @@ void loop() {
         }
       }
       // Empty the rest of the data from the client
-      //while (client.waitAvailable()) {
       client.flush();
-      //}
     }
 
     /**

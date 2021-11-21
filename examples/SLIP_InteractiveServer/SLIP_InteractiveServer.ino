@@ -94,7 +94,9 @@ void loop() {
     mesh_timer = millis();
     if ( ! mesh.checkConnection() ) {
       //refresh the network address
-      mesh.renewAddress();
+      if ( ! mesh.renewAddress() ) {
+        mesh.begin();
+      }
     }
   }
 

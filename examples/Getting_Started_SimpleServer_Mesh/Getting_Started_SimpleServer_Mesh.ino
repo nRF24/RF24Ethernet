@@ -132,7 +132,9 @@ void loop() {
     if ( ! mesh.checkConnection() ) {
       Serial.println("*** RENEW ***");
       //refresh the network address
-      mesh.renewAddress();
+      if ( ! mesh.renewAddress() ){
+        mesh.begin();
+      }
 
     } else {
 
@@ -146,8 +148,8 @@ void loop() {
       Serial.print((char)client.read());
     }
     // Send an HTML response to the client. Default max size/characters per write is 90
-    client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
-    client.write( "<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");
+    client.print( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
+    client.print( "<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");
     client.stop();
 
     Serial.println(F("********"));
