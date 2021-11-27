@@ -218,6 +218,13 @@ extern RF24EthernetClass RF24Ethernet;
  */
 
 /**
+ * @example Getting_Started_SimpleClient_Mesh_DNS.ino
+ *
+ * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP, 
+ * using DNS lookups instead of IP address.
+ */
+
+/**
  * @example SimpleClient_Mesh.ino
  *
  * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP.
