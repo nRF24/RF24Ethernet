@@ -20,10 +20,10 @@
 //#include <printf.h>
 
 /*** Configure the radio CE & CS pins ***/
-RF24 radio(7,8);
+RF24 radio(7, 8);
 RF24Network network(radio);
-RF24Mesh mesh(radio,network);
-RF24EthernetClass RF24Ethernet(radio,network,mesh);
+RF24Mesh mesh(radio, network);
+RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
 EthernetClient client;
 
@@ -41,14 +41,14 @@ void setup() {
   Serial.println(F("Start"));
 
   // Set the IP address we'll be using. The last octet mast match the nodeID (9)
-  IPAddress myIP(10,1,3,9);
-  IPAddress myDNS(8,8,8,8); //Use Google DNS in this example
-  Ethernet.begin(myIP,myDNS);
+  IPAddress myIP(10, 1, 3, 9);
+  IPAddress myDNS(8, 8, 8, 8); //Use Google DNS in this example
+  Ethernet.begin(myIP, myDNS);
   mesh.begin(30);
 
   // If you'll be making outgoing connections from the Arduino to the rest of
   // the world, you'll need a gateway set up.
-  IPAddress gwIP(10,1,3,33);
+  IPAddress gwIP(10, 1, 3, 33);
   Ethernet.set_gateway(gwIP);
 }
 
