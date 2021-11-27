@@ -51,22 +51,22 @@ typedef struct {
  * @warning <b> This is used internally and should not be accessed directly by users </b>
  */
 typedef struct {
-    uint8_t state;
+    bool hold;
+    bool sent;
     bool packets_in;
     bool packets_out;
-    uint16_t out_pos;
-#if UIP_CLIENT_TIMER >= 0
-     unsigned long timer;
-#endif
     bool windowOpened;
+    uint8_t state;
+    uint16_t out_pos;
+    uint16_t dataPos;
+    uint16_t dataCnt;
+#if UIP_CLIENT_TIMER >= 0
+     uint32_t timer;
+#endif
     uint32_t restartTime;
     uint32_t restartInterval;
     uint32_t connAbortTime;
     uint8_t myData[OUTPUT_BUFFER_SIZE];
-    uint16_t dataPos;
-    uint16_t dataCnt;
-    bool hold;
-    bool sent;
 } uip_userdata_t;
 
 
