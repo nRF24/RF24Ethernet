@@ -41,14 +41,14 @@ void setup() {
   Serial.println(F("Start"));
 
   // Set the IP address we'll be using. The last octet mast match the nodeID (9)
-  IPAddress myIP(10, 1, 3, 9);
+  IPAddress myIP(10, 10, 2, 4);
   IPAddress myDNS(8, 8, 8, 8); //Use Google DNS in this example
   Ethernet.begin(myIP, myDNS);
   mesh.begin(30);
 
   // If you'll be making outgoing connections from the Arduino to the rest of
   // the world, you'll need a gateway set up.
-  IPAddress gwIP(10, 1, 3, 33);
+  IPAddress gwIP(10, 10, 2, 2);
   Ethernet.set_gateway(gwIP);
 }
 
