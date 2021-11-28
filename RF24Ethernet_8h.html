@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RF24Ethernet - TCP/IP over RF24Network
-   &#160;<span id="projectnumber">v1.6.8</span>
+   &#160;<span id="projectnumber">1.6.9</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -132,7 +132,7 @@ Macros</h2></td></tr>
 <tr class="separator:a24f52ac52d6e714cb04a5aa01be3bdd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a998df07feeb7ea7b009277af95a3001b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b">uip_seteth_addr</a>(eaddr)</td></tr>
 <tr class="separator:a998df07feeb7ea7b009277af95a3001b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a448ccafaa1276dc5c1a187b4233b3c42"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42">uip_ip_addr</a>(addr,  ip)</td></tr>
+<tr class="memitem:a448ccafaa1276dc5c1a187b4233b3c42"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42">uip_ip_addr</a>(addr,  ip)&#160;&#160;&#160;memcpy(addr, &amp;ip[0], 4)</td></tr>
 <tr class="separator:a448ccafaa1276dc5c1a187b4233b3c42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a509630e7e6ae1cc8a52e394ef8014e1d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="RF24Ethernet_8h.html#a509630e7e6ae1cc8a52e394ef8014e1d">ip_addr_uip</a>(a)&#160;&#160;&#160;IPAddress(a[0] &amp; 0xFF, a[0] &gt;&gt; 8 , a[1] &amp; 0xFF, a[1] &gt;&gt; 8)</td></tr>
 <tr class="separator:a509630e7e6ae1cc8a52e394ef8014e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -235,7 +235,7 @@ Variables</h2></td></tr>
 <div class="line">                              uip_ethaddr.addr[4] = eaddr[4];\</div>
 <div class="line">                              uip_ethaddr.addr[5] = eaddr[5];} <span class="keywordflow">while</span>(0)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="RF24Ethernet_8h_source.html#l00082">82</a> of file <a class="el" href="RF24Ethernet_8h_source.html">RF24Ethernet.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Ethernet_8h_source.html#l00079">79</a> of file <a class="el" href="RF24Ethernet_8h_source.html">RF24Ethernet.h</a>.</p>
 
 </div>
 </div>
@@ -260,16 +260,11 @@ Variables</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td>&#160;&#160;&#160;memcpy(addr, &amp;ip[0], 4)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">                     <span class="keywordflow">do</span> { \</div>
-<div class="line">                     ((<a class="code" href="uip-conf_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a> *)(addr))[0] = HTONS(((ip[0]) &lt;&lt; 8) | (ip[1])); \</div>
-<div class="line">                     ((<a class="code" href="uip-conf_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a> *)(addr))[1] = HTONS(((ip[2]) &lt;&lt; 8) | (ip[3])); \</div>
-<div class="line">                  } <span class="keywordflow">while</span>(0)</div>
-<div class="ttc" id="auip-conf_8h_html_a77570ac4fcab86864fa1916e55676da2"><div class="ttname"><a href="uip-conf_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a></div><div class="ttdeci">uint16_t u16_t</div><div class="ttdoc">16 bit datatype</div><div class="ttdef"><b>Definition:</b> <a href="uip-conf_8h_source.html#l00246">uip-conf.h:246</a></div></div>
-</div><!-- fragment -->
+
 <p class="definition">Definition at line <a class="el" href="RF24Ethernet_8h_source.html#l00075">75</a> of file <a class="el" href="RF24Ethernet_8h_source.html">RF24Ethernet.h</a>.</p>
 
 </div>
@@ -290,7 +285,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="RF24Ethernet_8h_source.html#l00080">80</a> of file <a class="el" href="RF24Ethernet_8h_source.html">RF24Ethernet.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Ethernet_8h_source.html#l00077">77</a> of file <a class="el" href="RF24Ethernet_8h_source.html">RF24Ethernet.h</a>.</p>
 
 </div>
 </div>
@@ -316,7 +311,7 @@ Variables</h2></td></tr>
 <div class="line">                              uip_ethaddr.addr[4] = eaddr[4];\</div>
 <div class="line">                              uip_ethaddr.addr[5] = eaddr[5];} <span class="keywordflow">while</span>(0)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="RF24Ethernet_8h_source.html#l00082">82</a> of file <a class="el" href="RF24Ethernet_8h_source.html">RF24Ethernet.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Ethernet_8h_source.html#l00079">79</a> of file <a class="el" href="RF24Ethernet_8h_source.html">RF24Ethernet.h</a>.</p>
 
 </div>
 </div>
@@ -340,7 +335,7 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="Getting_Started_SimpleClient_Mesh_8ino-example.html#a1">Getting_Started_SimpleClient_Mesh.ino</a>, <a class="el" href="Getting_Started_SimpleServer_Mesh_8ino-example.html#a1">Getting_Started_SimpleServer_Mesh.ino</a>, <a class="el" href="InteractiveServer_Mesh_8ino-example.html#a1">InteractiveServer_Mesh.ino</a>, <a class="el" href="SLIP_InteractiveServer_8ino-example.html#a1">SLIP_InteractiveServer.ino</a>, <a class="el" href="SimpleClient_Mesh_8ino-example.html#a1">SimpleClient_Mesh.ino</a>, <a class="el" href="mqtt_basic_8ino-example.html#a1">mqtt_basic.ino</a>, and <a class="el" href="mqtt_basic_2_8ino-example.html#a1">mqtt_basic_2.ino</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="Getting_Started_SimpleClient_Mesh_8ino-example.html#a1">Getting_Started_SimpleClient_Mesh.ino</a>, <a class="el" href="Getting_Started_SimpleClient_Mesh_DNS_8ino-example.html#a1">Getting_Started_SimpleClient_Mesh_DNS.ino</a>, <a class="el" href="Getting_Started_SimpleServer_Mesh_8ino-example.html#a1">Getting_Started_SimpleServer_Mesh.ino</a>, <a class="el" href="InteractiveServer_Mesh_8ino-example.html#a1">InteractiveServer_Mesh.ino</a>, <a class="el" href="SLIP_InteractiveServer_8ino-example.html#a1">SLIP_InteractiveServer.ino</a>, <a class="el" href="SimpleClient_Mesh_8ino-example.html#a1">SimpleClient_Mesh.ino</a>, <a class="el" href="mqtt_basic_8ino-example.html#a1">mqtt_basic.ino</a>, and <a class="el" href="mqtt_basic_2_8ino-example.html#a1">mqtt_basic_2.ino</a>.</dd>
 </dl>
 
 <p class="reference">Referenced by <a class="el" href="RF24Client_8cpp_source.html#l00453">RF24Client::available()</a>, <a class="el" href="RF24Server_8cpp_source.html#l00051">RF24Server::begin()</a>, <a class="el" href="RF24Client_8cpp_source.html#l00123">RF24Client::stop()</a>, and <a class="el" href="RF24Client_8cpp_source.html#l00437">RF24Client::waitAvailable()</a>.</p>
@@ -350,7 +345,7 @@ Variables</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 13 2021 01:11:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 28 2021 13:08:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

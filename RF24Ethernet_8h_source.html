@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RF24Ethernet - TCP/IP over RF24Network
-   &#160;<span id="projectnumber">v1.6.8</span>
+   &#160;<span id="projectnumber">1.6.9</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -169,203 +169,207 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[3] = eaddr[3];\</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[4] = eaddr[4];\</span></div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[5] = eaddr[5];} while(0)</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42">   75</a></span>&#160;<span class="preprocessor">#define uip_ip_addr(addr, ip) do { \</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">                     ((u16_t *)(addr))[0] = HTONS(((ip[0]) &lt;&lt; 8) | (ip[1])); \</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">                     ((u16_t *)(addr))[1] = HTONS(((ip[2]) &lt;&lt; 8) | (ip[3])); \</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">                  } while(0)</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="RF24Ethernet_8h.html#a509630e7e6ae1cc8a52e394ef8014e1d">   80</a></span>&#160;<span class="preprocessor">#define ip_addr_uip(a) IPAddress(a[0] &amp; 0xFF, a[0] &gt;&gt; 8 , a[1] &amp; 0xFF, a[1] &gt;&gt; 8) </span><span class="comment">//TODO this is not IPV6 capable</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b">   82</a></span>&#160;<span class="preprocessor">#define uip_seteth_addr(eaddr) do {uip_ethaddr.addr[0] = eaddr[0]; \</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[1] = eaddr[1];\</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[2] = eaddr[2];\</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[3] = eaddr[3];\</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[4] = eaddr[4];\</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[5] = eaddr[5];} while(0)</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment"> * @warning &lt;b&gt;This is used internally. Use IPAddress instead. &lt;/b&gt;</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">int</span> a, b, c, d;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;} IP_ADDR;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42">   75</a></span>&#160;<span class="preprocessor">#define uip_ip_addr(addr, ip) memcpy(addr, &amp;ip[0], 4)</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="RF24Ethernet_8h.html#a509630e7e6ae1cc8a52e394ef8014e1d">   77</a></span>&#160;<span class="preprocessor">#define ip_addr_uip(a) IPAddress(a[0] &amp; 0xFF, a[0] &gt;&gt; 8 , a[1] &amp; 0xFF, a[1] &gt;&gt; 8) </span><span class="comment">//TODO this is not IPV6 capable</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b">   79</a></span>&#160;<span class="preprocessor">#define uip_seteth_addr(eaddr) do {uip_ethaddr.addr[0] = eaddr[0]; \</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[1] = eaddr[1];\</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[2] = eaddr[2];\</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[3] = eaddr[3];\</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[4] = eaddr[4];\</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">                              uip_ethaddr.addr[5] = eaddr[5];} while(0)</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment"> * @warning &lt;b&gt;This is used internally. Use IPAddress instead. &lt;/b&gt;</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">int</span> a, b, c, d;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;} IP_ADDR;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">class </span>RF24;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">class </span>RF24Network;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keyword">class </span>RF24;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keyword">class </span>RF24Network;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html">  100</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRF24EthernetClass.html">RF24EthernetClass</a> {<span class="comment">//: public Print {</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="comment">    /**</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="comment">     * Constructor to set up the Ethernet layer. Requires the radio and network to be configured by the user</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment">     * this allows users to set custom settings at the radio or network level</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">    #if !defined (RF24_TAP) </span><span class="comment">// Using RF24Mesh</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <a class="code" href="classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8">RF24EthernetClass</a>(RF24&amp; _radio,RF24Network&amp; _network, RF24Mesh&amp; _mesh);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="preprocessor">    #else</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <a class="code" href="classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8">RF24EthernetClass</a>(RF24&amp; _radio,RF24Network&amp; _network);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">    #endif</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html">   97</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRF24EthernetClass.html">RF24EthernetClass</a> {<span class="comment">//: public Print {</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment">    /**</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="comment">     * Constructor to set up the Ethernet layer. Requires the radio and network to be configured by the user</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment">     * this allows users to set custom settings at the radio or network level</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">    #if !defined (RF24_TAP) </span><span class="comment">// Using RF24Mesh</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <a class="code" href="classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8">RF24EthernetClass</a>(RF24&amp; _radio, RF24Network&amp; _network, RF24Mesh&amp; _mesh);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor">    #else</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8">RF24EthernetClass</a>(RF24&amp; _radio, RF24Network&amp; _network);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor">    #endif</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment">    /** Basic constructor */</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8">  111</a></span>&#160;    <a class="code" href="classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8">RF24EthernetClass</a>();</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment">    /** Basic constructor */</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8">  114</a></span>&#160;    <a class="code" href="classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8">RF24EthernetClass</a>();</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">    /**</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">     * @note Deprecated, maintained for backwards compatibility with old examples</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">     *</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment">     * This function is no longer needed, and does nothing</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a272292f0089f7a0ea2bdedcb60b73cff">use_device</a>();</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">    /**</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment">     * Configure the IP address and subnet mask of the node. This is independent of the RF24Network layer, so the IP</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="comment">     * and subnet only have to conform to standard IP routing rules within your network</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">  127</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IP_ADDR myIP, IP_ADDR subnet);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="comment">    /**</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="comment">     * Configure the IP address and subnet mask of the node. This is independent of the RF24Network layer, so the IP</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="comment">     * and subnet only have to conform to standard IP routing rules within your network</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IPAddress ip);</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IPAddress ip, IPAddress dns);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IPAddress ip, IPAddress dns, IPAddress gateway);</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="comment">    /**</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="comment">     * Configure the gateway IP address. This is generally going to be your master node with RF24Network address 00.</span></div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a9c11cc6c37a3fbb28750484f20ede422">set_gateway</a>(IPAddress gwIP);</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="comment">    /**</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="comment">     * Listen to a specified port - This will likely be changed to closer match the Arduino Ethernet API with server.begin();</span></div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a84961d1dec7dd8dbaeac538656084b45">listen</a>(uint16_t port);</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">    /**</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="comment">     * Sets the MAC address of the RF24 module, which is an RF24Network address</span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">     * Specify an Octal address to assign to this node, which will be used as the Ethernet mac address</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="comment">     * If setting up only a few nodes, use 01 to 05</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="comment">     * Please reference the RF24Network documentation for information on setting up a static network</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="comment">     * RF24Mesh will be integrated to provide this automatically</span></div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a307dddd1f2663939b4c4a626d633b3c2">setMac</a>(uint16_t address);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment">    /**</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">     * @note Deprecated, maintained for backwards compatibility with old examples</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">     *</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">     * This function is no longer needed, and does nothing</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a272292f0089f7a0ea2bdedcb60b73cff">use_device</a>();</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment">    /**</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment">     * Configure the IP address and subnet mask of the node. This is independent of the RF24Network layer, so the IP</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment">     * and subnet only have to conform to standard IP routing rules within your network</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">  124</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IP_ADDR myIP, IP_ADDR subnet);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="comment">    /**</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="comment">     * Configure the IP address and subnet mask of the node. This is independent of the RF24Network layer, so the IP</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment">     * and subnet only have to conform to standard IP routing rules within your network</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IPAddress ip);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IPAddress ip, IPAddress dns);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IPAddress ip, IPAddress dns, IPAddress gateway);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe">begin</a>(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="comment">    /**</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="comment">     * Configure the gateway IP address. This is generally going to be your master node with RF24Network address 00.</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a9c11cc6c37a3fbb28750484f20ede422">set_gateway</a>(IPAddress gwIP);</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="comment">    /**</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="comment">     * Listen to a specified port - This will likely be changed to closer match the Arduino Ethernet API with server.begin();</span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a84961d1dec7dd8dbaeac538656084b45">listen</a>(uint16_t port);</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="comment">    /**</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="comment">     * Sets the MAC address of the RF24 module, which is an RF24Network address</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="comment">     * Specify an Octal address to assign to this node, which will be used as the Ethernet mac address</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">     * If setting up only a few nodes, use 01 to 05</span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="comment">     * Please reference the RF24Network documentation for information on setting up a static network</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">     * RF24Mesh will be integrated to provide this automatically</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a307dddd1f2663939b4c4a626d633b3c2">setMac</a>(uint16_t address);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment">    /** Sets the Radio channel/frequency to use (0-127) */</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a313d0b7cd7d6a4fab825f3770ac8486a">setChannel</a>(uint8_t channel);</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="comment">    /** Sets the Radio channel/frequency to use (0-127) */</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a313d0b7cd7d6a4fab825f3770ac8486a">setChannel</a>(uint8_t channel);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="comment">    /** Indicates whether data is available. */</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#a3c92e8965529abe5e60baa5c659e057a">  158</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classRF24EthernetClass.html#a3c92e8965529abe5e60baa5c659e057a">available</a>();</div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment">    /** Indicates whether data is available. */</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#a3c92e8965529abe5e60baa5c659e057a">  161</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classRF24EthernetClass.html#a3c92e8965529abe5e60baa5c659e057a">available</a>();</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment">    /** Returns the local IP address */</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    IPAddress <a class="code" href="classRF24EthernetClass.html#a8725f1af4ae093b5030997d690ddf4ae">localIP</a>();</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="comment">    /** Returns the local IP address */</span></div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    IPAddress <a class="code" href="classRF24EthernetClass.html#a8725f1af4ae093b5030997d690ddf4ae">localIP</a>();</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="comment">    /** Returns the subnet mask */</span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    IPAddress <a class="code" href="classRF24EthernetClass.html#a93d4f56dbc030907229af878634eff5d">subnetMask</a>();</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="comment">    /** Returns the subnet mask */</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    IPAddress <a class="code" href="classRF24EthernetClass.html#a93d4f56dbc030907229af878634eff5d">subnetMask</a>();</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="comment">    /** Returns the gateway IP address */</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    IPAddress <a class="code" href="classRF24EthernetClass.html#afc1832fadf3992ae6ca0642137beaff5">gatewayIP</a>();</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">    /** Returns the gateway IP address */</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    IPAddress <a class="code" href="classRF24EthernetClass.html#afc1832fadf3992ae6ca0642137beaff5">gatewayIP</a>();</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">    /** Returns the DNS server IP address */</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    IPAddress <a class="code" href="classRF24EthernetClass.html#a7e70612c15de96f2dd6528cdfbcb5171">dnsServerIP</a>();</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="comment">    /** Returns the DNS server IP address */</span></div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    IPAddress <a class="code" href="classRF24EthernetClass.html#a7e70612c15de96f2dd6528cdfbcb5171">dnsServerIP</a>();</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="comment">    /** Keeps the TCP/IP stack running &amp; processing incoming data */</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a541fb5875321c9d5e92e623967333398">update</a>();</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="comment">//uint8_t *key;</span></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    RF24&amp; radio;</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    RF24Network&amp; network;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="preprocessor">    #if !defined (RF24_TAP) </span><span class="comment">// Using RF24Mesh</span></div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    RF24Mesh&amp; mesh;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="preprocessor">    #endif</span></div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keyword">static</span> IPAddress _dnsServerAddress;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keywordtype">void</span> configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="comment">// tick() must be called at regular intervals to process the incoming serial</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="comment">// data and issue IP events to the sketch.  It does not return until all IP</span></div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="comment">// events have been processed.</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> tick();</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> network_send();</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    uint8_t RF24_Channel;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keyword">struct </span>timer periodic_timer;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="preprocessor">    #if defined RF24_TAP</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keyword">struct </span>timer arp_timer;</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="preprocessor">    #endif</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#a671e8c5a10e578dcaa6fcfae80d0d938">  200</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classRF24Server.html">RF24Server</a>;</div>
-<div class="line"><a name="l00201"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#ace49748274217efa2d5817c9659262df">  201</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classRF24Client.html">RF24Client</a>;</div>
-<div class="line"><a name="l00202"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#a0dad18b1dbafe3af50f582a64b470c6c">  202</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classRF24EthernetClass.html#a0dad18b1dbafe3af50f582a64b470c6c">RF24UDP</a>;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;};</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="keyword">extern</span> <a class="code" href="classRF24EthernetClass.html">RF24EthernetClass</a> <a class="code" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>;</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// RF24Ethernet_h</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment"> * @example Getting_Started_SimpleServer_Mesh.ino</span></div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="comment"> * &lt;b&gt;Updated: TMRh20 2014 &lt;/b&gt;&lt;br&gt;</span></div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="comment"> * This is an example of how to use the RF24Ethernet class to create a web server which will allow you to connect via</span></div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="comment"> * any device with a web-browser. The url is http://your_chosen_IP:1000</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="comment"> * @example Getting_Started_SimpleClient_Mesh.ino</span></div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="comment"> * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP.</span></div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="comment"> * @example SimpleClient_Mesh.ino</span></div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="comment"> * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP.</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="comment"> * It also demonstrates how to read from the HTTP header to read the Content-Length before reading the data.</span></div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment"> * @example InteractiveServer_Mesh.ino</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment"> * This is an example of how to create a more advanced interactive web server.&lt;br&gt;</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="comment"> * This example uses [HTML.h](InteractiveServer__Mesh_2HTML_8h.html) from the</span></div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="comment"> * example&#39;s directory.</span></div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment"> * @example mqtt_basic.ino</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="comment"> * This is the example taken from the PubSub library (https://github.com/knolleary/pubsubclient) &amp; slightly modified to include RF24Ethernet/RF24Mesh.</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="comment"> * @example mqtt_basic_2.ino</span></div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="comment"> * A copy of the initial MQTT example using MQTT library https://github.com/256dpi/arduino-mqtt/ slightly modified to include RF24Ethernet/RF24Mesh.</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="comment"> * @example SLIP_Gateway.ino</span></div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="comment"> * This example demonstrates how to use an Arduino as a gateway to a SLIP enabled device.</span></div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment"> * @example SLIP_InteractiveServer.ino</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="comment"> * This example demonstrates how to use RF24Mesh with RF24Ethernet when working with a SLIP or TUN interface.</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment"> * &lt;br&gt;This example uses [HTML.h](SLIP__InteractiveServer_2HTML_8h.html) from the</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment"> * example&#39;s directory.</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="comment">    /** Keeps the TCP/IP stack running &amp; processing incoming data */</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRF24EthernetClass.html#a541fb5875321c9d5e92e623967333398">update</a>();</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="comment">//uint8_t *key;</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    RF24&amp; radio;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    RF24Network&amp; network;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="preprocessor">    #if !defined (RF24_TAP) </span><span class="comment">// Using RF24Mesh</span></div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    RF24Mesh&amp; mesh;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="preprocessor">    #endif</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keyword">static</span> IPAddress _dnsServerAddress;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <span class="keywordtype">void</span> configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="comment">// tick() must be called at regular intervals to process the incoming serial</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="comment">// data and issue IP events to the sketch.  It does not return until all IP</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="comment">// events have been processed.</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> tick();</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> network_send();</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    uint8_t RF24_Channel;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="keyword">struct </span>timer periodic_timer;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="preprocessor">    #if defined RF24_TAP</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <span class="keyword">struct </span>timer arp_timer;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="preprocessor">    #endif</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#a671e8c5a10e578dcaa6fcfae80d0d938">  197</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classRF24Server.html">RF24Server</a>;</div>
+<div class="line"><a name="l00198"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#ace49748274217efa2d5817c9659262df">  198</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classRF24Client.html">RF24Client</a>;</div>
+<div class="line"><a name="l00199"></a><span class="lineno"><a class="line" href="classRF24EthernetClass.html#a0dad18b1dbafe3af50f582a64b470c6c">  199</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classRF24EthernetClass.html#a0dad18b1dbafe3af50f582a64b470c6c">RF24UDP</a>;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;};</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="keyword">extern</span> <a class="code" href="classRF24EthernetClass.html">RF24EthernetClass</a> <a class="code" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// RF24Ethernet_h</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="comment"> * @example Getting_Started_SimpleServer_Mesh.ino</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="comment"> * &lt;b&gt;Updated: TMRh20 2014 &lt;/b&gt;&lt;br&gt;</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment"> * This is an example of how to use the RF24Ethernet class to create a web server which will allow you to connect via</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="comment"> * any device with a web-browser. The url is http://your_chosen_IP:1000</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="comment"> * @example Getting_Started_SimpleClient_Mesh.ino</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="comment"> * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP.</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="comment"> * @example Getting_Started_SimpleClient_Mesh_DNS.ino</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="comment"> * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP, </span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="comment"> * using DNS lookups instead of IP address.</span></div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="comment"> * @example SimpleClient_Mesh.ino</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment"> * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP.</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment"> * It also demonstrates how to read from the HTTP header to read the Content-Length before reading the data.</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="comment"> * @example InteractiveServer_Mesh.ino</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="comment"> * This is an example of how to create a more advanced interactive web server.&lt;br&gt;</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="comment"> * This example uses [HTML.h](InteractiveServer__Mesh_2HTML_8h.html) from the</span></div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment"> * example&#39;s directory.</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="comment"> * @example mqtt_basic.ino</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="comment"> * This is the example taken from the PubSub library (https://github.com/knolleary/pubsubclient) &amp; slightly modified to include RF24Ethernet/RF24Mesh.</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment"> * @example mqtt_basic_2.ino</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="comment"> * A copy of the initial MQTT example using MQTT library https://github.com/256dpi/arduino-mqtt/ slightly modified to include RF24Ethernet/RF24Mesh.</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="comment"> * @example SLIP_Gateway.ino</span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment"> * This example demonstrates how to use an Arduino as a gateway to a SLIP enabled device.</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment"> * @example SLIP_InteractiveServer.ino</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="comment"> * This example demonstrates how to use RF24Mesh with RF24Ethernet when working with a SLIP or TUN interface.</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="comment"> * &lt;br&gt;This example uses [HTML.h](SLIP__InteractiveServer_2HTML_8h.html) from the</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="comment"> * example&#39;s directory.</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="comment"> */</span></div>
 <div class="ttc" id="aDns_8h_html"><div class="ttname"><a href="Dns_8h.html">Dns.h</a></div></div>
 <div class="ttc" id="aRF24Client_8h_html"><div class="ttname"><a href="RF24Client_8h.html">RF24Client.h</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_ad1e8d95d62a572cb61fc616b4be11702"><div class="ttname"><a href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a></div><div class="ttdeci">RF24EthernetClass RF24Ethernet</div></div>
 <div class="ttc" id="aRF24Ethernet__config_8h_html"><div class="ttname"><a href="RF24Ethernet__config_8h.html">RF24Ethernet_config.h</a></div></div>
 <div class="ttc" id="aRF24Server_8h_html"><div class="ttname"><a href="RF24Server_8h.html">RF24Server.h</a></div></div>
 <div class="ttc" id="aRF24Udp_8h_html"><div class="ttname"><a href="RF24Udp_8h.html">RF24Udp.h</a></div></div>
-<div class="ttc" id="aclassRF24Client_html"><div class="ttname"><a href="classRF24Client.html">RF24Client</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8h_source.html#l00074">RF24Client.h:74</a></div></div>
-<div class="ttc" id="aclassRF24EthernetClass_html"><div class="ttname"><a href="classRF24EthernetClass.html">RF24EthernetClass</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00100">RF24Ethernet.h:100</a></div></div>
-<div class="ttc" id="aclassRF24EthernetClass_html_a0dad18b1dbafe3af50f582a64b470c6c"><div class="ttname"><a href="classRF24EthernetClass.html#a0dad18b1dbafe3af50f582a64b470c6c">RF24EthernetClass::RF24UDP</a></div><div class="ttdeci">friend class RF24UDP</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00202">RF24Ethernet.h:202</a></div></div>
+<div class="ttc" id="aclassRF24Client_html"><div class="ttname"><a href="classRF24Client.html">RF24Client</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8h_source.html#l00073">RF24Client.h:73</a></div></div>
+<div class="ttc" id="aclassRF24EthernetClass_html"><div class="ttname"><a href="classRF24EthernetClass.html">RF24EthernetClass</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00097">RF24Ethernet.h:97</a></div></div>
+<div class="ttc" id="aclassRF24EthernetClass_html_a0dad18b1dbafe3af50f582a64b470c6c"><div class="ttname"><a href="classRF24EthernetClass.html#a0dad18b1dbafe3af50f582a64b470c6c">RF24EthernetClass::RF24UDP</a></div><div class="ttdeci">friend class RF24UDP</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00199">RF24Ethernet.h:199</a></div></div>
 <div class="ttc" id="aclassRF24EthernetClass_html_a272292f0089f7a0ea2bdedcb60b73cff"><div class="ttname"><a href="classRF24EthernetClass.html#a272292f0089f7a0ea2bdedcb60b73cff">RF24EthernetClass::use_device</a></div><div class="ttdeci">void use_device()</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8cpp_source.html#l00047">RF24Ethernet.cpp:47</a></div></div>
 <div class="ttc" id="aclassRF24EthernetClass_html_a307dddd1f2663939b4c4a626d633b3c2"><div class="ttname"><a href="classRF24EthernetClass.html#a307dddd1f2663939b4c4a626d633b3c2">RF24EthernetClass::setMac</a></div><div class="ttdeci">void setMac(uint16_t address)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8cpp_source.html#l00054">RF24Ethernet.cpp:54</a></div></div>
 <div class="ttc" id="aclassRF24EthernetClass_html_a313d0b7cd7d6a4fab825f3770ac8486a"><div class="ttname"><a href="classRF24EthernetClass.html#a313d0b7cd7d6a4fab825f3770ac8486a">RF24EthernetClass::setChannel</a></div><div class="ttdeci">void setChannel(uint8_t channel)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8cpp_source.html#l00075">RF24Ethernet.cpp:75</a></div></div>
@@ -385,7 +389,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 13 2021 01:11:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 28 2021 13:08:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

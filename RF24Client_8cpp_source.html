@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RF24Ethernet - TCP/IP over RF24Network
-   &#160;<span id="projectnumber">v1.6.8</span>
+   &#160;<span id="projectnumber">1.6.9</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -268,8 +268,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
 <div class="line"><a name="l00172"></a><span class="lineno"><a class="line" href="classRF24Client.html#a0735631a999c8a2f8d5d027096efcd5c">  172</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="classRF24Client.html#a0735631a999c8a2f8d5d027096efcd5c">RF24Client::write</a>(uint8_t c)</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;{</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordflow">return</span> _write(data, &amp;c, 1);</div>
-<div class="line"><a name="l00175"></a><span class="lineno"><a class="line" href="uip-conf_8h.html#a8d670dfd402546dd32b678660d609b49">  175</a></span>&#160;}</div>
+<div class="line"><a name="l00174"></a><span class="lineno"><a class="line" href="uip-conf_8h.html#a8d670dfd402546dd32b678660d609b49">  174</a></span>&#160;    <span class="keywordflow">return</span> _write(data, &amp;c, 1);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;}</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="comment">/*************************************************************/</span></div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
@@ -372,7 +372,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                u-&gt;state &amp;= ~<a class="code" href="RF24Client_8h.html#a5d15a879ab0774414da35966a6e4d27c">UIP_CLIENT_RESTART</a>;</div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                u-&gt;windowOpened = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                u-&gt;connAbortTime = u-&gt;restartTime = millis();</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                memcpy(&amp;u-&gt;myDataIn[u-&gt;dataPos + u-&gt;dataCnt], uip_appdata, uip_datalen());</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                memcpy(&amp;u-&gt;myData[u-&gt;dataPos + u-&gt;dataCnt], uip_appdata, uip_datalen());</div>
 <div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                u-&gt;dataCnt += uip_datalen();</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                u-&gt;packets_in = 1;</div>
@@ -578,7 +578,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;        }</div>
 <div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160; </div>
 <div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        size = rf24_min(data-&gt;dataCnt, size);</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        memcpy(buf, &amp;data-&gt;myDataIn[data-&gt;dataPos], size);</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        memcpy(buf, &amp;data-&gt;myData[data-&gt;dataPos], size);</div>
 <div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;        data-&gt;dataCnt -= size;</div>
 <div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160; </div>
 <div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;        data-&gt;dataPos += size;</div>
@@ -631,7 +631,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;{</div>
 <div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="classRF24Client.html#aa3e897f86e5b5553a07c73ef556625d3">available</a>())</div>
 <div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;    {</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        <span class="keywordflow">return</span> data-&gt;myDataIn[data-&gt;dataPos];</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        <span class="keywordflow">return</span> data-&gt;myData[data-&gt;dataPos];</div>
 <div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;    }</div>
 <div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;    <span class="keywordflow">return</span> -1;</div>
 <div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;}</div>
@@ -656,11 +656,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="ttc" id="aRF24Ethernet_8h_html"><div class="ttname"><a href="RF24Ethernet_8h.html">RF24Ethernet.h</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_a448ccafaa1276dc5c1a187b4233b3c42"><div class="ttname"><a href="RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42">uip_ip_addr</a></div><div class="ttdeci">#define uip_ip_addr(addr, ip)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00075">RF24Ethernet.h:75</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_ad1e8d95d62a572cb61fc616b4be11702"><div class="ttname"><a href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a></div><div class="ttdeci">RF24EthernetClass RF24Ethernet</div></div>
-<div class="ttc" id="aclassRF24Client_html"><div class="ttname"><a href="classRF24Client.html">RF24Client</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8h_source.html#l00074">RF24Client.h:74</a></div></div>
+<div class="ttc" id="aclassRF24Client_html"><div class="ttname"><a href="classRF24Client.html">RF24Client</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8h_source.html#l00073">RF24Client.h:73</a></div></div>
 <div class="ttc" id="aclassRF24Client_html_a00e66ecc1dc3c0c2caec882492115db4"><div class="ttname"><a href="classRF24Client.html#a00e66ecc1dc3c0c2caec882492115db4">RF24Client::operator==</a></div><div class="ttdeci">virtual bool operator==(const EthernetClient &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8cpp_source.html#l00157">RF24Client.cpp:157</a></div></div>
 <div class="ttc" id="aclassRF24Client_html_a0735631a999c8a2f8d5d027096efcd5c"><div class="ttname"><a href="classRF24Client.html#a0735631a999c8a2f8d5d027096efcd5c">RF24Client::write</a></div><div class="ttdeci">size_t write(uint8_t)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8cpp_source.html#l00172">RF24Client.cpp:172</a></div></div>
 <div class="ttc" id="aclassRF24Client_html_a08cfb995b3f10b89115e93544c843b1a"><div class="ttname"><a href="classRF24Client.html#a08cfb995b3f10b89115e93544c843b1a">RF24Client::connect</a></div><div class="ttdeci">int connect(IPAddress ip, uint16_t port)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8cpp_source.html#l00040">RF24Client.cpp:40</a></div></div>
-<div class="ttc" id="aclassRF24Client_html_a12b2e871c95fb155e06e3ce8fcd64734"><div class="ttname"><a href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a></div><div class="ttdeci">static uip_userdata_t all_data[UIP_CONNS]</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8h_source.html#l00158">RF24Client.h:156</a></div></div>
+<div class="ttc" id="aclassRF24Client_html_a12b2e871c95fb155e06e3ce8fcd64734"><div class="ttname"><a href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a></div><div class="ttdeci">static uip_userdata_t all_data[UIP_CONNS]</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8h_source.html#l00157">RF24Client.h:155</a></div></div>
 <div class="ttc" id="aclassRF24Client_html_a407fa36d4296151aebd8f9660c66740a"><div class="ttname"><a href="classRF24Client.html#a407fa36d4296151aebd8f9660c66740a">RF24Client::waitAvailable</a></div><div class="ttdeci">int waitAvailable(uint32_t timeout=750)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8cpp_source.html#l00437">RF24Client.cpp:437</a></div></div>
 <div class="ttc" id="aclassRF24Client_html_a4fbc538b64c27747509475fcc047c60e"><div class="ttname"><a href="classRF24Client.html#a4fbc538b64c27747509475fcc047c60e">RF24Client::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8cpp_source.html#l00123">RF24Client.cpp:123</a></div></div>
 <div class="ttc" id="aclassRF24Client_html_a760707b590efa9f07d01a8fe56d2aa07"><div class="ttname"><a href="classRF24Client.html#a760707b590efa9f07d01a8fe56d2aa07">RF24Client::RF24Client</a></div><div class="ttdeci">RF24Client()</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8cpp_source.html#l00025">RF24Client.cpp:25</a></div></div>
@@ -677,7 +677,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 13 2021 01:11:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 28 2021 13:08:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

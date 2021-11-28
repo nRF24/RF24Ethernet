@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RF24Ethernet - TCP/IP over RF24Network
-   &#160;<span id="projectnumber">v1.6.8</span>
+   &#160;<span id="projectnumber">1.6.9</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -107,9 +107,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><span class="comment"> * 3. Un-comment #define DISABLE_USER_PAYLOADS</span></div>
 <div class="line"><span class="comment"> *</span></div>
 <div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * This example uses RF24Mesh. </span></div>
-<div class="line"><span class="comment"> * Set #define UIP_CONF_LLH_LEN 0 in uip_conf.h if used with a TUN(RF24Mesh) or SLIP interface </span></div>
-<div class="line"><span class="comment"> * </span></div>
+<div class="line"><span class="comment"> * This example uses RF24Mesh.</span></div>
+<div class="line"><span class="comment"> * Set #define UIP_CONF_LLH_LEN 0 in uip_conf.h if used with a TUN(RF24Mesh) or SLIP interface</span></div>
+<div class="line"><span class="comment"> *</span></div>
 <div class="line"><span class="comment"> */</span></div>
 <div class="line"> </div>
 <div class="line"> </div>
@@ -124,13 +124,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><span class="comment">/*** Configure the radio CE &amp; CS pins ***/</span></div>
 <div class="line">RF24 radio(7, 8);</div>
 <div class="line">RF24Network network(radio);</div>
-<div class="line">RF24Mesh mesh(radio,network);</div>
-<div class="line"><a name="_a0"></a><a class="code" href="classRF24EthernetClass.html">RF24EthernetClass</a> <a name="a1"></a><a class="code" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>(radio, network,mesh);</div>
+<div class="line">RF24Mesh mesh(radio, network);</div>
+<div class="line"><a name="_a0"></a><a class="code" href="classRF24EthernetClass.html">RF24EthernetClass</a> <a name="a1"></a><a class="code" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>(radio, network, mesh);</div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#if defined (ARDUINO_ARCH_ESP8266)</span></div>
-<div class="line"><span class="preprocessor">  #define LED_PIN BUILTIN_LED</span></div>
+<div class="line"><span class="preprocessor">#define LED_PIN BUILTIN_LED</span></div>
 <div class="line"><span class="preprocessor">#else</span></div>
-<div class="line"><span class="preprocessor">  #define LED_PIN A3 </span><span class="comment">//Analog pin A3</span></div>
+<div class="line"><span class="preprocessor">#define LED_PIN A3 </span><span class="comment">//Analog pin A3</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Configure the server to listen on port 1000</span></div>
@@ -145,7 +145,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line">  <span class="comment">//printf_begin();</span></div>
 <div class="line">  Serial.println(<span class="stringliteral">&quot;start&quot;</span>);</div>
 <div class="line">  pinMode(LED_PIN, OUTPUT);</div>
-<div class="line">  </div>
+<div class="line"> </div>
 <div class="line">  IPAddress myIP(10, 10, 2, 4);</div>
 <div class="line">  <a name="a3"></a><a class="code" href="ethernet__comp_8h.html#a09a9c005ebde74019ca9562f422fa88e">Ethernet</a>.begin(myIP);</div>
 <div class="line">  mesh.begin();</div>
@@ -167,12 +167,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"> </div>
 <div class="line">  <span class="comment">// Optional: If the node needs to move around physically, or using failover nodes etc.,</span></div>
 <div class="line">  <span class="comment">// enable address renewal</span></div>
-<div class="line">  <span class="keywordflow">if</span>(millis()-mesh_timer &gt; 30000){ <span class="comment">//Every 30 seconds, test mesh connectivity</span></div>
+<div class="line">  <span class="keywordflow">if</span> (millis() - mesh_timer &gt; 30000) { <span class="comment">//Every 30 seconds, test mesh connectivity</span></div>
 <div class="line">    mesh_timer = millis();</div>
-<div class="line">    <span class="keywordflow">if</span>( ! mesh.checkConnection() ){</div>
-<div class="line">        <span class="comment">//refresh the network address        </span></div>
-<div class="line">        mesh.renewAddress();</div>
-<div class="line">     }</div>
+<div class="line">    <span class="keywordflow">if</span> ( ! mesh.checkConnection() ) {</div>
+<div class="line">      <span class="comment">//refresh the network address</span></div>
+<div class="line">      <span class="keywordflow">if</span> ( ! mesh.renewAddress() ) {</div>
+<div class="line">        mesh.begin();</div>
+<div class="line">      }</div>
+<div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordtype">size_t</span> size;</div>
@@ -186,50 +188,58 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line">      <span class="comment">// If a request is received with enough characters, search for the / character</span></div>
 <div class="line">      <span class="keywordflow">if</span> (size &gt;= 7) {</div>
 <div class="line">        <span class="keywordtype">char</span> slash[] = {<span class="stringliteral">&quot;/&quot;</span>};</div>
+<div class="line">        client.setTimeout(10000);</div>
 <div class="line">        client.findUntil(slash, slash);</div>
 <div class="line">        <span class="keywordtype">char</span> buf[3] = {<span class="stringliteral">&quot;  &quot;</span>};</div>
-<div class="line">        <span class="keywordflow">if</span>(client.available() &gt;= 2){</div>
-<div class="line">        buf[0] = client.read();  <span class="comment">// Read in the first two characters from the request</span></div>
-<div class="line">        buf[1] = client.read();</div>
+<div class="line">        <span class="keywordflow">if</span> (client.available() &gt;= 2) {</div>
+<div class="line">          buf[0] = client.read();  <span class="comment">// Read in the first two characters from the request</span></div>
+<div class="line">          buf[1] = client.read();</div>
 <div class="line"> </div>
-<div class="line">        <span class="keywordflow">if</span> (strcmp(buf, <span class="stringliteral">&quot;ON&quot;</span>) == 0) { <span class="comment">// If the user requested http://ip-of-node:1000/ON</span></div>
-<div class="line">          <a name="a5"></a><a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a> = 1;</div>
-<div class="line">          pageReq = 1;</div>
-<div class="line">          digitalWrite(LED_PIN, <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a>);</div>
-<div class="line">          </div>
-<div class="line">        }<span class="keywordflow">else</span> <span class="keywordflow">if</span> (strcmp(buf, <span class="stringliteral">&quot;OF&quot;</span>) == 0) { <span class="comment">// If the user requested http://ip-of-node:1000/OF</span></div>
-<div class="line">          <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a> = 0;</div>
-<div class="line">          pageReq = 1;</div>
-<div class="line">          digitalWrite(LED_PIN, <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a>);</div>
-<div class="line">          </div>
-<div class="line">        }<span class="keywordflow">else</span> <span class="keywordflow">if</span> (strcmp(buf, <span class="stringliteral">&quot;ST&quot;</span>) == 0) { <span class="comment">// If the user requested http://ip-of-node:1000/ST</span></div>
-<div class="line">          pageReq = 2;</div>
-<div class="line">          </div>
-<div class="line">        }<span class="keywordflow">else</span> <span class="keywordflow">if</span> (strcmp(buf, <span class="stringliteral">&quot;CR&quot;</span>) == 0) { <span class="comment">// If the user requested http://ip-of-node:1000/CR</span></div>
-<div class="line">          pageReq = 3;</div>
-<div class="line">          </div>
-<div class="line">        }<span class="keywordflow">else</span> <span class="keywordflow">if</span>(buf[0] == <span class="charliteral">&#39; &#39;</span>){</div>
-<div class="line">          pageReq = 4; </div>
+<div class="line">          <span class="keywordflow">if</span> (strcmp(buf, <span class="stringliteral">&quot;ON&quot;</span>) == 0) { <span class="comment">// If the user requested http://ip-of-node:1000/ON</span></div>
+<div class="line">            <a name="a5"></a><a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a> = 1;</div>
+<div class="line">            pageReq = 1;</div>
+<div class="line">            digitalWrite(LED_PIN, <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a>);</div>
+<div class="line"> </div>
+<div class="line">          } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (strcmp(buf, <span class="stringliteral">&quot;OF&quot;</span>) == 0) { <span class="comment">// If the user requested http://ip-of-node:1000/OF</span></div>
+<div class="line">            <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a> = 0;</div>
+<div class="line">            pageReq = 1;</div>
+<div class="line">            digitalWrite(LED_PIN, <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a>);</div>
+<div class="line"> </div>
+<div class="line">          } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (strcmp(buf, <span class="stringliteral">&quot;ST&quot;</span>) == 0) { <span class="comment">// If the user requested http://ip-of-node:1000/ST</span></div>
+<div class="line">            pageReq = 2;</div>
+<div class="line"> </div>
+<div class="line">          } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (strcmp(buf, <span class="stringliteral">&quot;CR&quot;</span>) == 0) { <span class="comment">// If the user requested http://ip-of-node:1000/CR</span></div>
+<div class="line">            pageReq = 3;</div>
+<div class="line"> </div>
+<div class="line">          } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (buf[0] == <span class="charliteral">&#39; &#39;</span>) {</div>
+<div class="line">            pageReq = 4;</div>
+<div class="line">          }</div>
 <div class="line">        }</div>
 <div class="line">      }</div>
-<div class="line">      }</div>
 <div class="line">      <span class="comment">// Empty the rest of the data from the client</span></div>
-<div class="line">      <span class="comment">//while (client.waitAvailable()) {</span></div>
-<div class="line">        client.flush();</div>
-<div class="line">      <span class="comment">//}</span></div>
+<div class="line">      client.flush();</div>
 <div class="line">    }</div>
-<div class="line">    <span class="comment"></span></div>
+<div class="line"><span class="comment"></span> </div>
 <div class="line"><span class="comment">    /**</span></div>
 <div class="line"><span class="comment">    * Based on the incoming URL request, send the correct page to the client</span></div>
 <div class="line"><span class="comment">    * see HTML.h</span></div>
 <div class="line"><span class="comment">    */</span></div>
-<div class="line">    <span class="keywordflow">switch</span>(pageReq){</div>
-<div class="line">       <span class="keywordflow">case</span> 2: <a name="a6"></a><a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b">stats_page</a>(client); <span class="keywordflow">break</span>;</div>
-<div class="line">       <span class="keywordflow">case</span> 3: <a name="a7"></a><a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ad25901a87cc6f8b136a62c4851167fe3">credits_page</a>(client); <span class="keywordflow">break</span>;</div>
-<div class="line">       <span class="keywordflow">case</span> 4: <a name="a8"></a><a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8">main_page</a>(client); <span class="keywordflow">break</span>;</div>
-<div class="line">       <span class="keywordflow">case</span> 1: <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8">main_page</a>(client); <span class="keywordflow">break</span>;</div>
-<div class="line">       <span class="keywordflow">default</span>: <span class="keywordflow">break</span>; </div>
-<div class="line">    }    </div>
+<div class="line">    <span class="keywordflow">switch</span> (pageReq) {</div>
+<div class="line">      <span class="keywordflow">case</span> 2:</div>
+<div class="line">        <a name="a6"></a><a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b">stats_page</a>(client);</div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">      <span class="keywordflow">case</span> 3:</div>
+<div class="line">        <a name="a7"></a><a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ad25901a87cc6f8b136a62c4851167fe3">credits_page</a>(client);</div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">      <span class="keywordflow">case</span> 4:</div>
+<div class="line">        <a name="a8"></a><a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8">main_page</a>(client);</div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">      <span class="keywordflow">case</span> 1:</div>
+<div class="line">        <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8">main_page</a>(client);</div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">      <span class="keywordflow">default</span>:</div>
+<div class="line">        <span class="keywordflow">break</span>;</div>
+<div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    client.stop();</div>
 <div class="line">    Serial.println(F(<span class="stringliteral">&quot;********&quot;</span>));</div>
@@ -278,12 +288,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a172311489890fda0fd6c0562523f63c0"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a></div><div class="ttdeci">bool led_state</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00010">HTML.h:10</a></div></div>
-<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a812118aa31981f2ff283d50506303af8"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8">main_page</a></div><div class="ttdeci">void main_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00107">HTML.h:107</a></div></div>
-<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a81cb6f088916239a442b702e8fe1885b"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b">stats_page</a></div><div class="ttdeci">void stats_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00155">HTML.h:155</a></div></div>
-<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_ad25901a87cc6f8b136a62c4851167fe3"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#ad25901a87cc6f8b136a62c4851167fe3">credits_page</a></div><div class="ttdeci">void credits_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00142">HTML.h:142</a></div></div>
+<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a812118aa31981f2ff283d50506303af8"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8">main_page</a></div><div class="ttdeci">void main_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00106">HTML.h:106</a></div></div>
+<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a81cb6f088916239a442b702e8fe1885b"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b">stats_page</a></div><div class="ttdeci">void stats_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00154">HTML.h:154</a></div></div>
+<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_ad25901a87cc6f8b136a62c4851167fe3"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#ad25901a87cc6f8b136a62c4851167fe3">credits_page</a></div><div class="ttdeci">void credits_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00141">HTML.h:141</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html"><div class="ttname"><a href="RF24Ethernet_8h.html">RF24Ethernet.h</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_ad1e8d95d62a572cb61fc616b4be11702"><div class="ttname"><a href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a></div><div class="ttdeci">RF24EthernetClass RF24Ethernet</div></div>
-<div class="ttc" id="aclassRF24EthernetClass_html"><div class="ttname"><a href="classRF24EthernetClass.html">RF24EthernetClass</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00100">RF24Ethernet.h:100</a></div></div>
+<div class="ttc" id="aclassRF24EthernetClass_html"><div class="ttname"><a href="classRF24EthernetClass.html">RF24EthernetClass</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00097">RF24Ethernet.h:97</a></div></div>
 <div class="ttc" id="aethernet__comp_8h_html_a09a9c005ebde74019ca9562f422fa88e"><div class="ttname"><a href="ethernet__comp_8h.html#a09a9c005ebde74019ca9562f422fa88e">Ethernet</a></div><div class="ttdeci">#define Ethernet</div><div class="ttdef"><b>Definition:</b> <a href="ethernet__comp_8h_source.html#l00004">ethernet_comp.h:4</a></div></div>
 <div class="ttc" id="aethernet__comp_8h_html_a4c89344c1081c2e198156b72fea64d38"><div class="ttname"><a href="ethernet__comp_8h.html#a4c89344c1081c2e198156b72fea64d38">EthernetClient</a></div><div class="ttdeci">#define EthernetClient</div><div class="ttdef"><b>Definition:</b> <a href="ethernet__comp_8h_source.html#l00005">ethernet_comp.h:5</a></div></div>
 <div class="ttc" id="aethernet__comp_8h_html_a54f80f719b59bc968cdb7723ff70828f"><div class="ttname"><a href="ethernet__comp_8h.html#a54f80f719b59bc968cdb7723ff70828f">EthernetServer</a></div><div class="ttdeci">#define EthernetServer</div><div class="ttdef"><b>Definition:</b> <a href="ethernet__comp_8h_source.html#l00006">ethernet_comp.h:6</a></div></div>
@@ -291,7 +301,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 13 2021 01:11:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 28 2021 13:08:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

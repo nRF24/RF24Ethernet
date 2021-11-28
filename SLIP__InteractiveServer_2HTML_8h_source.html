@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RF24Ethernet - TCP/IP over RF24Network
-   &#160;<span id="projectnumber">v1.6.8</span>
+   &#160;<span id="projectnumber">1.6.9</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -105,7 +105,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * [SLIP_InteractiveServer example](SLIP_InteractiveServer_8ino-example.html)</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#if !defined (ARDUINO_ARCH_AVR)</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">    7</a></span>&#160;<span class="preprocessor">  #define strncpy_P strncpy</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">    7</a></span>&#160;<span class="preprocessor">#define strncpy_P strncpy</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="SLIP__InteractiveServer_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">   10</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a> = 0;</div>
@@ -120,7 +120,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">// The basic beginning of an HTML connection, plus</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">// a style (CSS) section and header to be used on every page</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> begin_html[] PROGMEM =</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> begin_html[] PROGMEM =</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="stringliteral">&quot;HTTP/1.1 200 OK\n&quot;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="stringliteral">&quot;Content-Type: text/html\n&quot;</span> <span class="comment">//40b</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="stringliteral">&quot;Connection: close\n\n&quot;</span> <span class="comment">//59</span></div>
@@ -159,10 +159,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="stringliteral">&quot;&lt;/body&gt;&lt;/html&gt;&quot;</span>;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">  /***************************************************************/</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">/***************************************************************/</span></div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="comment">// The HTML for the credits page</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> credits_html[] PROGMEM =</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// The HTML for the credits page</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> credits_html[] PROGMEM =</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="stringliteral">&quot;&lt;body&gt;&quot;</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="stringliteral">&quot;&lt;img src=&#39;http://arduino.cc/en/uploads/Trademark/ArduinoCommunityLogo.png&#39;&quot;</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="stringliteral">&quot;style=&#39;width:383px;height:162px&#39;&gt;&quot;</span></div>
@@ -194,10 +194,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">* in chunks equal to the max output buffer size or less</span></div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment">* This allows the HTML code to be modified as desired, with no need to change any other code</span></div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="SLIP__InteractiveServer_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">   96</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(<a class="code" href="ethernet__comp_8h.html#a4c89344c1081c2e198156b72fea64d38">EthernetClient</a>&amp; _client, <span class="keyword">const</span> <span class="keywordtype">char</span>* _pointer, <span class="keywordtype">size_t</span> size ){</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keywordflow">for</span>(uint16_t i=0; i&lt;size;i++){</div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="SLIP__InteractiveServer_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">   96</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(<a class="code" href="ethernet__comp_8h.html#a4c89344c1081c2e198156b72fea64d38">EthernetClient</a>&amp; _client, <span class="keyword">const</span> <span class="keywordtype">char</span>* _pointer, <span class="keywordtype">size_t</span> size ) {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keywordflow">for</span> (uint16_t i = 0; i &lt; size; i++) {</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">char</span> c = pgm_read_byte(_pointer++);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    _client.write(&amp;c,1);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    _client.write(&amp;c, 1);</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
@@ -208,11 +208,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="comment">// Send the connection info and header</span></div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span>* html_pointer = begin_html;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client,html_pointer,<span class="keyword">sizeof</span>(begin_html));</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client, html_pointer, <span class="keyword">sizeof</span>(begin_html));</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="comment">//Send the first part of the page</span></div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  html_pointer = main_html_p1;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client,html_pointer,<span class="keyword">sizeof</span>(main_html_p1));</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client, html_pointer, <span class="keyword">sizeof</span>(main_html_p1));</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="comment">// Include some variables, print them into the page manually</span></div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span> *lState = <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a> ? <span class="stringliteral">&quot;ON&quot;</span> : <span class="stringliteral">&quot;OFF&quot;</span>;</div>
@@ -220,20 +220,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <span class="keywordtype">char</span> bf[<a class="code" href="group__UipConfiguration.html#ga29a61474854edfeed19457644161249f">OUTPUT_BUFFER_SIZE</a>];</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="keywordflow">if</span>(!<a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a>){</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    sprintf_P(bf,PSTR(<span class="stringliteral">&quot;&lt;tr&gt;&lt;td bgcolor=%s&gt;\n&quot;</span>),lColor);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a>) {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    sprintf_P(bf, PSTR(<span class="stringliteral">&quot;&lt;tr&gt;&lt;td bgcolor=%s&gt;\n&quot;</span>), lColor);</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    _client.write(bf);</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    sprintf_P(bf,PSTR(<span class="stringliteral">&quot;LED is %s&lt;/td&gt;&lt;/tr&gt;\n&quot;</span>), lState);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  }<span class="keywordflow">else</span>{</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    sprintf_P(bf,PSTR(<span class="stringliteral">&quot;&lt;tr&gt;&lt;td&gt; &lt;/td&gt;&lt;td bgcolor=%s&gt;\n&quot;</span>),lColor);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    sprintf_P(bf, PSTR(<span class="stringliteral">&quot;LED is %s&lt;/td&gt;&lt;/tr&gt;\n&quot;</span>), lState);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    sprintf_P(bf, PSTR(<span class="stringliteral">&quot;&lt;tr&gt;&lt;td&gt; &lt;/td&gt;&lt;td bgcolor=%s&gt;\n&quot;</span>), lColor);</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    _client.write(bf);</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    sprintf_P(bf,PSTR(<span class="stringliteral">&quot;LED is %s&lt;/td&gt;&lt;/tr&gt;\n&quot;</span>), lState);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    sprintf_P(bf, PSTR(<span class="stringliteral">&quot;LED is %s&lt;/td&gt;&lt;/tr&gt;\n&quot;</span>), lState);</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  }</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  _client.write(bf);</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <span class="comment">// Send the 2nd half of the page</span></div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* html_pointer2 = main_html_p2;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client,html_pointer2,<span class="keyword">sizeof</span>(main_html_p2));</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client, html_pointer2, <span class="keyword">sizeof</span>(main_html_p2));</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;}</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
@@ -242,11 +242,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="SLIP__InteractiveServer_2HTML_8h.html#ad25901a87cc6f8b136a62c4851167fe3">  141</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ad25901a87cc6f8b136a62c4851167fe3">credits_page</a>(<a class="code" href="ethernet__comp_8h.html#a4c89344c1081c2e198156b72fea64d38">EthernetClient</a>&amp; _client) {</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;  <span class="comment">//Set the pointer to the HTML connection data + header</span></div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">char</span>* html_pointer = begin_html;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client,html_pointer,<span class="keyword">sizeof</span>(begin_html));</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client, html_pointer, <span class="keyword">sizeof</span>(begin_html));</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;  <span class="comment">//Set the pointer to the HTML page data and send it</span></div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  html_pointer = credits_html;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client,html_pointer,<span class="keyword">sizeof</span>(credits_html));</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <a class="code" href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a>(_client, html_pointer, <span class="keyword">sizeof</span>(credits_html));</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;}</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="comment">/***************************************************************/</span></div>
@@ -264,27 +264,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keywordtype">char</span> buffer[45];</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;HTTP/1.1 200 OK\nContent-Type: text/html\n&quot;</span>),45);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;HTTP/1.1 200 OK\nContent-Type: text/html\n&quot;</span>), 45);</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;Connection: close\n\n&lt;!DOCTYPE HTML&gt;\n&lt;html&gt;\n&quot;</span>),45);</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;Connection: close\n\n&lt;!DOCTYPE HTML&gt;\n&lt;html&gt;\n&quot;</span>), 45);</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;head&gt;&lt;style&gt;body{background-color:linen;}\n&quot;</span>),45);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;head&gt;&lt;style&gt;body{background-color:linen;}\n&quot;</span>), 45);</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;td{border: 1px solid black;}&lt;/style&gt;&lt;/head&gt;\n&quot;</span>),45);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;td{border: 1px solid black;}&lt;/style&gt;&lt;/head&gt;\n&quot;</span>), 45);</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;body&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt; Uptime&lt;/td&gt;&lt;td&gt;\n&quot;</span>),45);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;body&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt; Uptime&lt;/td&gt;&lt;td&gt;\n&quot;</span>), 45);</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  sprintf_P(buffer, PSTR(<span class="stringliteral">&quot;%u days, %lu hours %lu minutes %lu&quot;</span>),days,hours,minutes,seconds);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  sprintf_P(buffer, PSTR(<span class="stringliteral">&quot;%u days, %lu hours %lu minutes %lu&quot;</span>), days, hours, minutes, seconds);</div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;seconds&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;UIP Buffer Size&quot;</span>),45);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;seconds&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;UIP Buffer Size&quot;</span>), 45);</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  sprintf_P(buffer, PSTR(<span class="stringliteral">&quot;&lt;/td&gt;&lt;td&gt;%u bytes&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;User &quot;</span>),UIP_BUFSIZE);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  sprintf_P(buffer, PSTR(<span class="stringliteral">&quot;&lt;/td&gt;&lt;td&gt;%u bytes&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;User &quot;</span>), UIP_BUFSIZE);</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  sprintf_P(buffer, PSTR(<span class="stringliteral">&quot;Output&lt;br&gt;Buffer Size&lt;/td&gt;&lt;td&gt;%u bytes&quot;</span>),<a class="code" href="group__UipConfiguration.html#ga29a61474854edfeed19457644161249f">OUTPUT_BUFFER_SIZE</a>);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  sprintf_P(buffer, PSTR(<span class="stringliteral">&quot;Output&lt;br&gt;Buffer Size&lt;/td&gt;&lt;td&gt;%u bytes&quot;</span>), <a class="code" href="group__UipConfiguration.html#ga29a61474854edfeed19457644161249f">OUTPUT_BUFFER_SIZE</a>);</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br&gt;&lt;br&gt;&quot;</span>),45);</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br&gt;&lt;br&gt;&quot;</span>), 45);</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  _client.write( buffer );</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;a href=&#39;/&#39;&gt;Home&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span>),45);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <a class="code" href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;a href=&#39;/&#39;&gt;Home&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span>), 45);</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;  _client.write( buffer );</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;}</div>
@@ -294,29 +294,29 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="comment">/**</span></div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="comment">* An example of a very basic HTML page</span></div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> html_page[] PROGMEM =</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <span class="stringliteral">&quot;HTTP/1.1 200 OK\n&quot;</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="stringliteral">&quot;Content-Type: text/html\n&quot;</span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="stringliteral">&quot;Connection: close\n\n&quot;</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="stringliteral">&quot;&lt;!DOCTYPE HTML&gt;&quot;</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="stringliteral">&quot;&lt;html&gt;&quot;</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <span class="stringliteral">&quot;&lt;body&gt;&quot;</span></div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="stringliteral">&quot;&lt;b&gt;Hello From Arduino!&lt;/b&gt;&quot;</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="stringliteral">&quot;&lt;/body&gt;&quot;</span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="stringliteral">&quot;&lt;/html&gt;&quot;</span>;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> html_page[] PROGMEM =</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  <span class="stringliteral">&quot;HTTP/1.1 200 OK\n&quot;</span></div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  <span class="stringliteral">&quot;Content-Type: text/html\n&quot;</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <span class="stringliteral">&quot;Connection: close\n\n&quot;</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  <span class="stringliteral">&quot;&lt;!DOCTYPE HTML&gt;&quot;</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  <span class="stringliteral">&quot;&lt;html&gt;&quot;</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  <span class="stringliteral">&quot;&lt;body&gt;&quot;</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  <span class="stringliteral">&quot;&lt;b&gt;Hello From Arduino!&lt;/b&gt;&quot;</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  <span class="stringliteral">&quot;&lt;/body&gt;&quot;</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  <span class="stringliteral">&quot;&lt;/html&gt;&quot;</span>;</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
 <div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a172311489890fda0fd6c0562523f63c0"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a172311489890fda0fd6c0562523f63c0">led_state</a></div><div class="ttdeci">bool led_state</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00010">HTML.h:10</a></div></div>
-<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a812118aa31981f2ff283d50506303af8"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8">main_page</a></div><div class="ttdeci">void main_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00107">HTML.h:107</a></div></div>
-<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a81cb6f088916239a442b702e8fe1885b"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b">stats_page</a></div><div class="ttdeci">void stats_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00155">HTML.h:155</a></div></div>
+<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a812118aa31981f2ff283d50506303af8"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8">main_page</a></div><div class="ttdeci">void main_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00106">HTML.h:106</a></div></div>
+<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_a81cb6f088916239a442b702e8fe1885b"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b">stats_page</a></div><div class="ttdeci">void stats_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00154">HTML.h:154</a></div></div>
 <div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_ac75a4bcdd5a5cdaa6cce7736eaea2569"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569">sendPage</a></div><div class="ttdeci">void sendPage(EthernetClient &amp;_client, const char *_pointer, size_t size)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00097">HTML.h:97</a></div></div>
-<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_ad25901a87cc6f8b136a62c4851167fe3"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#ad25901a87cc6f8b136a62c4851167fe3">credits_page</a></div><div class="ttdeci">void credits_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00142">HTML.h:142</a></div></div>
+<div class="ttc" id="aInteractiveServer__Mesh_2HTML_8h_html_ad25901a87cc6f8b136a62c4851167fe3"><div class="ttname"><a href="InteractiveServer__Mesh_2HTML_8h.html#ad25901a87cc6f8b136a62c4851167fe3">credits_page</a></div><div class="ttdeci">void credits_page(EthernetClient &amp;_client)</div><div class="ttdef"><b>Definition:</b> <a href="InteractiveServer__Mesh_2HTML_8h_source.html#l00141">HTML.h:141</a></div></div>
 <div class="ttc" id="aSLIP__InteractiveServer_2HTML_8h_html_a66e2441227ad9b205e8b684cf6001be0"><div class="ttname"><a href="SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a></div><div class="ttdeci">#define strncpy_P</div><div class="ttdef"><b>Definition:</b> <a href="SLIP__InteractiveServer_2HTML_8h_source.html#l00007">HTML.h:7</a></div></div>
 <div class="ttc" id="aethernet__comp_8h_html_a4c89344c1081c2e198156b72fea64d38"><div class="ttname"><a href="ethernet__comp_8h.html#a4c89344c1081c2e198156b72fea64d38">EthernetClient</a></div><div class="ttdeci">#define EthernetClient</div><div class="ttdef"><b>Definition:</b> <a href="ethernet__comp_8h_source.html#l00005">ethernet_comp.h:5</a></div></div>
 <div class="ttc" id="agroup__UipConfiguration_html_ga29a61474854edfeed19457644161249f"><div class="ttname"><a href="group__UipConfiguration.html#ga29a61474854edfeed19457644161249f">OUTPUT_BUFFER_SIZE</a></div><div class="ttdeci">#define OUTPUT_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> <a href="uip-conf_8h_source.html#l00153">uip-conf.h:153</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 13 2021 01:11:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 28 2021 13:08:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

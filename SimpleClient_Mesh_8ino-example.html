@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RF24Ethernet - TCP/IP over RF24Network
-   &#160;<span id="projectnumber">v1.6.8</span>
+   &#160;<span id="projectnumber">1.6.9</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -163,7 +163,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line">  <span class="keywordflow">if</span> (millis() - mesh_timer &gt; 30000) { <span class="comment">//Every 30 seconds, test mesh connectivity</span></div>
 <div class="line">    mesh_timer = millis();</div>
 <div class="line">    <span class="keywordflow">if</span> ( ! mesh.checkConnection() ) {</div>
-<div class="line">      mesh.renewAddress();</div>
+<div class="line">      <span class="keywordflow">if</span> ( ! mesh.renewAddress() ) {</div>
+<div class="line">        mesh.begin();</div>
+<div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line"> </div>
@@ -189,8 +191,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line">      }</div>
 <div class="line">      <span class="keywordflow">if</span> (counter == contentLength) {</div>
 <div class="line">        gotHeader = <span class="keyword">false</span>;</div>
-<div class="line">        Serial.print(<span class="stringliteral">&quot;Content length &quot;</span>); Serial.println(contentLength);</div>
-<div class="line">        Serial.print(<span class="stringliteral">&quot;Received length &quot;</span>); Serial.println(counter);</div>
+<div class="line">        Serial.print(<span class="stringliteral">&quot;Content length &quot;</span>);</div>
+<div class="line">        Serial.println(contentLength);</div>
+<div class="line">        Serial.print(<span class="stringliteral">&quot;Received length &quot;</span>);</div>
+<div class="line">        Serial.println(counter);</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
@@ -230,13 +234,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"> </div>
 <div class="ttc" id="aRF24Ethernet_8h_html"><div class="ttname"><a href="RF24Ethernet_8h.html">RF24Ethernet.h</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_ad1e8d95d62a572cb61fc616b4be11702"><div class="ttname"><a href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a></div><div class="ttdeci">RF24EthernetClass RF24Ethernet</div></div>
-<div class="ttc" id="aclassRF24EthernetClass_html"><div class="ttname"><a href="classRF24EthernetClass.html">RF24EthernetClass</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00100">RF24Ethernet.h:100</a></div></div>
+<div class="ttc" id="aclassRF24EthernetClass_html"><div class="ttname"><a href="classRF24EthernetClass.html">RF24EthernetClass</a></div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00097">RF24Ethernet.h:97</a></div></div>
 <div class="ttc" id="aethernet__comp_8h_html_a09a9c005ebde74019ca9562f422fa88e"><div class="ttname"><a href="ethernet__comp_8h.html#a09a9c005ebde74019ca9562f422fa88e">Ethernet</a></div><div class="ttdeci">#define Ethernet</div><div class="ttdef"><b>Definition:</b> <a href="ethernet__comp_8h_source.html#l00004">ethernet_comp.h:4</a></div></div>
 <div class="ttc" id="aethernet__comp_8h_html_a4c89344c1081c2e198156b72fea64d38"><div class="ttname"><a href="ethernet__comp_8h.html#a4c89344c1081c2e198156b72fea64d38">EthernetClient</a></div><div class="ttdeci">#define EthernetClient</div><div class="ttdef"><b>Definition:</b> <a href="ethernet__comp_8h_source.html#l00005">ethernet_comp.h:5</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 13 2021 01:11:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 28 2021 13:08:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

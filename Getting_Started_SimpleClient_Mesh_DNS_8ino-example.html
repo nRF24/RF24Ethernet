@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RF24Ethernet - TCP/IP over RF24Network: Getting_Started_SimpleClient_Mesh.ino</title>
+<title>RF24Ethernet - TCP/IP over RF24Network: Getting_Started_SimpleClient_Mesh_DNS.ino</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -86,85 +86,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 
 <div class="header">
   <div class="headertitle">
-<div class="title">Getting_Started_SimpleClient_Mesh.ino</div>  </div>
+<div class="title">Getting_Started_SimpleClient_Mesh_DNS.ino</div>  </div>
 </div><!--header-->
 <div class="contents">
-<p>This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP.</p>
+<p>This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP, using DNS lookups instead of IP address.</p>
 <div class="fragment"><div class="line"><span class="comment">/*</span></div>
-<div class="line"><span class="comment"> * *************************************************************************</span></div>
-<div class="line"><span class="comment"> * RF24Ethernet Arduino library by TMRh20 - 2014-2015</span></div>
+<div class="line"><span class="comment"> * TMRh20 2021</span></div>
 <div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Automated (mesh) wireless networking and TCP/IP communication stack for RF24 radio modules</span></div>
+<div class="line"><span class="comment"> * RF24Ethernet simple web client using DNS example</span></div>
 <div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * RF24 -&gt; RF24Network -&gt; UIP(TCP/IP) -&gt; RF24Ethernet</span></div>
-<div class="line"><span class="comment"> *                     -&gt; RF24Mesh</span></div>
+<div class="line"><span class="comment"> * In order to use DNS, UDP must be enabled in the uIP stack:</span></div>
+<div class="line"><span class="comment"> * 1. Open the RF24Ethernet library folder</span></div>
+<div class="line"><span class="comment"> * 2. Edit the uip_conf.h file</span></div>
+<div class="line"><span class="comment"> * 3. Uncomment #define UIP_CONF_UDP 1</span></div>
+<div class="line"><span class="comment"> * 4. The gateway device must be able to forward DNS requests to the DNS server</span></div>
 <div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> *      Documentation: http://nRF24.github.io/RF24Ethernet/</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * *************************************************************************</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * What it does?:</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * RF24Ethernet allows tiny Arduino-based sensors to automatically</span></div>
-<div class="line"><span class="comment"> * form and maintain an interconnected, wireless mesh network capable of utilizing</span></div>
-<div class="line"><span class="comment"> * standard (TCP/IP) protocols for communication. ( Nodes can also use</span></div>
-<div class="line"><span class="comment"> * the underlying RF24Network/RF24Mesh layers for internal communication. )</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Any device with a browser can connect to and control various sensors, and/or the sensors</span></div>
-<div class="line"><span class="comment"> * can communicate directly with any number of IP based systems.</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Why?</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Enabling TCP/IP directly on the sensors enables users to connect directly</span></div>
-<div class="line"><span class="comment"> * to the sensor nodes with any standard browser, http capable tools, or with</span></div>
-<div class="line"><span class="comment"> * virtually any related protocol. Nodes are able to handle low level communications</span></div>
-<div class="line"><span class="comment"> * at the network layer and/or TCP/IP based connections.</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Remote networks can be easily interconnected using SSH tunnelling, VPNs etc., and</span></div>
-<div class="line"><span class="comment"> * sensor nodes can be configured to communicate without the need for an intermediary or additional programming.</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * *************************************************************************</span></div>
-<div class="line"><span class="comment"> * Example Network:</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * In the following example, 8 Arduino devices have assembled themselves into a</span></div>
-<div class="line"><span class="comment"> * wireless mesh network, with 3 sensors attached directly to RPi/Linux. Five</span></div>
-<div class="line"><span class="comment"> * additional sensors are too far away to connect directly to the RPi/Gateway,</span></div>
-<div class="line"><span class="comment"> * so they attach automatically to the closest sensor, which will automatically</span></div>
-<div class="line"><span class="comment"> * relay all communications for the distant node.</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Example network:</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Arduino 4 &lt;-&gt; Arduino 1 &lt;-&gt; Raspberry Pi    &lt;-&gt; Webserver</span></div>
-<div class="line"><span class="comment"> * Arduino 5 &lt;-&gt;              OR Arduino+Linux &lt;-&gt; Database</span></div>
-<div class="line"><span class="comment"> * Arduino 6 &lt;-&gt;                               &lt;-&gt; PHP</span></div>
-<div class="line"><span class="comment"> *                                             &lt;-&gt; BASH (Wget, Curl, etc)</span></div>
-<div class="line"><span class="comment"> * Arduino 7 &lt;-&gt; Arduino 2 &lt;-&gt;                 &lt;-&gt; Web-Browser</span></div>
-<div class="line"><span class="comment"> * Arduino 8 &lt;-&gt;                               &lt;-&gt; Python</span></div>
-<div class="line"><span class="comment"> *               Arduino 3 &lt;-&gt;                 &lt;-&gt; NodeJS</span></div>
-<div class="line"><span class="comment"> *                                             &lt;-&gt; SSH Tunnel &lt;-&gt; Remote RF24Ethernet Sensor Network</span></div>
-<div class="line"><span class="comment"> *                                             &lt;-&gt; VPN        &lt;-&gt;</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * In addition to communicating with external systems, the nodes are able to</span></div>
-<div class="line"><span class="comment"> * communicate internally using TCP/IP, and/or at the RF24Mesh/RF24Network</span></div>
-<div class="line"><span class="comment"> * layers.</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * **************************************************************************</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * RF24Ethernet simple web client example</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * RF24Ethernet uses the fine uIP stack by Adam Dunkels &lt;adam@sics.se&gt;</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * In order to minimize memory use and program space:</span></div>
-<div class="line"><span class="comment"> * 1. Open the RF24Network library folder</span></div>
-<div class="line"><span class="comment"> * 2. Edit the RF24Networl_config.h file</span></div>
-<div class="line"><span class="comment"> * 3. Un-comment #define DISABLE_USER_PAYLOADS</span></div>
-<div class="line"><span class="comment"> * 4. Remember to set it back for normal operation</span></div>
-<div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * This example will get you some pizza and a book to read</span></div>
-<div class="line"><span class="comment"> *</span></div>
+<div class="line"><span class="comment"> * This example connects to get you a pizza or a book to read using DNS lookups instead of IP address</span></div>
 <div class="line"><span class="comment"> */</span></div>
-<div class="line"> </div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;RF24.h&gt;</span></div>
@@ -183,9 +121,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"> </div>
 <div class="line"><span class="comment">// The hosts we will be connecting to</span></div>
 <div class="line"><span class="comment">// Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation</span></div>
-<div class="line">IPAddress icewind(109, 120, 203, 163); <span class="comment">//http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt</span></div>
-<div class="line">IPAddress pizza(94, 199, 58, 243); <span class="comment">//http://fiikus.net/asciiart/pizza.txt</span></div>
-<div class="line">IPAddress host(pizza);</div>
+<div class="line"><span class="comment">// Note: DNS responses for www.domain.com will typically be shorter than requests for domain.com.</span></div>
+<div class="line"><span class="keywordtype">char</span> icewind[] = {<span class="stringliteral">&quot;109.120.203.163&quot;</span>}; <span class="comment">//http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt</span></div>
+<div class="line"><span class="keywordtype">char</span> pizza[] = {<span class="stringliteral">&quot;www.fiikus.net&quot;</span>}; <span class="comment">//http://fiikus.net/asciiart/pizza.txt</span></div>
+<div class="line"><span class="keywordtype">char</span> *host = pizza;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> setup() {</div>
 <div class="line"> </div>
@@ -195,8 +134,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"> </div>
 <div class="line">  <span class="comment">// Set the IP address we&#39;ll be using. The last octet mast match the nodeID (9)</span></div>
 <div class="line">  IPAddress myIP(10, 10, 2, 4);</div>
-<div class="line">  <a name="a3"></a><a class="code" href="ethernet__comp_8h.html#a09a9c005ebde74019ca9562f422fa88e">Ethernet</a>.begin(myIP);</div>
-<div class="line">  mesh.begin();</div>
+<div class="line">  IPAddress myDNS(8, 8, 8, 8); <span class="comment">//Use Google DNS in this example</span></div>
+<div class="line">  <a name="a3"></a><a class="code" href="ethernet__comp_8h.html#a09a9c005ebde74019ca9562f422fa88e">Ethernet</a>.begin(myIP, myDNS);</div>
+<div class="line">  mesh.begin(30);</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// If you&#39;ll be making outgoing connections from the Arduino to the rest of</span></div>
 <div class="line">  <span class="comment">// the world, you&#39;ll need a gateway set up.</span></div>

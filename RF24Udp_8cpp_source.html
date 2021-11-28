@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RF24Ethernet - TCP/IP over RF24Network
-   &#160;<span id="projectnumber">v1.6.8</span>
+   &#160;<span id="projectnumber">1.6.9</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -352,7 +352,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordflow">if</span> (appdata.packet_in != 0)</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    {</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        memcpy(buffer, <a class="code" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myDataIn + appdata.in_pos, len);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        memcpy(buffer, <a class="code" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myData + appdata.in_pos, len);</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        appdata.in_pos += len;</div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;        appdata.packet_in_size -= len;</div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
@@ -375,7 +375,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
 <div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <span class="keywordflow">if</span> (appdata.packet_in != 0)</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    {</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myDataIn[appdata.in_pos];</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myData[appdata.in_pos];</div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    }</div>
 <div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    <span class="keywordflow">return</span> -1;</div>
 <div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;}</div>
@@ -422,11 +422,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                uip_ipaddr_copy(uip_udp_conn-&gt;ripaddr, UDPBUF-&gt;srcipaddr);</div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160; </div>
 <div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                <span class="comment">//discard Linklevel and IP and udp-header and any trailing bytes:</span></div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                memcpy(<a class="code" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myDataIn, uip_appdata, uip_len);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                memcpy(<a class="code" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myData, uip_appdata, uip_len);</div>
 <div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                data-&gt;packet_in_size += uip_len;</div>
 <div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                data-&gt;packet_in = 1;</div>
 <div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160; </div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                <a class="code" href="group__DebugOptions.html#gaa2088bbdfdd816f5343ebfc9082cdb7c">IF_RF24ETHERNET_DEBUG_UDP</a>(Serial.print(F(<span class="stringliteral">&quot;RF24UDP udp, uip_newdata received packet: &quot;</span>)); Serial.print(data-&gt;packet_next); Serial.print(F(<span class="stringliteral">&quot;, size: &quot;</span>)); Serial.println(data-&gt;packet_in_size); for (<span class="keywordtype">int</span> i = 0; i &lt; data-&gt;packet_in_size; i++) {  Serial.print(<a class="code" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myDataIn[i],HEX); Serial.print(F(<span class="stringliteral">&quot; : &quot;</span>)); } Serial.println(););</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                <a class="code" href="group__DebugOptions.html#gaa2088bbdfdd816f5343ebfc9082cdb7c">IF_RF24ETHERNET_DEBUG_UDP</a>(Serial.print(F(<span class="stringliteral">&quot;RF24UDP udp, uip_newdata received packet: &quot;</span>)); Serial.print(data-&gt;packet_next); Serial.print(F(<span class="stringliteral">&quot;, size: &quot;</span>)); Serial.println(data-&gt;packet_in_size); for (<span class="keywordtype">int</span> i = 0; i &lt; data-&gt;packet_in_size; i++) {  Serial.print(<a class="code" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myData[i],HEX); Serial.print(F(<span class="stringliteral">&quot; : &quot;</span>)); } Serial.println(););</div>
 <div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;            }</div>
 <div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        }</div>
 <div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        <span class="keywordflow">if</span> (uip_poll() &amp;&amp; data-&gt;send)</div>
@@ -474,16 +474,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;#endif <span class="comment">// UDP Enabled</span></div>
 <div class="ttc" id="aRF24Ethernet_8h_html"><div class="ttname"><a href="RF24Ethernet_8h.html">RF24Ethernet.h</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_a448ccafaa1276dc5c1a187b4233b3c42"><div class="ttname"><a href="RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42">uip_ip_addr</a></div><div class="ttdeci">#define uip_ip_addr(addr, ip)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00075">RF24Ethernet.h:75</a></div></div>
-<div class="ttc" id="aRF24Ethernet_8h_html_a509630e7e6ae1cc8a52e394ef8014e1d"><div class="ttname"><a href="RF24Ethernet_8h.html#a509630e7e6ae1cc8a52e394ef8014e1d">ip_addr_uip</a></div><div class="ttdeci">#define ip_addr_uip(a)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00080">RF24Ethernet.h:80</a></div></div>
+<div class="ttc" id="aRF24Ethernet_8h_html_a509630e7e6ae1cc8a52e394ef8014e1d"><div class="ttname"><a href="RF24Ethernet_8h.html#a509630e7e6ae1cc8a52e394ef8014e1d">ip_addr_uip</a></div><div class="ttdeci">#define ip_addr_uip(a)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00077">RF24Ethernet.h:77</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_ad1e8d95d62a572cb61fc616b4be11702"><div class="ttname"><a href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a></div><div class="ttdeci">RF24EthernetClass RF24Ethernet</div></div>
-<div class="ttc" id="aclassRF24Client_html_a12b2e871c95fb155e06e3ce8fcd64734"><div class="ttname"><a href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a></div><div class="ttdeci">static uip_userdata_t all_data[UIP_CONNS]</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8h_source.html#l00158">RF24Client.h:156</a></div></div>
+<div class="ttc" id="aclassRF24Client_html_a12b2e871c95fb155e06e3ce8fcd64734"><div class="ttname"><a href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a></div><div class="ttdeci">static uip_userdata_t all_data[UIP_CONNS]</div><div class="ttdef"><b>Definition:</b> <a href="RF24Client_8h_source.html#l00157">RF24Client.h:155</a></div></div>
 <div class="ttc" id="aclassRF24EthernetClass_html_a7e70612c15de96f2dd6528cdfbcb5171"><div class="ttname"><a href="classRF24EthernetClass.html#a7e70612c15de96f2dd6528cdfbcb5171">RF24EthernetClass::dnsServerIP</a></div><div class="ttdeci">IPAddress dnsServerIP()</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8cpp_source.html#l00195">RF24Ethernet.cpp:195</a></div></div>
 <div class="ttc" id="agroup__DebugOptions_html_gaa2088bbdfdd816f5343ebfc9082cdb7c"><div class="ttname"><a href="group__DebugOptions.html#gaa2088bbdfdd816f5343ebfc9082cdb7c">IF_RF24ETHERNET_DEBUG_UDP</a></div><div class="ttdeci">#define IF_RF24ETHERNET_DEBUG_UDP(x)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet__config_8h_source.html#l00069">RF24Ethernet_config.h:69</a></div></div>
 <div class="ttc" id="auip-conf_8h_html_aabcb6018b6d071112561466fcac249c0"><div class="ttname"><a href="uip-conf_8h.html#aabcb6018b6d071112561466fcac249c0">uipudp_appcall</a></div><div class="ttdeci">void uipudp_appcall(void)</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 13 2021 01:11:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 28 2021 13:08:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

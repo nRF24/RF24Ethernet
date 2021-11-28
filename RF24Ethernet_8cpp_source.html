@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RF24Ethernet - TCP/IP over RF24Network
-   &#160;<span id="projectnumber">v1.6.8</span>
+   &#160;<span id="projectnumber">1.6.9</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -391,35 +391,36 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;<span class="keywordtype">void</span> RF24EthernetClass::network_send()</div>
 <div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;{</div>
 <div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="preprocessor">    #if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160; </div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    <span class="keywordtype">bool</span> ok = <a class="code" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.network.write(headerOut, uip_buf, uip_len);</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="preprocessor">    #else</span></div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <a class="code" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.network.write(headerOut, uip_buf, uip_len);</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="preprocessor">    #endif</span></div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160; </div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;<span class="preprocessor">    #if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2</span></div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        <span class="keywordflow">if</span> (!ok) {</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;            Serial.println(); Serial.print(millis()); Serial.println(F(<span class="stringliteral">&quot; *** RF24Ethernet Network Write Fail ***&quot;</span>));</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        }</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;<span class="preprocessor">    #endif</span></div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="preprocessor">    #if defined ETH_DEBUG_L2</span></div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <span class="keywordflow">if</span> (ok) {</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;            Serial.println(); Serial.print(millis()); Serial.println(F(<span class="stringliteral">&quot; RF24Ethernet Network Write OK&quot;</span>));</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        }</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="preprocessor">    #endif</span></div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;}</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160; </div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="comment">/*******************************************************/</span></div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="comment">void uipudp_appcall() {</span></div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;<span class="comment">}*/</span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    </div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="keywordflow">if</span> (!ok) {</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        ok = <a class="code" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.network.write(headerOut, uip_buf, uip_len);</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="preprocessor">        #if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <span class="keywordflow">if</span> (!ok) {</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;            Serial.println(); Serial.print(millis()); Serial.println(F(<span class="stringliteral">&quot; *** RF24Ethernet Network Write Fail ***&quot;</span>));</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        }</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;<span class="preprocessor">        #endif</span></div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    }</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    </div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="preprocessor">    #if defined ETH_DEBUG_L2</span></div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <span class="keywordflow">if</span> (ok) {</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;            Serial.println(); Serial.print(millis()); Serial.println(F(<span class="stringliteral">&quot; RF24Ethernet Network Write OK&quot;</span>));</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        }</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;<span class="preprocessor">    #endif</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160; </div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;}</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160; </div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="comment">/*******************************************************/</span></div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="comment">void uipudp_appcall() {</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;<span class="comment">}*/</span></div>
 <div class="ttc" id="aRF24Ethernet_8h_html"><div class="ttname"><a href="RF24Ethernet_8h.html">RF24Ethernet.h</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_a24f52ac52d6e714cb04a5aa01be3bdd0"><div class="ttname"><a href="RF24Ethernet_8h.html#a24f52ac52d6e714cb04a5aa01be3bdd0">BUF</a></div><div class="ttdeci">#define BUF</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00065">RF24Ethernet.h:65</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_a448ccafaa1276dc5c1a187b4233b3c42"><div class="ttname"><a href="RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42">uip_ip_addr</a></div><div class="ttdeci">#define uip_ip_addr(addr, ip)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00075">RF24Ethernet.h:75</a></div></div>
-<div class="ttc" id="aRF24Ethernet_8h_html_a509630e7e6ae1cc8a52e394ef8014e1d"><div class="ttname"><a href="RF24Ethernet_8h.html#a509630e7e6ae1cc8a52e394ef8014e1d">ip_addr_uip</a></div><div class="ttdeci">#define ip_addr_uip(a)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00080">RF24Ethernet.h:80</a></div></div>
-<div class="ttc" id="aRF24Ethernet_8h_html_a998df07feeb7ea7b009277af95a3001b"><div class="ttname"><a href="RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b">uip_seteth_addr</a></div><div class="ttdeci">#define uip_seteth_addr(eaddr)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00082">RF24Ethernet.h:82</a></div></div>
+<div class="ttc" id="aRF24Ethernet_8h_html_a509630e7e6ae1cc8a52e394ef8014e1d"><div class="ttname"><a href="RF24Ethernet_8h.html#a509630e7e6ae1cc8a52e394ef8014e1d">ip_addr_uip</a></div><div class="ttdeci">#define ip_addr_uip(a)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00077">RF24Ethernet.h:77</a></div></div>
+<div class="ttc" id="aRF24Ethernet_8h_html_a998df07feeb7ea7b009277af95a3001b"><div class="ttname"><a href="RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b">uip_seteth_addr</a></div><div class="ttdeci">#define uip_seteth_addr(eaddr)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8h_source.html#l00079">RF24Ethernet.h:79</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_ad1e8d95d62a572cb61fc616b4be11702"><div class="ttname"><a href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a></div><div class="ttdeci">RF24EthernetClass RF24Ethernet</div></div>
 <div class="ttc" id="aclassRF24EthernetClass_html_a272292f0089f7a0ea2bdedcb60b73cff"><div class="ttname"><a href="classRF24EthernetClass.html#a272292f0089f7a0ea2bdedcb60b73cff">RF24EthernetClass::use_device</a></div><div class="ttdeci">void use_device()</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8cpp_source.html#l00047">RF24Ethernet.cpp:47</a></div></div>
 <div class="ttc" id="aclassRF24EthernetClass_html_a307dddd1f2663939b4c4a626d633b3c2"><div class="ttname"><a href="classRF24EthernetClass.html#a307dddd1f2663939b4c4a626d633b3c2">RF24EthernetClass::setMac</a></div><div class="ttdeci">void setMac(uint16_t address)</div><div class="ttdef"><b>Definition:</b> <a href="RF24Ethernet_8cpp_source.html#l00054">RF24Ethernet.cpp:54</a></div></div>
@@ -438,7 +439,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 13 2021 01:11:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 28 2021 13:08:28 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
