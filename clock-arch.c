@@ -18,7 +18,9 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#if !defined ARDUINO_ARCH_MBED_RP2040
 #include <Arduino.h>
+#endif
 #include "clock-arch.h"
 
 clock_time_t clock_time(void)
