@@ -132,7 +132,7 @@ void loop() {
     if ( ! mesh.checkConnection() ) {
       Serial.println("*** RENEW ***");
       //refresh the network address
-      if ( ! mesh.renewAddress() ) {
+      if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
       }
 

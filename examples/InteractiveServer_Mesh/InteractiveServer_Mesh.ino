@@ -78,7 +78,7 @@ void loop() {
     mesh_timer = millis();
     if ( ! mesh.checkConnection() ) {
       //refresh the network address
-      if ( ! mesh.renewAddress() ) {
+      if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
       }
     }

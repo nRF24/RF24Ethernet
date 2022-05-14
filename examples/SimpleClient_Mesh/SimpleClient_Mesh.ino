@@ -71,7 +71,7 @@ void loop() {
   if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
     if ( ! mesh.checkConnection() ) {
-      if ( ! mesh.renewAddress() ) {
+      if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
       }
     }
