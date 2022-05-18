@@ -2,7 +2,7 @@
     "name": "RF24Ethernet",
     "keywords": "rf, radio, wireless, spi, mesh, network",
     "description": "Automated, wireless(not WiFi), sensor/IoT networks that communicate/link together using standard protocols & networking. Typically requires Raspberry Pi/Linux device as gateway. An experiment disconnected...",
-    "license": "GPL-2.0-only",
+    "license": "GPL-2.0-or-later AND Apache-2.0 AND MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/nRF24/RF24Ethernet.git"
