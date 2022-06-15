@@ -106,6 +106,7 @@ jobs:
         board:
           - "tinypico"
           - "nodemcuv2"
+          - "bluepill_f103c8"
 
     steps:
       - uses: actions/checkout@v2
