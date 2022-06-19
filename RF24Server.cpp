@@ -82,3 +82,13 @@ size_t RF24Server::write(const uint8_t *buf, size_t size)
     }
     return ret;
 }
+
+void RF24Server::setTimeout(uint32_t timeout)
+{
+    for(uint8_t i = 0; i < UIP_CONNS; i++){
+        uip_userdata_t *data = &RF24Client::all_data[i];
+        if(data){
+            data->connectTimeout = timeout;
+        }
+    }
+}

@@ -60,6 +60,7 @@ void setup() {
   Ethernet.set_gateway(gwIP);
 
   server.begin();
+  server.setTimeout(30000);
   // prepare GPIO2
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, 0);
