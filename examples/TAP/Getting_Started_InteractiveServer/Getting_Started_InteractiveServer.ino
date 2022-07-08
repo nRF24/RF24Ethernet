@@ -10,11 +10,10 @@
  *
  * In order to minimize memory use and program space:
  * 1. Open the RF24Network library folder
- * 2. Edit the RF24Networl_config.h file
+ * 2. Edit the RF24Network_config.h file
  * 3. Un-comment #define DISABLE_USER_PAYLOADS
  * 4. See the Getting_Started_SimpleServer_Minimal example
  */
-
 
 #include <RF24Network.h>
 #include <RF24.h>
@@ -22,14 +21,12 @@
 //#include <printf.h>
 #include <RF24Ethernet.h>
 
-
 /*** Configure the radio CE & CS pins ***/
 RF24 radio(7, 8);
 RF24Network network(radio);
 RF24EthernetClass RF24Ethernet(radio, network);
 
-#define LED_PIN A3 //Analog pin A3
-
+#define LED_PIN A3  //Analog pin A3
 
 // Configure the server to listen on port 1000
 EthernetServer server = EthernetServer(1000);
@@ -72,7 +69,6 @@ void setup() {
   server.begin();
 }
 
-
 bool led_state = 0;
 uint32_t timer = 0;
 
@@ -80,22 +76,20 @@ void loop() {
 
   size_t size;
 
-  if (EthernetClient client = server.available())
-  {
-    while ((size = client.available()) > 0)
-    {
+  if (EthernetClient client = server.available()) {
+    while ((size = client.available()) > 0) {
       // If a request is received with enough characters, search for the / character
       if (size >= 7) {
         client.findUntil("/", "/");
-        char buf[3] = {"  "};
+        char buf[3] = { "  " };
         buf[0] = client.read();  // Read in the first two characters from the request
         buf[1] = client.read();
 
-        if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
+        if (strcmp(buf, "ON") == 0) {  // If the user requested http://ip-of-node:1000/ON
           Serial.println(F("TURN ON"));
           led_state = 1;
           digitalWrite(LED_PIN, led_state);
-        } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+        } else if (strcmp(buf, "OF") == 0) {  // If the user requested http://ip-of-node:1000/OF
           Serial.println(F("TURN OFF"));
           led_state = 0;
           digitalWrite(LED_PIN, led_state);
@@ -110,18 +104,15 @@ void loop() {
     char stateLine[24];
     int len = sprintf(stateLine, "The LED state is %d\n<br>", led_state);
 
-    client.write( "HTTP/1.1 200 OK\nContent-Type: text/html\n Connection: close\n\n<!DOCTYPE HTML>\n<html>\n");
-    client.write( "Hello From Arduino!<br>\n");
-    client.write( stateLine );
-    client.write( "<a href='/ON'>Turn LED On</a><br>\n <a href='/OF'>Turn LED Off</a><br>\n</html>\n");
+    client.write("HTTP/1.1 200 OK\nContent-Type: text/html\n Connection: close\n\n<!DOCTYPE HTML>\n<html>\n");
+    client.write("Hello From Arduino!<br>\n");
+    client.write(stateLine);
+    client.write("<a href='/ON'>Turn LED On</a><br>\n <a href='/OF'>Turn LED Off</a><br>\n</html>\n");
 
     client.stop();
     Serial.println(F("********"));
-
   }
 
   // We can do other things in the loop, but be aware that the loop will
   // briefly pause while IP data is being processed.
 }
-
-

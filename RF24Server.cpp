@@ -20,9 +20,8 @@
 #include "RF24Ethernet.h"
 #include "RF24Server.h"
 
-extern "C"
-{
-    //#include "uip-conf.h"
+extern "C" {
+//#include "uip-conf.h"
 }
 
 /*************************************************************/
@@ -36,9 +35,9 @@ RF24Server::RF24Server(uint16_t port) : _port(htons(port))
 RF24Client RF24Server::available()
 {
     Ethernet.tick();
-    for (uip_userdata_t *data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++)
+    for (uip_userdata_t* data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++)
     {
-        if (data->packets_in != 0 && (((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport == _port) || ((data->state & UIP_CLIENT_REMOTECLOSED) && ((uip_userdata_closed_t *)data)->lport == _port)))
+        if (data->packets_in != 0 && (((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport == _port) || ((data->state & UIP_CLIENT_REMOTECLOSED) && ((uip_userdata_closed_t*)data)->lport == _port)))
         {
             return RF24Client(data);
         }
@@ -55,7 +54,7 @@ void RF24Server::begin()
 }
 
 /*************************************************************/
-#if defined (ESP32)
+#if defined(ESP32)
 void RF24Server::begin(uint16_t port)
 {
     _port = port;
@@ -72,10 +71,10 @@ size_t RF24Server::write(uint8_t c)
 
 /*************************************************************/
 
-size_t RF24Server::write(const uint8_t *buf, size_t size)
+size_t RF24Server::write(const uint8_t* buf, size_t size)
 {
     size_t ret = 0;
-    for (uip_userdata_t *data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++)
+    for (uip_userdata_t* data = &RF24Client::all_data[0]; data < &RF24Client::all_data[UIP_CONNS]; data++)
     {
         if ((data->state & UIP_CLIENT_CONNECTED) && uip_conns[data->state & UIP_CLIENT_SOCKETS].lport == _port)
             ret += RF24Client::_write(data, buf, size);
@@ -85,9 +84,9 @@ size_t RF24Server::write(const uint8_t *buf, size_t size)
 
 void RF24Server::setTimeout(uint32_t timeout)
 {
-    for(uint8_t i = 0; i < UIP_CONNS; i++){
-        uip_userdata_t *data = &RF24Client::all_data[i];
-        if(data){
+    for (uint8_t i = 0; i < UIP_CONNS; i++) {
+        uip_userdata_t* data = &RF24Client::all_data[i];
+        if (data) {
             data->connectTimeout = timeout;
         }
     }

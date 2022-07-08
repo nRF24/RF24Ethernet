@@ -33,14 +33,13 @@
 #include "HTML.h"
 #include <printf.h>
 
-
 /*** Configure the radio CE & CS pins ***/
 RF24 radio(7, 8);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
-#define LED_PIN A3 //Analog pin A3
+#define LED_PIN A3  //Analog pin A3
 
 // Configure the server to listen on port 1000
 EthernetServer server = EthernetServer(1000);
@@ -53,7 +52,6 @@ void setup() {
   printf_begin();
   Serial.println("start");
   pinMode(LED_PIN, OUTPUT);
-
 
   // This step is very important. When using TUN or SLIP, the IP of the device
   // must be configured as the NodeID in the RF24Mesh layer
@@ -81,7 +79,6 @@ void setup() {
   server.begin();
 }
 
-
 /********************************************************/
 
 uint32_t mesh_timer = 0;
@@ -90,9 +87,9 @@ void loop() {
 
   // This is the last of the differences between this and the regular Interactive Server example
   // If the master node is completely down, and unresponsive for 30 seconds, renew the address
-  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) {  //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if ( ! mesh.checkConnection() ) {
+    if (!mesh.checkConnection()) {
       //refresh the network address
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
@@ -102,36 +99,30 @@ void loop() {
 
   size_t size;
 
-  if (EthernetClient client = server.available())
-  {
+  if (EthernetClient client = server.available()) {
     uint8_t pageReq = 0;
     generate_tcp_stats();
-    while ((size = client.available()) > 0)
-    {
+    while ((size = client.available()) > 0) {
       // If a request is received with enough characters, search for the / character
       if (size >= 7) {
-        char slash[] = {"/"};
+        char slash[] = { "/" };
         client.findUntil(slash, slash);
-        char buf[3] = {"  "};
+        char buf[3] = { "  " };
         buf[0] = client.read();  // Read in the first two characters from the request
         buf[1] = client.read();
 
-        if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
+        if (strcmp(buf, "ON") == 0) {  // If the user requested http://ip-of-node:1000/ON
           led_state = 1;
           pageReq = 1;
           digitalWrite(LED_PIN, led_state);
-
-        } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+        } else if (strcmp(buf, "OF") == 0) {  // If the user requested http://ip-of-node:1000/OF
           led_state = 0;
           pageReq = 1;
           digitalWrite(LED_PIN, led_state);
-
-        } else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/OF
+        } else if (strcmp(buf, "ST") == 0) {  // If the user requested http://ip-of-node:1000/OF
           pageReq = 2;
-
-        } else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/OF
+        } else if (strcmp(buf, "CR") == 0) {  // If the user requested http://ip-of-node:1000/OF
           pageReq = 3;
-
         } else if (buf[0] == ' ') {
           pageReq = 4;
         }
@@ -165,7 +156,6 @@ void loop() {
 
     client.stop();
     Serial.println(F("********"));
-
   }
 
   // We can do other things in the loop, but be aware that the loop will
@@ -177,9 +167,8 @@ void loop() {
 * how to interact directly with the uIP TCP/IP stack
 * See the uIP documentation for more info
 */
-static unsigned short generate_tcp_stats()
-{
-  struct uip_conn *conn;
+static unsigned short generate_tcp_stats() {
+  struct uip_conn* conn;
 
   // If multiple connections are enabled, get info for each active connection
   for (uint8_t i = 0; i < UIP_CONF_MAX_CONNECTIONS; i++) {
@@ -204,7 +193,6 @@ static unsigned short generate_tcp_stats()
       Serial.println(htons(conn->rport));
       Serial.print(F("Outstanding "));
       Serial.println((uip_outstanding(conn)) ? '*' : ' ');
-
     }
   }
   return 1;

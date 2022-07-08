@@ -12,7 +12,6 @@
  * This example connects to get you a pizza or a book to read using DNS lookups instead of IP address
  */
 
-
 #include <RF24.h>
 #include <RF24Network.h>
 #include <RF24Mesh.h>
@@ -30,9 +29,9 @@ EthernetClient client;
 // The hosts we will be connecting to
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
 // Note: DNS responses for www.domain.com will typically be shorter than requests for domain.com.
-char icewind[] = {"109.120.203.163"}; //http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt
-char pizza[] = {"www.fiikus.net"}; //http://fiikus.net/asciiart/pizza.txt
-char *host = pizza;
+char icewind[] = { "109.120.203.163" };  //http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt
+char pizza[] = { "www.fiikus.net" };     //http://fiikus.net/asciiart/pizza.txt
+char* host = pizza;
 
 void setup() {
 
@@ -42,7 +41,7 @@ void setup() {
 
   // Set the IP address we'll be using. The last octet mast match the nodeID (9)
   IPAddress myIP(10, 10, 2, 4);
-  IPAddress myDNS(8, 8, 8, 8); //Use Google DNS in this example
+  IPAddress myDNS(8, 8, 8, 8);  //Use Google DNS in this example
   Ethernet.begin(myIP, myDNS);
   mesh.begin(30);
 
@@ -70,9 +69,9 @@ void loop() {
 
   // Optional: If the node needs to move around physically, or using failover nodes etc.,
   // enable address renewal
-  if (millis() - mesh_timer > 12000) { //Every 12 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 12000) {  //Every 12 seconds, test mesh connectivity
     mesh_timer = millis();
-    if ( ! mesh.checkConnection() ) {
+    if (!mesh.checkConnection()) {
       //refresh the network address
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
@@ -98,7 +97,8 @@ void loop() {
     // Calling client.available(); or Ethernet.update(); is required during delays
     // to keep the stack updated
     reqTimer = millis();
-    while (millis() - reqTimer < 5000 && !client.available() ) { }
+    while (millis() - reqTimer < 5000 && !client.available()) {
+    }
     connect();
   }
 
@@ -122,7 +122,6 @@ void connect() {
 
     client.println("Connection: close");
     client.println();
-
   } else {
     // if you didn't get a connection to the server:
     Serial.println(F("connection failed"));

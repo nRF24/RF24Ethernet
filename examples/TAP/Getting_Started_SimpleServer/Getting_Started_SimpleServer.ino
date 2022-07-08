@@ -8,11 +8,10 @@
  *
  * In order to minimize memory use and program space:
  * 1. Open the RF24Network library folder
- * 2. Edit the RF24Networl_config.h file
+ * 2. Edit the RF24Network_config.h file
  * 3. Un-comment #define DISABLE_USER_PAYLOADS
  * 4. See the Getting_Started_SimpleServer_Minimal example
  */
-
 
 #include <RF24Network.h>
 #include <RF24.h>
@@ -20,12 +19,10 @@
 #include <printf.h>
 #include <RF24Ethernet.h>
 
-
 /** Configure the radio CE & CS pins **/
 RF24 radio(7, 8);
 RF24Network network(radio);
 RF24EthernetClass RF24Ethernet(radio, network);
-
 
 // Set up the server to listen on port 1000
 EthernetServer server = EthernetServer(1000);
@@ -71,18 +68,16 @@ void loop() {
 
   size_t size;
 
-  if (EthernetClient client = server.available())
-  {
+  if (EthernetClient client = server.available()) {
 
-    while ((size = client.waitAvailable()) > 0)
-    {
+    while ((size = client.waitAvailable()) > 0) {
       // Read any incoming data from the client
       Serial.print((char)client.read());
       Serial.println("");
     }
     // Send an HTML response to the client.
-    client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
-    client.write( "\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");
+    client.write("HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
+    client.write("\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");
 
     client.stop();
     Serial.println(F("********"));

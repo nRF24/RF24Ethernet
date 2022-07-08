@@ -81,7 +81,6 @@
  *      Documentation: http://nRF24.github.io/RF24Ethernet/
  */
 
-
 #include <RF24Network.h>
 #include <RF24.h>
 #include <SPI.h>
@@ -94,7 +93,6 @@ RF24 radio(7, 8);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
-
 
 // Set up the server to listen on port 1000
 EthernetServer server = EthernetServer(1000);
@@ -131,29 +129,27 @@ void loop() {
 
   // Optional: If the node needs to move around physically, or using failover nodes etc.,
   // enable address renewal
-  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) {  //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if ( ! mesh.checkConnection() ) {
+    if (!mesh.checkConnection()) {
       Serial.println("*** RENEW ***");
       //refresh the network address
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
       }
-
     } else {
 
       Serial.println("*** MESH OK ***");
     }
   }
 
-  if (EthernetClient client = server.available())
-  {
-    while ( client.waitAvailable() > 0) {
+  if (EthernetClient client = server.available()) {
+    while (client.waitAvailable() > 0) {
       Serial.print((char)client.read());
     }
     // Send an HTML response to the client. Default max size/characters per write is 90
-    client.print( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
-    client.print( "<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");
+    client.print("HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
+    client.print("<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");
     client.stop();
 
     Serial.println(F("********"));

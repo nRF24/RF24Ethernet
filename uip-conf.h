@@ -104,9 +104,9 @@
  * with a single address if requesting an address of www.google.com vs google.com, and this will work with the default payload size
  */
 
-#define UIP_CONF_UDP             0
-//#define UIP_CONF_BROADCAST       0
-//#define UIP_CONF_UDP_CONNS       1
+#define UIP_CONF_UDP 0
+//#define UIP_CONF_BROADCAST 0
+//#define UIP_CONF_UDP_CONNS 1
 
 /**
  * @}
@@ -133,7 +133,7 @@
 #define UIP_CONF_ACTIVE_OPEN 1
 
 /** @brief UDP checksums on or off */
-#define UIP_CONF_UDP_CHECKSUMS   0
+#define UIP_CONF_UDP_CHECKSUMS 0
 
 /**
  * @brief uIP User Output buffer size
@@ -164,7 +164,7 @@
  * When increasing the uip buffer size, this value should be increased, or
  * the window may be reopened while the requested data is still being received, hindering traffic flow.
  */
-#define UIP_WINDOW_REOPEN_DELAY  3550
+#define UIP_WINDOW_REOPEN_DELAY 3550
 
 /** @} */
 /** @} */
@@ -172,7 +172,7 @@
 
 /********** TMRh20: This option is not yet valid **********/
 /* @brief for TCP */
-#define UIP_SOCKET_NUMPACKETS    1
+#define UIP_SOCKET_NUMPACKETS 1
 
 /**
  * @brief The TCP receive window.
@@ -196,22 +196,22 @@
  *
  * \hideinitializer
  */
-#define UIP_CONF_BYTE_ORDER      LITTLE_ENDIAN
+#define UIP_CONF_BYTE_ORDER LITTLE_ENDIAN
 
 /**
  * @brief Logging on or off
  *
  * \hideinitializer
  */
-//#define UIP_CONF_LOGGING         1
-#define UIP_CONF_LOGGING         0
+//#define UIP_CONF_LOGGING 1
+#define UIP_CONF_LOGGING 0
 
 /**
  * @brief uIP statistics on or off
  *
  * \hideinitializer
  */
-#define UIP_CONF_STATISTICS      0
+#define UIP_CONF_STATISTICS 0
 
 // Define config for TAP or TUN based on Link-layer header length
 #if UIP_CONF_LLH_LEN > 0
@@ -220,12 +220,11 @@
 
 #if defined UIP_TIMER_DIVISOR
     #if UIP_TIMER_DIVISOR > 5
-        #define UIP_CONF_RTO (UIP_TIMER_DIVISOR/2)
+        #define UIP_CONF_RTO (UIP_TIMER_DIVISOR / 2)
     #else
         #define UIP_CONF_RTO 3
     #endif
 #endif
-
 
 /**
  * @brief 8 bit datatype

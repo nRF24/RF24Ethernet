@@ -24,15 +24,15 @@ IPAddress RF24EthernetClass::_dnsServerAddress;
 //DhcpClass* RF24EthernetClass::_dhcp(NULL);
 
 /*************************************************************/
-#if defined (RF24_TAP)
-RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network) :
-        radio(_radio), network(_network) //fn_uip_cb(NULL)
-{}
+#if defined(RF24_TAP)
+RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network) : radio(_radio), network(_network) //fn_uip_cb(NULL)
+{
+}
 
 #else // Using RF24Mesh
-RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh) :
-        radio(_radio), network(_network), mesh(_mesh) //fn_uip_cb(NULL)
-{}
+RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) //fn_uip_cb(NULL)
+{
+}
 #endif
 
 /*************************************************************/
@@ -60,12 +60,14 @@ void RF24EthernetClass::setMac(uint16_t address)
     const uint8_t mac[6] = {0x52, 0x46, 0x32, 0x34, (uint8_t)address, (uint8_t)(address >> 8)};
     //printf("MAC: %o %d\n", address, mac[0]);
 
-    #if defined (RF24_TAP)
+#if defined(RF24_TAP)
     uip_seteth_addr(mac);
     network.multicastRelay = 1;
-    #else
-    if (mac[0]==1) {}; //Dummy operation to prevent warnings if TAP not defined
-    #endif
+#else
+    if (mac[0] == 1) {
+        //Dummy operation to prevent warnings if TAP not defined
+    };
+#endif
     RF24_Channel = RF24_Channel ? RF24_Channel : 97;
     network.begin(RF24_Channel, address);
 }
@@ -110,16 +112,16 @@ void RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway)
 
 void RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
 {
-    configure(ip,dns,gateway,subnet);
+    configure(ip, dns, gateway, subnet);
 }
 
 /*******************************************************/
 
 void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
 {
-    #if !defined (RF24_TAP) // Using RF24Mesh
+#if !defined(RF24_TAP) // Using RF24Mesh
     mesh.setNodeID(ip[3]);
-    #endif
+#endif
 
     uip_buf = (uint8_t*)&network.frag_ptr->message_buffer[0];
 
@@ -134,23 +136,23 @@ void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway
 
     timer_set(&this->periodic_timer, CLOCK_SECOND / UIP_TIMER_DIVISOR);
 
-    #if defined (RF24_TAP)
+#if defined(RF24_TAP)
     timer_set(&this->arp_timer, CLOCK_SECOND * 2);
-    #endif
+#endif
 
     uip_init();
-    #if defined (RF24_TAP)
+#if defined(RF24_TAP)
     uip_arp_init();
-    #endif
+#endif
 }
 
 /*******************************************************/
 
 void RF24EthernetClass::set_gateway(IPAddress gwIP)
 {
-  uip_ipaddr_t ipaddr;
-  uip_ip_addr(ipaddr, gwIP);
-  uip_setdraddr(ipaddr);
+    uip_ipaddr_t ipaddr;
+    uip_ip_addr(ipaddr, gwIP);
+    uip_setdraddr(ipaddr);
 }
 
 /*******************************************************/
@@ -201,16 +203,16 @@ IPAddress RF24EthernetClass::dnsServerIP()
 
 void RF24EthernetClass::tick()
 {
-    #if defined (ARDUINO_ARCH_ESP8266)
+#if defined(ARDUINO_ARCH_ESP8266)
     yield();
-    #endif
+#endif
     if (RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE) {
         if (RF24Ethernet.network.frag_ptr->message_size <= UIP_BUFSIZE) {
             uip_len = RF24Ethernet.network.frag_ptr->message_size;
         }
     }
 
-    #if !defined (RF24_TAP)
+#if !defined(RF24_TAP)
     if (uip_len > 0) {
         uip_input();
         if (uip_len > 0) {
@@ -219,7 +221,7 @@ void RF24EthernetClass::tick()
     }
     else if (timer_expired(&Ethernet.periodic_timer)) {
         timer_reset(&Ethernet.periodic_timer);
-        for(int i = 0; i < UIP_CONNS; i++) {
+        for (int i = 0; i < UIP_CONNS; i++) {
             uip_periodic(i);
             /* If the above function invocation resulted in data that
             should be sent out on the network, the global variable
@@ -229,7 +231,7 @@ void RF24EthernetClass::tick()
             }
         }
     }
-    #else // defined (RF24_TAP)
+#else  // defined (RF24_TAP)
     if (uip_len > 0) {
         if (BUF->type == htons(UIP_ETHTYPE_IP)) {
             uip_arp_ipin();
@@ -254,7 +256,7 @@ void RF24EthernetClass::tick()
     }
     else if (timer_expired(&Ethernet.periodic_timer)) {
         timer_reset(&Ethernet.periodic_timer);
-        for(int i = 0; i < UIP_CONNS; i++) {
+        for (int i = 0; i < UIP_CONNS; i++) {
             uip_periodic(i);
             /* If the above function invocation resulted in data that
             should be sent out on the network, the global variable
@@ -264,28 +266,28 @@ void RF24EthernetClass::tick()
                 network_send();
             }
         }
-    #endif // defined (RF24_TAP)
-    #if UIP_UDP
-        for(int i = 0; i < UIP_UDP_CONNS; i++) {
-            uip_udp_periodic(i);
-            /* If the above function invocation resulted in data that
+#endif // defined (RF24_TAP)
+#if UIP_UDP
+    for (int i = 0; i < UIP_UDP_CONNS; i++) {
+        uip_udp_periodic(i);
+        /* If the above function invocation resulted in data that
             should be sent out on the network, the global variable
             uip_len is set to a value > 0. */
-            if (uip_len > 0) {
-                //uip_arp_out();
-                //network_send();
-                RF24UDP::_send((uip_udp_userdata_t *)(uip_udp_conns[i].appstate));
-            }
-        }
-    #endif /* UIP_UDP */
-    #if defined (RF24_TAP)
-        /* Call the ARP timer function every 10 seconds. */
-
-        if (timer_expired(&Ethernet.arp_timer)) {
-            timer_reset(&Ethernet.arp_timer);
-            uip_arp_timer();
+        if (uip_len > 0) {
+            //uip_arp_out();
+            //network_send();
+            RF24UDP::_send((uip_udp_userdata_t*)(uip_udp_conns[i].appstate));
         }
     }
+#endif /* UIP_UDP */
+#if defined(RF24_TAP)
+    /* Call the ARP timer function every 10 seconds. */
+
+    if (timer_expired(&Ethernet.arp_timer)) {
+        timer_reset(&Ethernet.arp_timer);
+        uip_arp_timer();
+    }
+}
 #endif //RF24_TAP
 }
 
@@ -293,25 +295,28 @@ void RF24EthernetClass::tick()
 
 void RF24EthernetClass::network_send()
 {
-    RF24NetworkHeader headerOut(00,EXTERNAL_DATA_TYPE);
+    RF24NetworkHeader headerOut(00, EXTERNAL_DATA_TYPE);
 
     bool ok = RF24Ethernet.network.write(headerOut, uip_buf, uip_len);
-    
+
     if (!ok) {
         ok = RF24Ethernet.network.write(headerOut, uip_buf, uip_len);
-        #if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2
+#if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2
         if (!ok) {
-            Serial.println(); Serial.print(millis()); Serial.println(F(" *** RF24Ethernet Network Write Fail ***"));
+            Serial.println();
+            Serial.print(millis());
+            Serial.println(F(" *** RF24Ethernet Network Write Fail ***"));
         }
-        #endif
+#endif
     }
-    
-    #if defined ETH_DEBUG_L2
-        if (ok) {
-            Serial.println(); Serial.print(millis()); Serial.println(F(" RF24Ethernet Network Write OK"));
-        }
-    #endif
 
+#if defined ETH_DEBUG_L2
+    if (ok) {
+        Serial.println();
+        Serial.print(millis());
+        Serial.println(F(" RF24Ethernet Network Write OK"));
+    }
+#endif
 }
 
 /*******************************************************/

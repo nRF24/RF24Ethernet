@@ -19,9 +19,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   */
 
-
 #ifndef RF24Ethernet_h
-#define RF24Ethernet_h
+    #define RF24Ethernet_h
 
 /**
  * @file RF24Ethernet.h
@@ -29,7 +28,7 @@
  * Class declaration for RF24Ethernet
  */
 
-#include <Arduino.h>
+    #include <Arduino.h>
 
 extern "C" {
     #include "uip-conf.h"
@@ -38,70 +37,76 @@ extern "C" {
     #include "utility/uip_arp.h"
 }
 
-#include "RF24Ethernet_config.h"
-#include <RF24.h>
-#include <RF24Network.h>
-#if !defined (RF24_TAP) // Using RF24Mesh
-#include <RF24Mesh.h>
-#endif
+    #include "RF24Ethernet_config.h"
+    #include <RF24.h>
+    #include <RF24Network.h>
+    #if !defined(RF24_TAP) // Using RF24Mesh
+        #include <RF24Mesh.h>
+    #endif
 
-#include "ethernet_comp.h"
-#include "IPAddress.h"
-#include "RF24Client.h"
-#include "RF24Server.h"
+    #include "ethernet_comp.h"
+    #include "IPAddress.h"
+    #include "RF24Client.h"
+    #include "RF24Server.h"
 
-#if UIP_CONF_UDP > 0
-#include "RF24Udp.h"
-#include "Dns.h"
-#endif
+    #if UIP_CONF_UDP > 0
+        #include "RF24Udp.h"
+        #include "Dns.h"
+    #endif
 
-#define UIPETHERNET_FREEPACKET 1
-#define UIPETHERNET_SENDPACKET 2
+    #define UIPETHERNET_FREEPACKET 1
+    #define UIPETHERNET_SENDPACKET 2
 
-//#define TUN  // Use only the tcp protocol, no ethernet headers or arps
-#define TAP  // Include ethernet headers
+    //#define TUN  // Use only the tcp protocol, no ethernet headers or arps
+    #define TAP // Include ethernet headers
 
-#if defined (TAP)
-#define BUF ((struct uip_eth_hdr *)&uip_buf[0])
-#endif
+    #if defined(TAP)
+        #define BUF ((struct uip_eth_hdr*)&uip_buf[0])
+    #endif
 //#define BUF ((struct uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
 
-#define uip_seteth_addr(eaddr) do {uip_ethaddr.addr[0] = eaddr[0]; \
-                              uip_ethaddr.addr[1] = eaddr[1];\
-                              uip_ethaddr.addr[2] = eaddr[2];\
-                              uip_ethaddr.addr[3] = eaddr[3];\
-                              uip_ethaddr.addr[4] = eaddr[4];\
-                              uip_ethaddr.addr[5] = eaddr[5];} while(0)
-#define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
+    #define uip_seteth_addr(eaddr)          \
+        do {                                \
+            uip_ethaddr.addr[0] = eaddr[0]; \
+            uip_ethaddr.addr[1] = eaddr[1]; \
+            uip_ethaddr.addr[2] = eaddr[2]; \
+            uip_ethaddr.addr[3] = eaddr[3]; \
+            uip_ethaddr.addr[4] = eaddr[4]; \
+            uip_ethaddr.addr[5] = eaddr[5]; \
+        } while (0)
+    #define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
 
-#define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8 , a[1] & 0xFF, a[1] >> 8) //TODO this is not IPV6 capable
+    #define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) //TODO this is not IPV6 capable
 
-#define uip_seteth_addr(eaddr) do {uip_ethaddr.addr[0] = eaddr[0]; \
-                              uip_ethaddr.addr[1] = eaddr[1];\
-                              uip_ethaddr.addr[2] = eaddr[2];\
-                              uip_ethaddr.addr[3] = eaddr[3];\
-                              uip_ethaddr.addr[4] = eaddr[4];\
-                              uip_ethaddr.addr[5] = eaddr[5];} while(0)
-
+    #define uip_seteth_addr(eaddr)          \
+        do {                                \
+            uip_ethaddr.addr[0] = eaddr[0]; \
+            uip_ethaddr.addr[1] = eaddr[1]; \
+            uip_ethaddr.addr[2] = eaddr[2]; \
+            uip_ethaddr.addr[3] = eaddr[3]; \
+            uip_ethaddr.addr[4] = eaddr[4]; \
+            uip_ethaddr.addr[5] = eaddr[5]; \
+        } while (0)
 
 /**
  * @warning <b>This is used internally. Use IPAddress instead. </b>
  */
-typedef struct {
+typedef struct
+{
     int a, b, c, d;
 } IP_ADDR;
 
 class RF24;
 class RF24Network;
 
-class RF24EthernetClass {//: public Print {
+class RF24EthernetClass
+{ //: public Print {
 public:
-
     /**
      * Constructor to set up the Ethernet layer. Requires the radio and network to be configured by the user
      * this allows users to set custom settings at the radio or network level
      */
-    #if !defined (RF24_TAP) // Using RF24Mesh
+    #if !defined(RF24_TAP) // Using RF24Mesh
     RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh);
     #else
     RF24EthernetClass(RF24& _radio, RF24Network& _network);
@@ -176,7 +181,7 @@ public:
 private:
     RF24& radio;
     RF24Network& network;
-    #if !defined (RF24_TAP) // Using RF24Mesh
+    #if !defined(RF24_TAP) // Using RF24Mesh
     RF24Mesh& mesh;
     #endif
 

@@ -14,7 +14,6 @@
  * This example connects to google and downloads the index page
  */
 
-
 #include <RF24Network.h>
 #include <RF24.h>
 #include <SPI.h>
@@ -25,7 +24,6 @@
 RF24 radio(7, 8);
 RF24Network network(radio);
 RF24EthernetClass RF24Ethernet(radio, network);
-
 
 EthernetClient client;
 
@@ -73,9 +71,9 @@ void loop() {
     //while (!Serial.available() && !client.connected()){}
     //Serial.read();
     reqTimer = millis();
-    while (millis() - reqTimer < 5000 && !client.available() ) { }
+    while (millis() - reqTimer < 5000 && !client.available()) {
+    }
     connect();
-
   }
   // We can do other things in the loop, but be aware that the loop will
   // briefly pause while IP data is being processed.
@@ -92,7 +90,6 @@ void connect() {
     client.write("Host: www.google.ca\n");
     client.write("Connection: close\n");
     client.println();
-
   } else {
     // if you didn't get a connection to the server:
     Serial.println(F("connection failed"));

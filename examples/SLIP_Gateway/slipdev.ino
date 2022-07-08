@@ -54,29 +54,26 @@
  * suggestions, and improvements to this code!
  */
 
-#define SLIP_END     0300
-#define SLIP_ESC     0333
+#define SLIP_END 0300
+#define SLIP_ESC 0333
 #define SLIP_ESC_END 0334
 #define SLIP_ESC_ESC 0335
 
-
 static uint16_t len, tmplen;
 static uint8_t lastc;
-HardwareSerial *slip_device;
+HardwareSerial* slip_device;
 
 /*-----------------------------------------------------------------------------------*/
 
 // Put a character on the serial device.
-void slipdev_char_put(uint8_t c)
-{
+void slipdev_char_put(uint8_t c) {
   slip_device->write((char)c);
 }
 
 /*-----------------------------------------------------------------------------------*/
 
 // Poll the serial device for a character.
-uint8_t slipdev_char_poll(uint8_t *c)
-{
+uint8_t slipdev_char_poll(uint8_t* c) {
   if (slip_device->available()) {
     *c = slip_device->read();
     return 1;
@@ -97,14 +94,13 @@ uint8_t slipdev_char_poll(uint8_t *c)
  *
  */
 /*-----------------------------------------------------------------------------------*/
-void slipdev_send(uint8_t *ptr, size_t len)
-{
+void slipdev_send(uint8_t* ptr, size_t len) {
   uint16_t i;
   uint8_t c;
 
   slipdev_char_put(SLIP_END);
 
-#if defined (LED_TXRX)
+#if defined(LED_TXRX)
   digitalWrite(DEBUG_LED_PIN, HIGH);
 #endif
 
@@ -125,7 +121,7 @@ void slipdev_send(uint8_t *ptr, size_t len)
     }
   }
   slipdev_char_put(SLIP_END);
-#if defined (LED_TXRX)
+#if defined(LED_TXRX)
   digitalWrite(DEBUG_LED_PIN, LOW);
 #endif
 }
@@ -134,7 +130,7 @@ void slipdev_send(uint8_t *ptr, size_t len)
  * Poll the SLIP device for an available packet.
  *
  * This function will poll the SLIP device to see if a packet is
- * available. It uses a buffer in which all avaliable bytes from the
+ * available. It uses a buffer in which all available bytes from the
  * RS232 interface are read into. When a full packet has been read
  * into the buffer, the packet is copied into the uip_buf buffer and
  * the length of the packet is returned.
@@ -143,10 +139,8 @@ void slipdev_send(uint8_t *ptr, size_t len)
  * zero if no packet is available.
  */
 /*-----------------------------------------------------------------------------------*/
-uint16_t slipdev_poll(void)
-{
+uint16_t slipdev_poll(void) {
   uint8_t c;
-
 
   // Create a new RF24Network header if there is data available, and possibly ready to send
   if (slip_device->available()) {
@@ -207,7 +201,7 @@ uint16_t slipdev_poll(void)
  * only the SLIP part.
  */
 /*-----------------------------------------------------------------------------------*/
-void slipdev_init(HardwareSerial &dev) {
+void slipdev_init(HardwareSerial& dev) {
   lastc = len = 0;
   slip_device = &dev;
 }
@@ -215,4 +209,3 @@ void slipdev_init(HardwareSerial &dev) {
 
 /** @} */
 /** @} */
-

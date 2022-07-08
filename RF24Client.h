@@ -28,29 +28,30 @@
 //#define UIP_SOCKET_NUMPACKETS 5
 //#endif
 
-#define UIP_CLIENT_CONNECTED 0x10
-#define UIP_CLIENT_CLOSE 0x20
+#define UIP_CLIENT_CONNECTED    0x10
+#define UIP_CLIENT_CLOSE        0x20
 #define UIP_CLIENT_REMOTECLOSED 0x40
-#define UIP_CLIENT_RESTART 0x80
-#define UIP_CLIENT_STATEFLAGS (UIP_CLIENT_CONNECTED | UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED | UIP_CLIENT_RESTART)
-#define UIP_CLIENT_SOCKETS ~UIP_CLIENT_STATEFLAGS
+#define UIP_CLIENT_RESTART      0x80
+#define UIP_CLIENT_STATEFLAGS   (UIP_CLIENT_CONNECTED | UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED | UIP_CLIENT_RESTART)
+#define UIP_CLIENT_SOCKETS      ~UIP_CLIENT_STATEFLAGS
 
 /**
  * @warning <b> This is used internally and should not be accessed directly by users </b>
  */
-typedef struct {
+typedef struct
+{
     uint8_t state;
     uint8_t packets_in[UIP_SOCKET_NUMPACKETS];
     /** The local TCP port, in network byte order. */
     uint16_t lport;
 } uip_userdata_closed_t;
 
-
 /**
  * Data structure for holding per connection data
  * @warning <b> This is used internally and should not be accessed directly by users </b>
  */
-typedef struct {
+typedef struct
+{
     bool hold;
     bool sent;
     bool packets_in;
@@ -61,7 +62,7 @@ typedef struct {
     uint16_t dataPos;
     uint16_t dataCnt;
 #if UIP_CLIENT_TIMER >= 0
-     uint32_t timer;
+    uint32_t timer;
 #endif
     uint32_t restartTime;
     uint32_t restartInterval;
@@ -72,11 +73,10 @@ typedef struct {
     bool initialData;
 } uip_userdata_t;
 
-
-class RF24Client : public Client {
+class RF24Client : public Client
+{
 
 public:
-
     /** Basic constructor */
     RF24Client();
 
@@ -91,7 +91,7 @@ public:
      * Lookups will generally return responses with a single A record if using hostnames like
      * "www.google.com" instead of "google.com" which works well with the default buffer size
      */
-    int connect(const char *host, uint16_t port);
+    int connect(const char* host, uint16_t port);
 
     /**
      * Read available data into a buffer
@@ -100,7 +100,7 @@ public:
      * client.read(buf,size);
      * @endcode
      */
-    int read(uint8_t *buf, size_t size);
+    int read(uint8_t* buf, size_t size);
 
     /**
      * Read data one byte at a time
@@ -123,7 +123,7 @@ public:
     size_t write(uint8_t);
 
     /** Write a buffer of data, to be sent in a single TCP packet */
-    size_t write(const uint8_t *buf, size_t size);
+    size_t write(const uint8_t* buf, size_t size);
 
     /**
      * Indicates whether data is available to be read by the client.
@@ -143,7 +143,7 @@ public:
      * @note Calling client or server available() keeps the IP stack and RF24Network layer running, so needs to be called regularly,
      * even when disconnected or delaying for extended periods.
      */
-    int waitAvailable(uint32_t timeout=750);
+    int waitAvailable(uint32_t timeout = 750);
 
     /** Read a byte from the incoming buffer without advancing the point of reading */
     int peek();
@@ -155,21 +155,23 @@ public:
 
     operator bool();
     virtual bool operator==(const EthernetClient&);
-    virtual bool operator!=(const EthernetClient& rhs) { return !this->operator==(rhs); };
+    virtual bool operator!=(const EthernetClient& rhs)
+    {
+        return !this->operator==(rhs);
+    };
 
     static uip_userdata_t all_data[UIP_CONNS];
 
 private:
-
-    RF24Client(struct uip_conn *_conn);
+    RF24Client(struct uip_conn* _conn);
     RF24Client(uip_userdata_t* conn_data);
 
     uip_userdata_t* data;
 
-    static int _available(uip_userdata_t *);
+    static int _available(uip_userdata_t*);
 
     static uip_userdata_t* _allocateData();
-    static size_t _write(uip_userdata_t *,const uint8_t *buf, size_t size);
+    static size_t _write(uip_userdata_t*, const uint8_t* buf, size_t size);
 
     friend class RF24EthernetClass;
     friend class RF24Server;
@@ -177,6 +179,5 @@ private:
     friend void serialip_appcall(void);
     friend void uip_log(char* msg);
 };
-
 
 #endif // RF24CLIENT_H

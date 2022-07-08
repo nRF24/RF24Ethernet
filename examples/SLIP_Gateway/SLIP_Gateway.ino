@@ -44,8 +44,8 @@ RF24 radio(7, 8);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 
-#define LED_TXRX          // Flash LED on SLIP device TX or RX 
-#define SLIP_DEBUG        // Will delay and flash LEDs if unable to find a node by IP address ( node needs to reconnect via RF24Mesh ) 
+#define LED_TXRX    // Flash LED on SLIP device TX or RX
+#define SLIP_DEBUG  // Will delay and flash LEDs if unable to find a node by IP address ( node needs to reconnect via RF24Mesh )
 
 // Define the LED pin for the above two options
 #define DEBUG_LED_PIN A3
@@ -54,7 +54,7 @@ RF24Mesh mesh(radio, network);
 // the MAX_PAYLOAD_SIZE in RF24Network. The default is 120 bytes
 #define UIP_BUFFER_SIZE MAX_PAYLOAD_SIZE
 
-uint8_t slip_buf[UIP_BUFFER_SIZE]; // MSS + TCP Header Length
+uint8_t slip_buf[UIP_BUFFER_SIZE];  // MSS + TCP Header Length
 
 //Function to send incoming network data to the SLIP interface
 void networkToSLIP();
@@ -72,13 +72,12 @@ void setup() {
 
   // LED stuff
   pinMode(DEBUG_LED_PIN, OUTPUT);
-#if defined (SLIP_DEBUG)
+#if defined(SLIP_DEBUG)
   digitalWrite(DEBUG_LED_PIN, HIGH);
   delay(200);
   digitalWrite(DEBUG_LED_PIN, LOW);
 #endif
 }
-
 
 uint32_t active_timer = 0;
 
@@ -103,12 +102,11 @@ void loop() {
     networkToSLIP();
   }
 
-
   // Poll the SLIP device for incoming data
   //uint16_t len = slipdev_poll();
   uint16_t len;
 
-  if ( (len = slipdev_poll()) > 0 ) {
+  if ((len = slipdev_poll()) > 0) {
     if (len > MAX_PAYLOAD_SIZE) {
       return;
     }
@@ -119,17 +117,17 @@ void loop() {
     uint8_t lastOctet = slip_buf[19];
 
     //Convert the IP into an RF24Network Mac address
-    if ( (meshAddr = mesh.getAddress(lastOctet)) > 0) {
+    if ((meshAddr = mesh.getAddress(lastOctet)) > 0) {
       // Set the RF24Network address in the header
       header.to_node = meshAddr;
 
-#if defined (LED_TXRX)
+#if defined(LED_TXRX)
       digitalWrite(DEBUG_LED_PIN, HIGH);
 #endif
 
       network.write(header, &slip_buf, len);
 
-#if defined (LED_TXRX)
+#if defined(LED_TXRX)
       digitalWrite(DEBUG_LED_PIN, LOW);
 #endif
     } else {
@@ -137,24 +135,20 @@ void loop() {
       // Flash the LED 3 times slowly
       flashLED();
     }
-
   }
-
 }
-
 
 void networkToSLIP() {
 
-  RF24NetworkFrame *frame = network.frag_ptr;
+  RF24NetworkFrame* frame = network.frag_ptr;
   size_t size = frame->message_size;
-  uint8_t *pointer = frame->message_buffer;
+  uint8_t* pointer = frame->message_buffer;
   slipdev_send(pointer, size);
   //digitalWrite(DEBUG_LED_PIN, !digitalRead(DEBUG_LED_PIN));
-
 }
 
 void flashLED() {
-#if defined (SLIP_DEBUG)
+#if defined(SLIP_DEBUG)
   digitalWrite(DEBUG_LED_PIN, HIGH);
   delay(200);
   digitalWrite(DEBUG_LED_PIN, LOW);
@@ -168,5 +162,4 @@ void flashLED() {
   digitalWrite(DEBUG_LED_PIN, LOW);
   delay(200);
 #endif
-
 }

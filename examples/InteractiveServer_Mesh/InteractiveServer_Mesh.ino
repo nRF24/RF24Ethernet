@@ -10,7 +10,7 @@
  *
  * In order to minimize memory use and program space:
  * 1. Open the RF24Network library folder
- * 2. Edit the RF24Networl_config.h file
+ * 2. Edit the RF24Network_config.h file
  * 3. Un-comment #define DISABLE_USER_PAYLOADS
  *
  *
@@ -18,7 +18,6 @@
  * Set #define UIP_CONF_LLH_LEN 0 in uip_conf.h if used with a TUN(RF24Mesh) or SLIP interface
  *
  */
-
 
 #include <SPI.h>
 #include <RF24.h>
@@ -34,10 +33,10 @@ RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
-#if defined (ARDUINO_ARCH_ESP8266)
+#if defined(ARDUINO_ARCH_ESP8266)
 #define LED_PIN BUILTIN_LED
 #else
-#define LED_PIN A3 //Analog pin A3
+#define LED_PIN A3  //Analog pin A3
 #endif
 
 // Configure the server to listen on port 1000
@@ -63,9 +62,7 @@ void setup() {
 
   server.begin();
   server.setTimeout(30000);
-
 }
-
 
 /********************************************************/
 
@@ -75,9 +72,9 @@ void loop() {
 
   // Optional: If the node needs to move around physically, or using failover nodes etc.,
   // enable address renewal
-  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) {  //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if ( ! mesh.checkConnection() ) {
+    if (!mesh.checkConnection()) {
       //refresh the network address
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
@@ -87,38 +84,32 @@ void loop() {
 
   size_t size;
 
-  if (EthernetClient client = server.available())
-  {
+  if (EthernetClient client = server.available()) {
     uint8_t pageReq = 0;
     generate_tcp_stats();
-    while ((size = client.available()) > 0)
-    {
+    while ((size = client.available()) > 0) {
       // If a request is received with enough characters, search for the / character
       if (size >= 7) {
-        char slash[] = {"/"};
+        char slash[] = { "/" };
         client.setTimeout(10000);
         client.findUntil(slash, slash);
-        char buf[3] = {"  "};
+        char buf[3] = { "  " };
         if (client.available() >= 2) {
           buf[0] = client.read();  // Read in the first two characters from the request
           buf[1] = client.read();
 
-          if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
+          if (strcmp(buf, "ON") == 0) {  // If the user requested http://ip-of-node:1000/ON
             led_state = 1;
             pageReq = 1;
             digitalWrite(LED_PIN, led_state);
-
-          } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+          } else if (strcmp(buf, "OF") == 0) {  // If the user requested http://ip-of-node:1000/OF
             led_state = 0;
             pageReq = 1;
             digitalWrite(LED_PIN, led_state);
-
-          } else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/ST
+          } else if (strcmp(buf, "ST") == 0) {  // If the user requested http://ip-of-node:1000/ST
             pageReq = 2;
-
-          } else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/CR
+          } else if (strcmp(buf, "CR") == 0) {  // If the user requested http://ip-of-node:1000/CR
             pageReq = 3;
-
           } else if (buf[0] == ' ') {
             pageReq = 4;
           }
@@ -151,7 +142,6 @@ void loop() {
 
     client.stop();
     Serial.println(F("********"));
-
   }
 
   // We can do other things in the loop, but be aware that the loop will
@@ -163,9 +153,8 @@ void loop() {
 * how to interact directly with the uIP TCP/IP stack
 * See the uIP documentation for more info
 */
-static unsigned short generate_tcp_stats()
-{
-  struct uip_conn *conn;
+static unsigned short generate_tcp_stats() {
+  struct uip_conn* conn;
 
   // If multiple connections are enabled, get info for each active connection
   for (uint8_t i = 0; i < UIP_CONF_MAX_CONNECTIONS; i++) {
@@ -189,9 +178,7 @@ static unsigned short generate_tcp_stats()
       Serial.println(htons(conn->rport));
       Serial.print(F("Outstanding "));
       Serial.println((uip_outstanding(conn)) ? '*' : ' ');
-
     }
   }
   return 1;
 }
-

@@ -43,11 +43,11 @@ RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
 IPAddress ip(10, 10, 2, 4);
-IPAddress gateway(10, 10, 2, 2); //Specify the gateway in case different from the server
-IPAddress server(10, 10, 2, 2); //The ip of the MQTT server
-char clientID[] = {"arduinoClient   "};
+IPAddress gateway(10, 10, 2, 2);  //Specify the gateway in case different from the server
+IPAddress server(10, 10, 2, 2);   //The ip of the MQTT server
+char clientID[] = { "arduinoClient   " };
 
-void messageReceived(MQTTClient *client, char topic[], char payload[], int length) {
+void messageReceived(MQTTClient* client, char topic[], char payload[], int length) {
   Serial.println("incoming: ");
   Serial.print(topic);
   Serial.print(" - ");
@@ -78,10 +78,7 @@ void connect() {
   client.subscribe("inTopic", 2);
 }
 
-
-
-void setup()
-{
+void setup() {
   Serial.begin(115200);
 
   Ethernet.begin(ip, gateway);
@@ -101,19 +98,17 @@ void setup()
 
   client.begin(server, ethClient);
   client.onMessageAdvanced(messageReceived);
-
 }
 
 uint32_t mesh_timer = 0;
 uint32_t pub_timer = 0;
 
-void loop()
-{
+void loop() {
   Ethernet.update();
 
-  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) {  //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if ( ! mesh.checkConnection() ) {
+    if (!mesh.checkConnection()) {
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
       }
@@ -137,6 +132,4 @@ void loop()
 
     client.publish("outTopic", str1);
   }
-
-
 }

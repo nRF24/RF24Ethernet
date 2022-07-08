@@ -36,8 +36,8 @@
 /**
  * Uncomment `#define RF24ETHERNET_DEBUG_CLIENT` to enable main debugging output
  */
-#if defined (RF24ETHERNET_DEBUG_CLIENT)
-    #define IF_RF24ETHERNET_DEBUG_CLIENT(x) ({x;})
+#if defined(RF24ETHERNET_DEBUG_CLIENT)
+    #define IF_RF24ETHERNET_DEBUG_CLIENT(x) ({ x; })
 #else
     #define IF_RF24ETHERNET_DEBUG_CLIENT(x)
 #endif
@@ -45,8 +45,8 @@
 /**
  * Uncomment `#define ETH_DEBUG_L1` for debugging window reopening & retransmissions
  */
-#if defined (ETH_DEBUG_L1)
-    #define IF_ETH_DEBUG_L1(x) ({x;})
+#if defined(ETH_DEBUG_L1)
+    #define IF_ETH_DEBUG_L1(x) ({ x; })
 #else
     #define IF_ETH_DEBUG_L1(x)
 #endif
@@ -54,8 +54,8 @@
 /**
  * Uncomment `#define ETH_DEBUG_L2` for extra client state debugging
  */
-#if defined (ETH_DEBUG_L2)
-    #define IF_ETH_DEBUG_L2(x) ({x;})
+#if defined(ETH_DEBUG_L2)
+    #define IF_ETH_DEBUG_L2(x) ({ x; })
 #else
     #define IF_ETH_DEBUG_L2(x)
 #endif
@@ -63,8 +63,8 @@
 /**
  * Uncomment `#define RF24ETHERNET_DEBUG_UDP` for UDP debugging
  */
-#if defined (RF24ETHERNET_DEBUG_UDP)
-    #define IF_RF24ETHERNET_DEBUG_UDP(x) ({x;})
+#if defined(RF24ETHERNET_DEBUG_UDP)
+    #define IF_RF24ETHERNET_DEBUG_UDP(x) ({ x; })
 #else
     #define IF_RF24ETHERNET_DEBUG_UDP(x)
 #endif
@@ -72,8 +72,8 @@
 /**
  * Uncomment `#define RF24ETHERNET_DEBUG_DNS` for DNS debugging
  */
-#if defined (RF24ETHERNET_DEBUG_DNS)
-    #define IF_RF24ETHERNET_DEBUG_DNS(x) ({x;})
+#if defined(RF24ETHERNET_DEBUG_DNS)
+    #define IF_RF24ETHERNET_DEBUG_DNS(x) ({ x; })
 #else
     #define IF_RF24ETHERNET_DEBUG_DNS(x)
 #endif

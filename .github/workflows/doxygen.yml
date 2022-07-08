@@ -33,23 +33,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: get latest release version number
-      id: latest_ver
-      run: echo "::set-output name=release::$(awk -F "=" '/version/ {print $2}' library.properties)"
-    - name: overwrite doxygen tags
-      run: |
-        touch doxygenAction
-        echo "PROJECT_NUMBER = ${{ steps.latest_ver.outputs.release }}" >> doxygenAction
-        echo "@INCLUDE = doxygenAction" >> Doxyfile
-    - name: build doxygen
-      uses: mattnotmitt/doxygen-action@v1
-      with:
-          working-directory: '.'
-          doxyfile-path: './Doxyfile'
-    - name: upload to github pages
-      if: ${{ github.event_name == 'release'}}
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/html
+      - uses: actions/checkout@v2
+      - name: get latest release version number
+        id: latest_ver
+        run: echo "::set-output name=release::$(awk -F "=" '/version/ {print $2}' library.properties)"
+      - name: overwrite doxygen tags
+        run: |
+          touch doxygenAction
+          echo "PROJECT_NUMBER = ${{ steps.latest_ver.outputs.release }}" >> doxygenAction
+          echo "@INCLUDE = doxygenAction" >> Doxyfile
+      - name: install Doxygen static libclang deps
+        run: sudo apt-get install libclang1-9 libclang-cpp9
+      - name: install doxygen from SF binary archives
+        env:
+          DOXYGEN_VERSION: '1.9.4'
+        run: |
+          mkdir doxygen && cd doxygen
+          curl -L https://sourceforge.net/projects/doxygen/files/rel-$DOXYGEN_VERSION/doxygen-$DOXYGEN_VERSION.linux.bin.tar.gz > doxygen.tar.gz
+          gunzip doxygen.tar.gz
+          tar xf doxygen.tar
+          cd doxygen-$DOXYGEN_VERSION
+          sudo make install
+      - run: doxygen
+      - name: upload to github pages
+        if: ${{ github.event_name == 'release'}}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html

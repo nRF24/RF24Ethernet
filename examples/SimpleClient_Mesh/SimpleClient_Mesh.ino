@@ -15,12 +15,11 @@
 
    In order to minimize memory use and program space:
    1. Open the RF24Network library folder
-   2. Edit the RF24Networl_config.h file
+   2. Edit the RF24Network_config.h file
    3. Un-comment #define DISABLE_USER_PAYLOADS
 
    This example connects to google and downloads the index page
 */
-
 
 #include <SPI.h>
 #include <RF24.h>
@@ -33,7 +32,6 @@ RF24 radio(7, 8);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
-
 
 EthernetClient client;
 
@@ -68,9 +66,9 @@ long contentLength = 0;
 
 void loop() {
 
-  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 30000) {  //Every 30 seconds, test mesh connectivity
     mesh_timer = millis();
-    if ( ! mesh.checkConnection() ) {
+    if (!mesh.checkConnection()) {
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
       }
@@ -79,7 +77,7 @@ void loop() {
 
   size_t size;
 
-  if ( (size = client.available()) > 0) {
+  if ((size = client.available()) > 0) {
 
     //Look for http header with content length. This will empty the entire request
     //if the server does not include the length.
@@ -115,9 +113,9 @@ void loop() {
 
     // Wait 5 seconds between requests
     reqTimer = millis();
-    while (millis() - reqTimer < 5000 && !client.available() ) { }
+    while (millis() - reqTimer < 5000 && !client.available()) {
+    }
     connect();
-
   }
   // We can do other things in the loop, but be aware that the loop will
   // briefly pause while IP data is being processed.
@@ -133,10 +131,8 @@ void connect() {
     client.write("GET /asciiart/pizza.txt HTTP/1.1\n");
     client.write("Host: fiikus.net\n");
     client.write("Connection: close\n\n");
-
   } else {
     // if you didn't get a connection to the server:
     Serial.println(F("connection failed"));
   }
 }
-

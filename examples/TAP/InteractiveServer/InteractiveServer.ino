@@ -10,11 +10,10 @@
  *
  * In order to minimize memory use and program space:
  * 1. Open the RF24Network library folder
- * 2. Edit the RF24Networl_config.h file
+ * 2. Edit the RF24Network_config.h file
  * 3. Un-comment #define DISABLE_USER_PAYLOADS
  * 4. See the Getting_Started_SimpleServer_Minimal example
  */
-
 
 #include <RF24Network.h>
 #include <RF24.h>
@@ -30,7 +29,7 @@ RF24 radio(7, 8);
 RF24Network network(radio);
 RF24EthernetClass RF24Ethernet(radio, network);
 RF24Mesh mesh(radio, network);
-#define LED_PIN A3 //Analog pin A3
+#define LED_PIN A3  //Analog pin A3
 
 // Configure the server to listen on port 1000
 EthernetServer server = EthernetServer(1000);
@@ -60,42 +59,35 @@ void setup() {
   server.begin();
 }
 
-
 /********************************************************/
 
 void loop() {
 
   size_t size;
 
-  if (EthernetClient client = server.available())
-  {
+  if (EthernetClient client = server.available()) {
     uint8_t pageReq = 0;
     generate_tcp_stats();
-    while ((size = client.available()) > 0)
-    {
+    while ((size = client.available()) > 0) {
       // If a request is received with enough characters, search for the / character
       if (size >= 7) {
         client.findUntil("/", "/");
-        char buf[3] = {"  "};
+        char buf[3] = { "  " };
         buf[0] = client.read();  // Read in the first two characters from the request
         buf[1] = client.read();
 
-        if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
+        if (strcmp(buf, "ON") == 0) {  // If the user requested http://ip-of-node:1000/ON
           led_state = 1;
           pageReq = 1;
           digitalWrite(LED_PIN, led_state);
-
-        } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+        } else if (strcmp(buf, "OF") == 0) {  // If the user requested http://ip-of-node:1000/OF
           led_state = 0;
           pageReq = 1;
           digitalWrite(LED_PIN, led_state);
-
-        } else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/OF
+        } else if (strcmp(buf, "ST") == 0) {  // If the user requested http://ip-of-node:1000/OF
           pageReq = 2;
-
-        } else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/OF
+        } else if (strcmp(buf, "CR") == 0) {  // If the user requested http://ip-of-node:1000/OF
           pageReq = 3;
-
         } else if (buf[0] == ' ') {
           pageReq = 4;
         }
@@ -129,7 +121,6 @@ void loop() {
 
     client.stop();
     Serial.println(F("********"));
-
   }
 
   // We can do other things in the loop, but be aware that the loop will
@@ -141,9 +132,8 @@ void loop() {
 * how to interact directly with the uIP TCP/IP stack
 * See the uIP documentation for more info
 */
-static unsigned short generate_tcp_stats()
-{
-  struct uip_conn *conn;
+static unsigned short generate_tcp_stats() {
+  struct uip_conn* conn;
 
   // If multiple connections are enabled, get info for each active connection
   for (uint8_t i = 0; i < UIP_CONF_MAX_CONNECTIONS; i++) {
@@ -168,8 +158,6 @@ static unsigned short generate_tcp_stats()
       Serial.println(htons(conn->rport));
       Serial.print(F("Outstanding "));
       Serial.println((uip_outstanding(conn)) ? '*' : ' ');
-
     }
   }
 }
-

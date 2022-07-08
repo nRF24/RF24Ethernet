@@ -65,15 +65,13 @@
  *
  * In order to minimize memory use and program space:
  * 1. Open the RF24Network library folder
- * 2. Edit the RF24Networl_config.h file
+ * 2. Edit the RF24Network_config.h file
  * 3. Un-comment #define DISABLE_USER_PAYLOADS
  * 4. Remember to set it back for normal operation
  *
  * This example will get you some pizza and a book to read
  *
  */
-
-
 
 #include <RF24.h>
 #include <RF24Network.h>
@@ -91,8 +89,8 @@ EthernetClient client;
 
 // The hosts we will be connecting to
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
-IPAddress icewind(109, 120, 203, 163); //http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt
-IPAddress pizza(94, 199, 58, 243); //http://fiikus.net/asciiart/pizza.txt
+IPAddress icewind(109, 120, 203, 163);  //http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt
+IPAddress pizza(94, 199, 58, 243);      //http://fiikus.net/asciiart/pizza.txt
 IPAddress host(pizza);
 
 void setup() {
@@ -130,9 +128,9 @@ void loop() {
 
   // Optional: If the node needs to move around physically, or using failover nodes etc.,
   // enable address renewal
-  if (millis() - mesh_timer > 12000) { //Every 12 seconds, test mesh connectivity
+  if (millis() - mesh_timer > 12000) {  //Every 12 seconds, test mesh connectivity
     mesh_timer = millis();
-    if ( ! mesh.checkConnection() ) {
+    if (!mesh.checkConnection()) {
       //refresh the network address
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
@@ -158,7 +156,8 @@ void loop() {
     // Calling client.available(); or Ethernet.update(); is required during delays
     // to keep the stack updated
     reqTimer = millis();
-    while (millis() - reqTimer < 5000 && !client.available() ) { }
+    while (millis() - reqTimer < 5000 && !client.available()) {
+    }
     connect();
   }
 
@@ -182,7 +181,6 @@ void connect() {
 
     client.println("Connection: close");
     client.println();
-
   } else {
     // if you didn't get a connection to the server:
     Serial.println(F("connection failed"));

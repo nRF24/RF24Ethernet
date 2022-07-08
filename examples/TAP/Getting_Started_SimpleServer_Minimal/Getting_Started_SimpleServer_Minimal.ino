@@ -7,11 +7,10 @@
  *
  * In order to minimize memory use and program space:
  * 1. Open the RF24Network library folder
- * 2. Edit the RF24Networl_config.h file
+ * 2. Edit the RF24Network_config.h file
  * 3. Un-comment #define DISABLE_USER_PAYLOADS
  *
  */
-
 
 #include <RF24Network.h>
 #include <RF24.h>
@@ -52,8 +51,8 @@ void loop() {
       client.flush();
     }
     // Send an HTML response to the client.
-    client.write( "HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
-    client.write( "\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");
+    client.write("HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close\n Refresh: 5\n");
+    client.write("\n<!DOCTYPE HTML>\n <html>\nHELLO FROM ARDUINO!\n</html>\n");
     client.stop();
   }
 
