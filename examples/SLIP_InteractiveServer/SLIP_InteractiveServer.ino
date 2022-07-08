@@ -33,7 +33,6 @@
 #include "HTML.h"
 #include <printf.h>
 
-
 /*** Configure the radio CE & CS pins ***/
 RF24 radio(7, 8);
 RF24Network network(radio);
@@ -47,129 +46,128 @@ EthernetServer server = EthernetServer(1000);
 
 /**********************************************************/
 
-void setup() {
-  // Set up the speed of our serial link.
-  Serial.begin(115200);
-  printf_begin();
-  Serial.println("start");
-  pinMode(LED_PIN, OUTPUT);
+void setup()
+{
+    // Set up the speed of our serial link.
+    Serial.begin(115200);
+    printf_begin();
+    Serial.println("start");
+    pinMode(LED_PIN, OUTPUT);
 
+    // This step is very important. When using TUN or SLIP, the IP of the device
+    // must be configured as the NodeID in the RF24Mesh layer
 
-  // This step is very important. When using TUN or SLIP, the IP of the device
-  // must be configured as the NodeID in the RF24Mesh layer
+    mesh.setNodeID(2);
+    mesh.begin();
 
-  mesh.setNodeID(2);
-  mesh.begin();
+    //Optional
+    radio.printDetails();
 
-  //Optional
-  radio.printDetails();
+    // Set the IP address we'll be using.  Make sure this doesn't conflict with
+    // any IP addresses or subnets on your LAN or you won't be able to connect to
+    // either the Arduino or your LAN...
 
-  // Set the IP address we'll be using.  Make sure this doesn't conflict with
-  // any IP addresses or subnets on your LAN or you won't be able to connect to
-  // either the Arduino or your LAN...
+    // NOTE: The last octet/last digit of the IP must match the RF24Mesh nodeID above
+    IPAddress myIP(10, 10, 3, 2);
+    Ethernet.begin(myIP);
 
-  // NOTE: The last octet/last digit of the IP must match the RF24Mesh nodeID above
-  IPAddress myIP(10, 10, 3, 2);
-  Ethernet.begin(myIP);
+    // If you'll be making outgoing connections from the Arduino to the rest of
+    // the world, you'll need a gateway set up.
+    IPAddress gwIP(10, 10, 3, 1);
+    Ethernet.set_gateway(gwIP);
 
-  // If you'll be making outgoing connections from the Arduino to the rest of
-  // the world, you'll need a gateway set up.
-  IPAddress gwIP(10, 10, 3, 1);
-  Ethernet.set_gateway(gwIP);
-
-  // Listen for incoming connections on TCP port 1000.
-  server.begin();
+    // Listen for incoming connections on TCP port 1000.
+    server.begin();
 }
-
 
 /********************************************************/
 
 uint32_t mesh_timer = 0;
 
-void loop() {
+void loop()
+{
 
-  // This is the last of the differences between this and the regular Interactive Server example
-  // If the master node is completely down, and unresponsive for 30 seconds, renew the address
-  if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
-    mesh_timer = millis();
-    if ( ! mesh.checkConnection() ) {
-      //refresh the network address
-      if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
-        mesh.begin();
-      }
-    }
-  }
-
-  size_t size;
-
-  if (EthernetClient client = server.available())
-  {
-    uint8_t pageReq = 0;
-    generate_tcp_stats();
-    while ((size = client.available()) > 0)
-    {
-      // If a request is received with enough characters, search for the / character
-      if (size >= 7) {
-        char slash[] = {"/"};
-        client.findUntil(slash, slash);
-        char buf[3] = {"  "};
-        buf[0] = client.read();  // Read in the first two characters from the request
-        buf[1] = client.read();
-
-        if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
-          led_state = 1;
-          pageReq = 1;
-          digitalWrite(LED_PIN, led_state);
-
-        } else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
-          led_state = 0;
-          pageReq = 1;
-          digitalWrite(LED_PIN, led_state);
-
-        } else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/OF
-          pageReq = 2;
-
-        } else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/OF
-          pageReq = 3;
-
-        } else if (buf[0] == ' ') {
-          pageReq = 4;
+    // This is the last of the differences between this and the regular Interactive Server example
+    // If the master node is completely down, and unresponsive for 30 seconds, renew the address
+    if (millis() - mesh_timer > 30000) { //Every 30 seconds, test mesh connectivity
+        mesh_timer = millis();
+        if (!mesh.checkConnection()) {
+            //refresh the network address
+            if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
+                mesh.begin();
+            }
         }
-      }
-      // Empty the rest of the data from the client
-      while (client.waitAvailable()) {
-        client.read();
-      }
     }
 
-    /**
+    size_t size;
+
+    if (EthernetClient client = server.available())
+    {
+        uint8_t pageReq = 0;
+        generate_tcp_stats();
+        while ((size = client.available()) > 0)
+        {
+            // If a request is received with enough characters, search for the / character
+            if (size >= 7) {
+                char slash[] = {"/"};
+                client.findUntil(slash, slash);
+                char buf[3] = {"  "};
+                buf[0] = client.read(); // Read in the first two characters from the request
+                buf[1] = client.read();
+
+                if (strcmp(buf, "ON") == 0) { // If the user requested http://ip-of-node:1000/ON
+                    led_state = 1;
+                    pageReq = 1;
+                    digitalWrite(LED_PIN, led_state);
+                }
+                else if (strcmp(buf, "OF") == 0) { // If the user requested http://ip-of-node:1000/OF
+                    led_state = 0;
+                    pageReq = 1;
+                    digitalWrite(LED_PIN, led_state);
+                }
+                else if (strcmp(buf, "ST") == 0) { // If the user requested http://ip-of-node:1000/OF
+                    pageReq = 2;
+                }
+                else if (strcmp(buf, "CR") == 0) { // If the user requested http://ip-of-node:1000/OF
+                    pageReq = 3;
+                }
+                else if (buf[0] == ' ') {
+                    pageReq = 4;
+                }
+            }
+            // Empty the rest of the data from the client
+            while (client.waitAvailable()) {
+                client.read();
+            }
+        }
+
+        /**
     * Based on the incoming URL request, send the correct page to the client
     * see HTML.h
     */
-    switch (pageReq) {
-      case 2:
-        stats_page(client);
-        break;
-      case 3:
-        credits_page(client);
-        break;
-      case 4:
-        main_page(client);
-        break;
-      case 1:
-        main_page(client);
-        break;
-      default:
-        break;
+        switch (pageReq) {
+            case 2:
+                stats_page(client);
+                break;
+            case 3:
+                credits_page(client);
+                break;
+            case 4:
+                main_page(client);
+                break;
+            case 1:
+                main_page(client);
+                break;
+            default:
+                break;
+        }
+
+        client.stop();
+        Serial.println(F("********"));
     }
 
-    client.stop();
-    Serial.println(F("********"));
-
-  }
-
-  // We can do other things in the loop, but be aware that the loop will
-  // briefly pause while IP data is being processed.
+    // We can do other things in the loop, but be aware that the loop will
+    // briefly pause while IP data is being processed.
 }
 
 /**
@@ -179,33 +177,32 @@ void loop() {
 */
 static unsigned short generate_tcp_stats()
 {
-  struct uip_conn *conn;
+    struct uip_conn* conn;
 
-  // If multiple connections are enabled, get info for each active connection
-  for (uint8_t i = 0; i < UIP_CONF_MAX_CONNECTIONS; i++) {
-    conn = &uip_conns[i];
+    // If multiple connections are enabled, get info for each active connection
+    for (uint8_t i = 0; i < UIP_CONF_MAX_CONNECTIONS; i++) {
+        conn = &uip_conns[i];
 
-    // If there is an open connection to one of the listening ports, print the info
-    // This logic seems to be backwards?
-    if (uip_stopped(conn)) {
-      Serial.print(F("Connection no "));
-      Serial.println(i);
-      Serial.print(F("Local Port "));
-      Serial.println(htons(conn->lport));
-      Serial.print(F("Remote IP/Port "));
-      Serial.print(htons(conn->ripaddr[0]) >> 8);
-      Serial.print(F("."));
-      Serial.print(htons(conn->ripaddr[0]) & 0xff);
-      Serial.print(F("."));
-      Serial.print(htons(conn->ripaddr[1]) >> 8);
-      Serial.print(F("."));
-      Serial.print(htons(conn->ripaddr[1]) & 0xff);
-      Serial.print(F(":"));
-      Serial.println(htons(conn->rport));
-      Serial.print(F("Outstanding "));
-      Serial.println((uip_outstanding(conn)) ? '*' : ' ');
-
+        // If there is an open connection to one of the listening ports, print the info
+        // This logic seems to be backwards?
+        if (uip_stopped(conn)) {
+            Serial.print(F("Connection no "));
+            Serial.println(i);
+            Serial.print(F("Local Port "));
+            Serial.println(htons(conn->lport));
+            Serial.print(F("Remote IP/Port "));
+            Serial.print(htons(conn->ripaddr[0]) >> 8);
+            Serial.print(F("."));
+            Serial.print(htons(conn->ripaddr[0]) & 0xff);
+            Serial.print(F("."));
+            Serial.print(htons(conn->ripaddr[1]) >> 8);
+            Serial.print(F("."));
+            Serial.print(htons(conn->ripaddr[1]) & 0xff);
+            Serial.print(F(":"));
+            Serial.println(htons(conn->rport));
+            Serial.print(F("Outstanding "));
+            Serial.println((uip_outstanding(conn)) ? '*' : ' ');
+        }
     }
-  }
-  return 1;
+    return 1;
 }

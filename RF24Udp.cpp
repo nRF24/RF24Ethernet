@@ -21,13 +21,13 @@
 
 #if UIP_CONF_UDP > 0
 
-#ifdef RF24ETHERNET_DEBUG_UDP
-#include "HardwareSerial.h"
-#endif
+    #ifdef RF24ETHERNET_DEBUG_UDP
+        #include "HardwareSerial.h"
+    #endif
 
-#if UIP_UDP
-#define UIP_ARPHDRSIZE 42
-#define UDPBUF ((struct uip_udpip_hdr *)&uip_buf[UIP_LLH_LEN])
+    #if UIP_UDP
+        #define UIP_ARPHDRSIZE 42
+        #define UDPBUF         ((struct uip_udpip_hdr*)&uip_buf[UIP_LLH_LEN])
 
 /*******************************************************/
 
@@ -137,7 +137,7 @@ int RF24UDP::beginPacket(IPAddress ip, uint16_t port)
 
 // Start building up a packet to send to the remote host specific in host and port
 // Returns 1 if successful, 0 if there was a problem resolving the hostname or port
-int RF24UDP::beginPacket(const char *host, uint16_t port)
+int RF24UDP::beginPacket(const char* host, uint16_t port)
 {
     // Look up the host first
     int ret = 0;
@@ -187,7 +187,7 @@ size_t RF24UDP::write(uint8_t c)
 /*******************************************************/
 
 // Write size bytes from buffer into the packet
-size_t RF24UDP::write(const uint8_t *buffer, size_t size)
+size_t RF24UDP::write(const uint8_t* buffer, size_t size)
 {
     if (appdata.packet_out != 0)
     {
@@ -248,7 +248,7 @@ int RF24UDP::read()
 
 // Read up to len bytes from the current packet and place them into buffer
 // Returns the number of bytes read, or 0 if none are available
-int RF24UDP::read(unsigned char *buffer, size_t len)
+int RF24UDP::read(unsigned char* buffer, size_t len)
 {
 
     RF24EthernetClass::tick();
@@ -315,7 +315,7 @@ uint16_t RF24UDP::remotePort()
 
 void uipudp_appcall(void)
 {
-    if (uip_udp_userdata_t *data = (uip_udp_userdata_t *)(uip_udp_conn->appstate))
+    if (uip_udp_userdata_t* data = (uip_udp_userdata_t*)(uip_udp_conn->appstate))
     {
         if (uip_newdata())
         {
@@ -345,11 +345,11 @@ void uipudp_appcall(void)
 
 /*******************************************************/
 
-void RF24UDP::_send(uip_udp_userdata_t *data)
+void RF24UDP::_send(uip_udp_userdata_t* data)
 {
-#if defined(RF24_TAP)
+        #if defined(RF24_TAP)
     uip_arp_out(); //add arp
-#endif
+        #endif
     if (uip_len == UIP_ARPHDRSIZE)
     {
         //RF24EthernetClass::uip_packet = 0;
@@ -371,7 +371,7 @@ void RF24UDP::_send(uip_udp_userdata_t *data)
     }
 }
 
-/*******************************************************/
+    /*******************************************************/
 
-#endif // UIP_UDP
-#endif // UDP Enabled
+    #endif // UIP_UDP
+#endif     // UDP Enabled

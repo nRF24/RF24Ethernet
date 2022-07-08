@@ -27,13 +27,14 @@
 
 #if UIP_CONF_UDP > 0
 
-#include <Udp.h>
+    #include <Udp.h>
 
-#define UIP_UDP_MAXDATALEN 1500
-#define UIP_UDP_PHYH_LEN UIP_LLH_LEN+UIP_IPUDPH_LEN
-#define UIP_UDP_MAXPACKETSIZE UIP_UDP_MAXDATALEN+UIP_UDP_PHYH_LEN
+    #define UIP_UDP_MAXDATALEN    1500
+    #define UIP_UDP_PHYH_LEN      UIP_LLH_LEN + UIP_IPUDPH_LEN
+    #define UIP_UDP_MAXPACKETSIZE UIP_UDP_MAXDATALEN + UIP_UDP_PHYH_LEN
 
-typedef struct {
+typedef struct
+{
     uint16_t out_pos;
     uint8_t packet_next;
     uint8_t packet_in;
@@ -46,7 +47,7 @@ typedef struct {
 class RF24UDP : public UDP
 {
 private:
-    struct uip_udp_conn *_uip_udp_conn;
+    struct uip_udp_conn* _uip_udp_conn;
 
     uip_udp_userdata_t appdata;
 
@@ -75,7 +76,7 @@ public:
      * Start building up a packet to send to the remote host specific in host and port
      * @return 1 if successful, 0 if there was a problem resolving the hostname or port
      */
-    int beginPacket(const char *host, uint16_t port);
+    int beginPacket(const char* host, uint16_t port);
 
     /**
      * @brief Finish off this packet and send it
@@ -87,7 +88,7 @@ public:
     size_t write(uint8_t);
 
     /** @brief Write @p size bytes from @p buffer into the packet */
-    size_t write(const uint8_t *buffer, size_t size);
+    size_t write(const uint8_t* buffer, size_t size);
 
     using Print::write;
 
@@ -113,8 +114,9 @@ public:
      * Read up to @p len characters from the current packet and place them into @p buffer
      * @return The number of characters read, or 0 if none are available
      */
-    int read(char* buffer, size_t len) {
-        return read((unsigned char*) buffer, len);
+    int read(char* buffer, size_t len)
+    {
+        return read((unsigned char*)buffer, len);
     };
 
     /** @return The next byte from the current packet without moving on to the next byte */
@@ -130,13 +132,11 @@ public:
     uint16_t remotePort();
 
 private:
-
     friend void uipudp_appcall(void);
 
     friend class RF24EthernetClass;
     friend class RF24Client;
-    static void _send(uip_udp_userdata_t *data);
-
+    static void _send(uip_udp_userdata_t* data);
 };
 
 #endif // UDP Enabled
