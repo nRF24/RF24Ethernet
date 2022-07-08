@@ -240,6 +240,13 @@ void serialip_appcall(void)
 {
     uip_userdata_t *u = (uip_userdata_t *)uip_conn->appstate;
 
+    if(u && u->connectTimeout > 0){
+      if(millis() - u->connectTimer > u->connectTimeout && u->initialData == false){
+        uip_close();
+        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.println("UIP Client close(timeout)"););
+      }
+    }
+        
     /*******Connected**********/
     if (!u && uip_connected())
     {
@@ -265,6 +272,8 @@ void serialip_appcall(void)
         {
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.print(F(" UIPClient uip_newdata, uip_len:")); Serial.println(uip_len););
 
+            u->initialData = true;
+                        
             if (u->sent)
             {
                 u->hold = (u->out_pos = (u->windowOpened = (u->packets_out = false)));
@@ -428,6 +437,8 @@ uip_userdata_t *RF24Client::_allocateData()
             data->dataPos = 0;
             data->out_pos = 0;
             data->hold = 0;
+            data->initialData = false;
+            data->connectTimer = millis();
             return data;
         }
     }

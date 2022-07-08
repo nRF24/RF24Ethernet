@@ -62,6 +62,7 @@ void setup() {
   Ethernet.set_gateway(gwIP);
 
   server.begin();
+  server.setTimeout(30000);
 
 }
 

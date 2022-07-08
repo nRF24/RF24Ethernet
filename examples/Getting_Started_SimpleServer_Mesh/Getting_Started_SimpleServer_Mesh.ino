@@ -119,6 +119,10 @@ void setup() {
   // Listen for incoming connections on TCP port 1000.  Each incoming
   // connection will result in the uip_callback() function being called.
   server.begin();
+
+  // If no data is received from an incoming connection in the first 30 seconds,
+  // close the connection
+  server.setTimeout(30000);
 }
 
 uint32_t mesh_timer = 0;
