@@ -19,9 +19,9 @@ bool led_state = 0;
 
 // The basic beginning of an HTML connection, plus
 // a style (CSS) section and header to be used on every page
-static const char begin_html[] PROGMEM = "HTTP/1.1 200 OK\n"
-                                         "Content-Type: text/html\n"  //40b
-                                         "Connection: close\n\n"      //59
+static const PROGMEM char begin_html[] = "HTTP/1.1 200 OK\r\n"
+                                         "Content-Type: text/html\r\n"  //40b
+                                         "Connection: close\r\n\n"      //59
                                          "<!DOCTYPE HTML>\n"          //75
                                          "<html><head>"               //87
                                          "<style>\n"
@@ -34,7 +34,8 @@ static const char begin_html[] PROGMEM = "HTTP/1.1 200 OK\n"
 
 // The main HTML page, broken into 2 parts
 // It is broken up so some variables can be printed manually in the middle
-static const char main_html_p1[] PROGMEM =
+/** main html part 1 */
+static const PROGMEM char main_html_p1[] =
 
   "<body>"
   "<img src='http://arduino.cc/en/uploads/Trademark/ArduinoCommunityLogo.png'"
@@ -44,8 +45,8 @@ static const char main_html_p1[] PROGMEM =
   "<br><br>\n<table class = 'center'>";
 
 /***************************************************************/
-
-static const char main_html_p2[] PROGMEM =
+/** main html part 2 */
+static const PROGMEM char main_html_p2[] =
 
   "<tr><td><a href='/ON'>Turn LED On</a>"
 
@@ -59,8 +60,8 @@ static const char main_html_p2[] PROGMEM =
 
 /***************************************************************/
 
-// The HTML for the credits page
-static const char credits_html[] PROGMEM = "<body>"
+/** The HTML for the credits page */
+static const PROGMEM char credits_html[] = "<body>"
                                            "<img src='http://arduino.cc/en/uploads/Trademark/ArduinoCommunityLogo.png'"
                                            "style='width:383px;height:162px'>"
                                            "<br><b>Credits:</b><br><table class='center'><tr>"
@@ -87,14 +88,13 @@ static const char credits_html[] PROGMEM = "<body>"
 /***************************************************************/
 
 /**
-* This function reads from a specified program memory buffer, and sends the data to the client
-* in chunks equal to the max output buffer size or less
-* This allows the HTML code to be modified as desired, with no need to change any other code
-*/
+ * This function reads from a specified program memory buffer, and sends the data to the client
+ * in chunks equal to the max output buffer size or less
+ * This allows the HTML code to be modified as desired, with no need to change any other code
+ */
 void sendPage(EthernetClient& _client, const char* _pointer, size_t size) {
   for (uint16_t i = 0; i < size; i++) {
-    char c = pgm_read_byte(_pointer++);
-    _client.write(&c, 1);
+    _client.print((char)pgm_read_byte(_pointer++));
   }
 }
 
@@ -119,14 +119,14 @@ void main_page(EthernetClient& _client) {
 
   if (!led_state) {
     sprintf_P(bf, PSTR("<tr><td bgcolor=%s>\n"), lColor);
-    _client.write(bf);
+    _client.print(bf);
     sprintf_P(bf, PSTR("LED is %s</td></tr>\n"), lState);
   } else {
     sprintf_P(bf, PSTR("<tr><td> </td><td bgcolor=%s>\n"), lColor);
-    _client.write(bf);
+    _client.print(bf);
     sprintf_P(bf, PSTR("LED is %s</td></tr>\n"), lState);
   }
-  _client.write(bf);
+  _client.print(bf);
 
   // Send the 2nd half of the page
   static const char* html_pointer2 = main_html_p2;
@@ -160,38 +160,38 @@ void stats_page(EthernetClient& _client) {
 
   char buffer[45];
 
-  strncpy_P(buffer, PSTR("HTTP/1.1 200 OK\nContent-Type: text/html\n"), 45);
-  _client.write(buffer);
-  strncpy_P(buffer, PSTR("Connection: close\n\n<!DOCTYPE HTML>\n<html>\n"), 45);
-  _client.write(buffer);
+  strncpy_P(buffer, PSTR("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n"), 45);
+  _client.print(buffer);
+  strncpy_P(buffer, PSTR("Connection: close\r\n\n<!DOCTYPE HTML>\n<html>\n"), 45);
+  _client.print(buffer);
   strncpy_P(buffer, PSTR("<head><style>body{background-color:linen;}\n"), 45);
-  _client.write(buffer);
+  _client.print(buffer);
   strncpy_P(buffer, PSTR("td{border: 1px solid black;}</style></head>\n"), 45);
-  _client.write(buffer);
+  _client.print(buffer);
   strncpy_P(buffer, PSTR("<body><table><tr><td> Uptime</td><td>\n"), 45);
-  _client.write(buffer);
+  _client.print(buffer);
   sprintf_P(buffer, PSTR("%u days, %lu hours %lu minutes %lu"), days, hours, minutes, seconds);
-  _client.write(buffer);
+  _client.print(buffer);
   strncpy_P(buffer, PSTR("seconds</td></tr><tr><td>UIP Buffer Size"), 45);
-  _client.write(buffer);
+  _client.print(buffer);
   sprintf_P(buffer, PSTR("</td><td>%u bytes</td></tr><tr><td>User "), UIP_BUFSIZE);
-  _client.write(buffer);
+  _client.print(buffer);
   sprintf_P(buffer, PSTR("Output<br>Buffer Size</td><td>%u bytes"), OUTPUT_BUFFER_SIZE);
-  _client.write(buffer);
+  _client.print(buffer);
   strncpy_P(buffer, PSTR("</td></tr></table><br><br>"), 45);
-  _client.write(buffer);
+  _client.print(buffer);
   strncpy_P(buffer, PSTR("<a href='/'>Home</a></body></html>"), 45);
-  _client.write(buffer);
+  _client.print(buffer);
 }
 
 /***************************************************************/
 
 /**
-* An example of a very basic HTML page
-*/
-static const char html_page[] PROGMEM = "HTTP/1.1 200 OK\n"
-                                        "Content-Type: text/html\n"
-                                        "Connection: close\n\n"
+ * An example of a very basic HTML page
+ */
+static const PROGMEM char html_page[] = "HTTP/1.1 200 OK\r\n"
+                                        "Content-Type: text/html\r\n"
+                                        "Connection: close\r\n\n"
                                         "<!DOCTYPE HTML>"
                                         "<html>"
                                         "<body>"

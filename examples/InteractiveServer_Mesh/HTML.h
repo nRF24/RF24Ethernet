@@ -19,9 +19,9 @@ bool led_state = 0;
 
 // The basic beginning of an HTML connection, plus
 // a style (CSS) section and header to be used on every page
-static const PROGMEM char begin_html[] = "HTTP/1.1 200 OK\n"
-                                         "Content-Type: text/html\n"  //40b
-                                         "Connection: close\n\n"      //59
+static const PROGMEM char begin_html[] = "HTTP/1.1 200 OK\r\n"
+                                         "Content-Type: text/html\r\n"  //40b
+                                         "Connection: close\r\n\n"      //59
                                          "<!DOCTYPE HTML>\n"          //75
                                          "<html><head>"               //87
                                          "<style>\n"
@@ -160,9 +160,9 @@ void stats_page(EthernetClient& _client) {
 
   char buffer[45];
 
-  strncpy_P(buffer, PSTR("HTTP/1.1 200 OK\nContent-Type: text/html\n"), 45);
+  strncpy_P(buffer, PSTR("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n"), 45);
   _client.print(buffer);
-  strncpy_P(buffer, PSTR("Connection: close\n\n<!DOCTYPE HTML>\n<html>\n"), 45);
+  strncpy_P(buffer, PSTR("Connection: close\r\n\n<!DOCTYPE HTML>\n<html>\n"), 45);
   _client.print(buffer);
   strncpy_P(buffer, PSTR("<head><style>body{background-color:linen;}\n"), 45);
   _client.print(buffer);
@@ -189,9 +189,9 @@ void stats_page(EthernetClient& _client) {
 /**
  * An example of a very basic HTML page
  */
-static const PROGMEM char html_page[] = "HTTP/1.1 200 OK\n"
-                                        "Content-Type: text/html\n"
-                                        "Connection: close\n\n"
+static const PROGMEM char html_page[] = "HTTP/1.1 200 OK\r\n"
+                                        "Content-Type: text/html\r\n"
+                                        "Connection: close\r\n\n"
                                         "<!DOCTYPE HTML>"
                                         "<html>"
                                         "<body>"
