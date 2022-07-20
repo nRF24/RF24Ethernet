@@ -148,7 +148,7 @@ void loop() {
       Serial.print((char)client.read());
     }
     // Send an HTML response to the client. Default max size/characters per write is 90
-    client.print("HTTP/1.1 200 OK\n Content-Type: text/html\n Connection: close \nRefresh: 5 \n\n");
+    client.print("HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n Connection: close \r\nRefresh: 5 \r\n\n");
     client.print("<!DOCTYPE HTML>\n <html> HELLO FROM ARDUINO!</html>");
     client.stop();
 
