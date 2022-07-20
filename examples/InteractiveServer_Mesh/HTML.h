@@ -22,8 +22,8 @@ bool led_state = 0;
 static const PROGMEM char begin_html[] = "HTTP/1.1 200 OK\r\n"
                                          "Content-Type: text/html\r\n"  //40b
                                          "Connection: close\r\n\n"      //59
-                                         "<!DOCTYPE HTML>\n"          //75
-                                         "<html><head>"               //87
+                                         "<!DOCTYPE HTML>\n"            //75
+                                         "<html><head>"                 //87
                                          "<style>\n"
                                          "body{background-color:linen; text-align: center}"
                                          "table.center{margin-left:auto;margin-right:auto;}"
