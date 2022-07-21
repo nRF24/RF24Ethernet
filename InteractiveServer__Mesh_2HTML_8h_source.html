@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;1.6.10</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;1.6.11</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -118,11 +118,11 @@ var searchBox = new SearchBox("searchBox", "search",'Search','.html');
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">// The basic beginning of an HTML connection, plus</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="comment">// a style (CSS) section and header to be used on every page</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">static</span> <span class="keyword">const</span> PROGMEM <span class="keywordtype">char</span> begin_html[] = <span class="stringliteral">&quot;HTTP/1.1 200 OK\n&quot;</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>                                         <span class="stringliteral">&quot;Content-Type: text/html\n&quot;</span>  <span class="comment">//40b</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>                                         <span class="stringliteral">&quot;Connection: close\n\n&quot;</span>      <span class="comment">//59</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>                                         <span class="stringliteral">&quot;&lt;!DOCTYPE HTML&gt;\n&quot;</span>          <span class="comment">//75</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>                                         <span class="stringliteral">&quot;&lt;html&gt;&lt;head&gt;&quot;</span>               <span class="comment">//87</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">static</span> <span class="keyword">const</span> PROGMEM <span class="keywordtype">char</span> begin_html[] = <span class="stringliteral">&quot;HTTP/1.1 200 OK\r\n&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>                                         <span class="stringliteral">&quot;Content-Type: text/html\r\n&quot;</span>  <span class="comment">//40b</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>                                         <span class="stringliteral">&quot;Connection: close\r\n\n&quot;</span>      <span class="comment">//59</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>                                         <span class="stringliteral">&quot;&lt;!DOCTYPE HTML&gt;\n&quot;</span>            <span class="comment">//75</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>                                         <span class="stringliteral">&quot;&lt;html&gt;&lt;head&gt;&quot;</span>                 <span class="comment">//87</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>                                         <span class="stringliteral">&quot;&lt;style&gt;\n&quot;</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>                                         <span class="stringliteral">&quot;body{background-color:linen; text-align: center}&quot;</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>                                         <span class="stringliteral">&quot;table.center{margin-left:auto;margin-right:auto;}&quot;</span></div>
@@ -259,9 +259,9 @@ var searchBox = new SearchBox("searchBox", "search",'Search','.html');
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>  <span class="keywordtype">char</span> buffer[45];</div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>  <a class="code hl_define" href="InteractiveServer__Mesh_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;HTTP/1.1 200 OK\nContent-Type: text/html\n&quot;</span>), 45);</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>  <a class="code hl_define" href="InteractiveServer__Mesh_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n&quot;</span>), 45);</div>
 <div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>  _client.print(buffer);</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>  <a class="code hl_define" href="InteractiveServer__Mesh_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;Connection: close\n\n&lt;!DOCTYPE HTML&gt;\n&lt;html&gt;\n&quot;</span>), 45);</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>  <a class="code hl_define" href="InteractiveServer__Mesh_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;Connection: close\r\n\n&lt;!DOCTYPE HTML&gt;\n&lt;html&gt;\n&quot;</span>), 45);</div>
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>  _client.print(buffer);</div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>  <a class="code hl_define" href="InteractiveServer__Mesh_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0">strncpy_P</a>(buffer, PSTR(<span class="stringliteral">&quot;&lt;head&gt;&lt;style&gt;body{background-color:linen;}\n&quot;</span>), 45);</div>
 <div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>  _client.print(buffer);</div>
@@ -288,9 +288,9 @@ var searchBox = new SearchBox("searchBox", "search",'Search','.html');
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="comment">/**</span></div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="comment"> * An example of a very basic HTML page</span></div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="comment"> */</span></div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="keyword">static</span> <span class="keyword">const</span> PROGMEM <span class="keywordtype">char</span> html_page[] = <span class="stringliteral">&quot;HTTP/1.1 200 OK\n&quot;</span></div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                                        <span class="stringliteral">&quot;Content-Type: text/html\n&quot;</span></div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>                                        <span class="stringliteral">&quot;Connection: close\n\n&quot;</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="keyword">static</span> <span class="keyword">const</span> PROGMEM <span class="keywordtype">char</span> html_page[] = <span class="stringliteral">&quot;HTTP/1.1 200 OK\r\n&quot;</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                                        <span class="stringliteral">&quot;Content-Type: text/html\r\n&quot;</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>                                        <span class="stringliteral">&quot;Connection: close\r\n\n&quot;</span></div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>                                        <span class="stringliteral">&quot;&lt;!DOCTYPE HTML&gt;&quot;</span></div>
 <div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                                        <span class="stringliteral">&quot;&lt;html&gt;&quot;</span></div>
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>                                        <span class="stringliteral">&quot;&lt;body&gt;&quot;</span></div>
@@ -308,7 +308,7 @@ var searchBox = new SearchBox("searchBox", "search",'Search','.html');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 9 2022 12:51:25 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Thu Jul 21 2022 12:08:41 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>
