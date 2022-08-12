@@ -31,6 +31,9 @@ See the [**Overview**](md_docs_overview.html) page
 ## Building a Network - Customizing your RF24 TCP/IP network
 See the [Building a network](md_docs_custom_networks.html) page
 
+## Home Automation with MQTT and Node-Red
+See the [Project Setup Info](https://create.arduino.cc/projecthub/TMRh20/iot-home-automation-w-nrf24l01-raspberry-pi-9ee904) at Arduino Project Hub
+
 ## About Troubleshooting
 The RF24 libraries are divided into layers, generally according to the OSI model, which allows specialized testing and troubleshooting of individual layers.
 
