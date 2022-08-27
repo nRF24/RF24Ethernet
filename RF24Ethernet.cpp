@@ -203,7 +203,7 @@ IPAddress RF24EthernetClass::dnsServerIP()
 
 void RF24EthernetClass::tick()
 {
-#if defined(ARDUINO_ARCH_ESP8266)
+#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_RP2040)
     yield();
 #endif
     if (RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE) {
