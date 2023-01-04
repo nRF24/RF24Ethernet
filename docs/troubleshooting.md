@@ -1,5 +1,7 @@
 # Troubleshooting
 
+@tableofcontents
+
 ## Installation & Compilation Errors:
 
 ### RPi

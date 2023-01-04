@@ -1,0 +1,353 @@
+# Doxyfile 1.9.1
+
+# This file describes the settings to be used by the documentation system
+# doxygen (www.doxygen.org) for a project.
+#
+# All text after a double hash (##) is considered a comment and is placed in
+# front of the TAG it is preceding.
+#
+# All text after a single hash (#) is considered a comment and will be ignored.
+# The format is:
+# TAG = value [value, ...]
+# For lists, items can also be appended using:
+# TAG += value [value, ...]
+# Values that contain spaces should be placed between quotes (\" \").
+
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+
+# The PROJECT_NAME tag is a single word (or a sequence of words surrounded by
+# double-quotes, unless you are using Doxywizard) that should identify the
+# project for which the documentation is generated. This name is used in the
+# title of most generated pages and in a few other places.
+# The default value is: My Project.
+
+PROJECT_NAME           = "RF24Ethernet - TCP/IP over RF24Network"
+
+# The PROJECT_NUMBER tag can be used to enter a project or revision number. This
+# could be handy for archiving the generated documentation or if some version
+# control system is used.
+
+PROJECT_NUMBER         = 1.3b
+
+# Using the PROJECT_BRIEF tag one can provide an optional one line description
+# for a project that appears at the top of each page and should give viewer a
+# quick idea about the purpose of the project. Keep the description short.
+
+PROJECT_BRIEF          = "TMRh20 - Pushing the practical limits of RF24 modules"
+
+# With the PROJECT_LOGO tag one can specify a logo or an icon that is included
+# in the documentation. The maximum height of the logo should not exceed 55
+# pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
+# the logo to the output directory.
+
+PROJECT_LOGO           =
+
+# The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
+# into which the generated documentation will be written. If a relative path is
+# entered, it will be relative to the location where doxygen was started. If
+# left blank the current directory will be used.
+
+OUTPUT_DIRECTORY       = ./
+
+# The STRIP_FROM_PATH tag can be used to strip a user-defined part of the path.
+# Stripping is only done if one of the specified strings matches the left-hand part
+# of the path. The tag can be used to show relative paths in the file list.
+# If left blank the directory from which doxygen is run is used as the path to strip.
+# Note that you can specify absolute paths here, but also relative paths, which will
+# be relative from the directory where doxygen is started.
+#
+# This tag requires that the tag FULL_PATH_NAMES is set to YES. 
+
+STRIP_FROM_PATH        = ../
+
+# Doxygen selects the parser to use depending on the extension of the files it
+# parses. With this tag you can assign which parser to use for a given
+# extension. Doxygen has a built-in mapping, but you can override or extend it
+# using this tag. The format is ext=language, where ext is a file extension, and
+# language is one of the parsers supported by doxygen: IDL, Java, JavaScript,
+# Csharp (C#), C, C++, D, PHP, md (Markdown), Objective-C, Python, Slice, VHDL,
+# Fortran (fixed format Fortran: FortranFixed, free formatted Fortran:
+# FortranFree, unknown formatted Fortran: Fortran. In the later case the parser
+# tries to guess whether the code is fixed or free formatted code, this is the
+# default for Fortran type files). For instance to make doxygen treat .inc files
+# as Fortran files (default is PHP), and .f files as C (default is Fortran),
+# use: inc=Fortran f=C.
+#
+# Note: For files without extension you can use no_extension as a placeholder.
+#
+# Note that for custom extensions you also need to set FILE_PATTERNS otherwise
+# the files are not read by doxygen. When specifying no_extension you should add
+# * to the FILE_PATTERNS.
+#
+# Note see also the list of default file extension mappings.
+
+EXTENSION_MAPPING      = ino=c \
+                         pde=c
+
+#---------------------------------------------------------------------------
+# Build related configuration options
+#---------------------------------------------------------------------------
+
+# If the EXTRACT_ALL tag is set to YES, doxygen will assume all entities in
+# documentation are documented, even if no documentation was available. Private
+# class members and static file members will be hidden unless the
+# EXTRACT_PRIVATE respectively EXTRACT_STATIC tags are set to YES.
+# Note: This will also disable the warnings about undocumented members that are
+# normally produced when WARNINGS is set to YES.
+# The default value is: NO.
+
+EXTRACT_ALL            = YES
+
+# With the correct setting of option CASE_SENSE_NAMES doxygen will better be
+# able to match the capabilities of the underlying filesystem. In case the
+# filesystem is case sensitive (i.e. it supports files in the same directory
+# whose names only differ in casing), the option must be set to YES to properly
+# deal with such files in case they appear in the input. For filesystems that
+# are not case sensitive the option should be be set to NO to properly deal with
+# output files written for symbols that only differ in casing, such as for two
+# classes, one named CLASS and the other named Class, and to also support
+# references to files without having to specify the exact matching casing. On
+# Windows (including Cygwin) and MacOS, users should typically set this option
+# to NO, whereas on Linux or other Unix flavors it should typically be set to
+# YES.
+# The default value is: system dependent.
+
+CASE_SENSE_NAMES       = YES
+
+# If the SORT_MEMBER_DOCS tag is set to YES then doxygen will sort the
+# (detailed) documentation of file and class members alphabetically by member
+# name. If set to NO, the members will appear in declaration order.
+# The default value is: YES.
+
+SORT_MEMBER_DOCS       = NO
+
+# If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by
+# fully-qualified names, including namespaces. If set to NO, the class list will
+# be sorted only by class name, not including the namespace part.
+# Note: This option is not very useful if HIDE_SCOPE_NAMES is set to YES.
+# Note: This option applies only to the class list, not to the alphabetical
+# list.
+# The default value is: NO.
+
+SORT_BY_SCOPE_NAME     = YES
+
+# The GENERATE_TODOLIST tag can be used to enable (YES) or disable (NO) the todo
+# list. This list is created by putting \todo commands in the documentation.
+# The default value is: YES.
+
+GENERATE_TODOLIST      = NO
+
+# Set the SHOW_USED_FILES tag to NO to disable the list of files generated at
+# the bottom of the documentation of classes and structs. If set to YES, the
+# list will mention the files that were used to generate the documentation.
+# The default value is: YES.
+
+SHOW_USED_FILES        = NO
+
+# Set the SHOW_NAMESPACES tag to NO to disable the generation of the Namespaces
+# page. This will remove the Namespaces entry from the Quick Index and from the
+# Folder Tree View (if specified).
+# The default value is: YES.
+
+SHOW_NAMESPACES        = NO
+
+#---------------------------------------------------------------------------
+# Configuration options related to warning and progress messages
+#---------------------------------------------------------------------------
+
+# If the WARN_AS_ERROR tag is set to YES then doxygen will immediately stop when
+# a warning is encountered. If the WARN_AS_ERROR tag is set to FAIL_ON_WARNINGS
+# then doxygen will continue running as if WARN_AS_ERROR tag is set to NO, but
+# at the end of the doxygen process doxygen will return with a non-zero status.
+# Possible values are: NO, YES and FAIL_ON_WARNINGS.
+# The default value is: NO.
+
+WARN_AS_ERROR          = YES
+
+#---------------------------------------------------------------------------
+# Configuration options related to the input files
+#---------------------------------------------------------------------------
+
+# The INPUT tag is used to specify the files and/or directories that contain
+# documented source files. You may enter file names like myfile.cpp or
+# directories like /usr/src/myproject. Separate the files or directories with
+# spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
+# Note: If this tag is empty the current directory is searched.
+
+INPUT                  = ../ \
+                         ../RF24Ethernet_config.h \
+                         ../examples/InteractiveServer_Mesh/HTML.h \
+                         ../examples/InteractiveServer_Mesh_ESPWifi/HTML.h \
+                         ../examples/SLIP_InteractiveServer/HTML.h \
+                         ../examples/TAP/InteractiveServer/HTML.h \
+                         ./
+
+# The EXCLUDE tag can be used to specify files and/or directories that should be
+# excluded from the INPUT source files. This way you can easily exclude a
+# subdirectory from a directory tree whose root is specified with the INPUT tag.
+#
+# Note that relative paths are relative to the directory from which doxygen is
+# run.
+
+EXCLUDE                = ../utility/uip.c \
+                         ../utility/arp.h \
+                         ./README.md
+
+# The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
+# (namespaces, classes, functions, etc.) that should be excluded from the
+# output. The symbol name can be a fully qualified name, a word, or if the
+# wildcard * is used, a substring. Examples: ANamespace, AClass,
+# AClass::ANamespace, ANamespace::*Test
+#
+# Note that the wildcards are matched against the file with absolute path, so to
+# exclude all test directories use the pattern */test/*
+
+EXCLUDE_SYMBOLS        = IP_ADDR* \
+                         uip_userdata_* \
+                         uip_udp_userdata_* \
+                         ./README.md
+
+# The EXAMPLE_PATH tag can be used to specify one or more files or directories
+# that contain example code fragments that are included (see the \include
+# command).
+
+EXAMPLE_PATH           = ../examples
+
+# If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be
+# searched for input files to be used with the \include or \dontinclude commands
+# irrespective of the value of the RECURSIVE tag.
+# The default value is: NO.
+
+EXAMPLE_RECURSIVE      = YES
+
+# The IMAGE_PATH tag can be used to specify one or more files or directories
+# that contain images that are to be included in the documentation (see the
+# \image command).
+
+IMAGE_PATH             = ../images
+
+# If the USE_MDFILE_AS_MAINPAGE tag refers to the name of a markdown file that
+# is part of the input, its contents will be placed on the main page
+# (index.html). This can be useful if you have a project on for instance GitHub
+# and want to reuse the introduction page also for the doxygen output.
+
+USE_MDFILE_AS_MAINPAGE = main_page.md
+
+#---------------------------------------------------------------------------
+# Configuration options related to source browsing
+#---------------------------------------------------------------------------
+
+# If the SOURCE_BROWSER tag is set to YES then a list of source files will be
+# generated. Documented entities will be cross-referenced with these sources.
+#
+# Note: To get rid of all source code in the generated output, make sure that
+# also VERBATIM_HEADERS is set to NO.
+# The default value is: NO.
+
+SOURCE_BROWSER         = YES
+
+# Setting the STRIP_CODE_COMMENTS tag to YES will instruct doxygen to hide any
+# special comment blocks from generated source code fragments. Normal C, C++ and
+# Fortran comments will always remain visible.
+# The default value is: YES.
+
+STRIP_CODE_COMMENTS    = NO
+
+# If the REFERENCED_BY_RELATION tag is set to YES then for each documented
+# entity all documented functions referencing it will be listed.
+# The default value is: NO.
+
+REFERENCED_BY_RELATION = YES
+
+# If the REFERENCES_RELATION tag is set to YES then for each documented function
+# all documented entities called/used by that function will be listed.
+# The default value is: NO.
+
+REFERENCES_RELATION    = YES
+
+#---------------------------------------------------------------------------
+# Configuration options related to the HTML output
+#---------------------------------------------------------------------------
+
+# If the GENERATE_HTML tag is set to YES, doxygen will generate HTML output
+# The default value is: YES.
+
+GENERATE_HTML          = YES
+
+# The HTML_OUTPUT tag is used to specify where the HTML docs will be put. If a
+# relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
+# it.
+# The default directory is: html.
+# This tag requires that the tag GENERATE_HTML is set to YES.
+
+HTML_OUTPUT            = html
+
+# The HTML_EXTRA_STYLESHEET tag can be used to specify additional user-defined
+# cascading style sheets that are included after the standard style sheets
+# created by doxygen. Using this option one can overrule certain style aspects.
+# This is preferred over using HTML_STYLESHEET since it does not replace the
+# standard style sheet and is therefore more robust against future updates.
+# Doxygen will copy the style sheet files to the output directory.
+# Note: The order of the extra style sheet files is of importance (e.g. the last
+# style sheet in the list overrules the setting of the previous ones in the
+# list). For an example see the documentation.
+# This tag requires that the tag GENERATE_HTML is set to YES.
+
+HTML_EXTRA_STYLESHEET  = doxygen-custom.css
+
+# The HTML_COLORSTYLE tag can be used to specify if the generated HTML output should be rendered
+# with a dark or light theme.
+#
+# Possible values are:
+# - LIGHT always generate light mode output
+# - DARK always generate dark mode output
+# - AUTO_LIGHT automatically set the mode according to the user preference,
+#   use light mode if no preference is set (the default)
+# - AUTO_DARK automatically set the mode according to the user preference,
+#   use dark mode if no preference is set
+# - TOGGLE allow to user to switch between light and dark mode via a button.
+#
+# The default value is: AUTO_LIGHT.
+#
+# This tag requires that the tag GENERATE_HTML is set to YES.
+
+HTML_COLORSTYLE = TOGGLE
+
+# If the HTML_TIMESTAMP tag is set to YES then the footer of each generated HTML
+# page will contain the date and time when the page was generated. Setting this
+# to YES can help to show when doxygen was last run and thus if the
+# documentation is up to date.
+# The default value is: NO.
+# This tag requires that the tag GENERATE_HTML is set to YES.
+
+HTML_TIMESTAMP         = YES
+
+# If the HTML_DYNAMIC_MENUS tag is set to YES then the generated HTML
+# documentation will contain a main index with vertical navigation menus that
+# are dynamically created via JavaScript. If disabled, the navigation index will
+# consists of multiple levels of tabs that are statically embedded in every HTML
+# page. Disable this option to support browsers that do not have JavaScript,
+# like the Qt help browser.
+# The default value is: YES.
+# This tag requires that the tag GENERATE_HTML is set to YES.
+
+HTML_DYNAMIC_MENUS     = NO
+
+# If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
+# documentation will contain sections that can be hidden and shown after the
+# page has loaded.
+# The default value is: NO.
+# This tag requires that the tag GENERATE_HTML is set to YES.
+
+HTML_DYNAMIC_SECTIONS  = YES
+
+#---------------------------------------------------------------------------
+# Configuration options related to the LaTeX output
+#---------------------------------------------------------------------------
+
+# If the GENERATE_LATEX tag is set to YES, doxygen will generate LaTeX output.
+# The default value is: YES.
+
+GENERATE_LATEX         = NO

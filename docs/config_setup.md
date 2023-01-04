@@ -1,4 +1,7 @@
 # Configuration and Set-Up
+
+@tableofcontents
+
 RF24Ethernet requires the RF24 and RF24Network libraries (optionally RF24Mesh) <br>
 See http://tmrh20.github.io for documentation and downloads
 
