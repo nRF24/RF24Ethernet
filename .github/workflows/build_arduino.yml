@@ -11,45 +11,55 @@ on:
     paths:
       - ".github/workflows/build_arduino.yml"
       - "examples/**"
-env:
-  # convenient variable used multiple times
-  SKETCHES_REPORTS: sketches-reports
 
 jobs:
   check_formatting:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      # Ubuntu 20.04.4 LTS runners ship with clang-tools v12
-      # - name: Install clang-tools
-      #   uses: KyleMayes/install-llvm-action@v1
-      #   with:
-      #     version: 12
-      - name: Install linter python package
-        run: python3 -m pip install git+https://github.com/cpp-linter/cpp-linter-action@v1
-      - name: run linter as a python package
-        id: linter
-        run: |
-          cpp-linter \
-          --version=12 \
-          --style=file \
-          --tidy-checks='-*' \
-          --files-changed-only='False' \
-          --extensions=ino,cpp,h \
-          --ignore='utility|clock-arch.c|clock-arch.h|Dns.cpp|Dns.h'
-      - name: Linter checks failed?
-        if: steps.linter.outputs.checks-failed > 0
-        run: exit 1
+    uses: nRF24/.github/.github/workflows/cpp_lint.yaml@main
+    with:
+      ignore: 'utility|clock-arch.c|clock-arch.h|Dns.cpp|Dns.h'
+      extensions: ino,cpp,h
 
   build:
     needs: check_formatting
-    runs-on: ubuntu-latest
+    uses: nRF24/.github/.github/workflows/build_arduino.yaml@main
+    with:
+      sketch-paths: |
+        - examples/Getting_Started_SimpleClient_Mesh
+        - examples/Getting_Started_SimpleServer_Mesh
+        - examples/InteractiveServer_Mesh
+        - examples/MQTT/mqtt_basic
+        - examples/MQTT/mqtt_basic_2
+        - examples/SimpleClient_Mesh
 
+      # these need RF24_TAP defined
+      # - examples/SLIP_InteractiveServer  # also requires EEPROM.h
+      # - examples/TAP/Getting_Started_InteractiveServer
+      # - examples/TAP/Getting_Started_SimpleClient
+      # - examples/TAP/Getting_Started_SimpleClient_DNS
+      # - examples/TAP/Getting_Started_SimpleServer
+      # - examples/TAP/Getting_Started_SimpleServer_Minimal
+
+      # other reasons we exclude the following examples
+      # - examples/SLIP_Gateway  # hardcoded to use HardwareSerial
+      # - examples/TAP/InteractiveServer  # specific to AVR boards
+      # - examples/InteractiveServer_Mesh_ESPWifi  # needs ESP8266WiFi.h
+      libraries: |
+        - source-url: https://github.com/nRF24/RF24.git
+        - source-url: https://github.com/nRF24/RF24Network.git
+        - source-url: https://github.com/nRF24/RF24Mesh.git
+        - name: PubSubClient
+        - name: MQTT
+        - source-path: ./
+      fqbn: ${{ matrix.fqbn }}
+      enable-deltas-report: ${{ matrix.enable-deltas-report }}
+      platforms: |
+        - name: arduino:avr
+        - name: arduino:megaavr
+        - name: arduino:samd
+        - name: arduino:mbed
+      # - name: arduino:sam
     strategy:
       fail-fast: false
-
       matrix:
         fqbn:
           - "arduino:avr:yun"
@@ -75,7 +85,7 @@ jobs:
           - "arduino:avr:chiwawa"
           - "arduino:avr:one"
           - "arduino:avr:unowifi"
-          - "arduino:mbed:nano33ble"
+          # - "arduino:mbed:nano33ble" # pending nRF5x ESB integration
           - "arduino:samd:mkr1000"
           - "arduino:samd:mkrwifi1010"
           - "arduino:samd:nano_33_iot"
@@ -101,67 +111,8 @@ jobs:
           - fqbn: arduino:samd:mkrzero
             enable-deltas-report: true
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Compile examples
-        uses: arduino/compile-sketches@main
-        with:
-          sketch-paths: |
-            - examples/Getting_Started_SimpleClient_Mesh
-            - examples/Getting_Started_SimpleServer_Mesh
-            - examples/InteractiveServer_Mesh
-            - examples/MQTT/mqtt_basic
-            - examples/MQTT/mqtt_basic_2
-            - examples/SimpleClient_Mesh
-
-          # these need RF24_TAP defined
-          # - examples/SLIP_InteractiveServer  # also requires EEPROM.h
-          # - examples/TAP/Getting_Started_InteractiveServer
-          # - examples/TAP/Getting_Started_SimpleClient
-          # - examples/TAP/Getting_Started_SimpleClient_DNS
-          # - examples/TAP/Getting_Started_SimpleServer
-          # - examples/TAP/Getting_Started_SimpleServer_Minimal
-
-          # other reasons we exclude the following examples
-          # - examples/SLIP_Gateway  # hardcoded to use HardwareSerial
-          # - examples/TAP/InteractiveServer  # specific to AVR boards
-          # - examples/InteractiveServer_Mesh_ESPWifi  # needs ESP8266WiFi.h
-          libraries: |
-            - name: RF24
-            - name: RF24Mesh
-            - name: RF24Network
-            - name: PubSubClient
-            - name: MQTT
-            - source-path: ./
-          # - source-url: https://github.com/nRF24/RF24Network.git
-          #   version: CMake-4-Linux
-          # - source-url: https://github.com/nRF24/RF24Mesh.git
-          #   version: CMake-4-Linux
-          fqbn: ${{ matrix.fqbn }}
-          enable-deltas-report: ${{ matrix.enable-deltas-report }}
-          sketches-report-path: ${{ env.SKETCHES_REPORTS }}
-      
-      # This step is needed to pass the size data to the report job 
-      - name: Upload sketches report to workflow artifact
-        if: ${{ matrix.enable-deltas-report }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.SKETCHES_REPORTS }}
-          path: ${{ env.SKETCHES_REPORTS }}
-
   # When using a matrix to compile for multiple boards, it's necessary to use a separate job for the deltas report
   report:
     needs: build
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download sketches reports artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ env.SKETCHES_REPORTS }}
-          path: ${{ env.SKETCHES_REPORTS }}
-
-      - uses: arduino/report-size-deltas@v1
-        with:
-          sketches-reports-source: ${{ env.SKETCHES_REPORTS }}
+    uses: nRF24/.github/.github/workflows/arduino_size_deltas.yaml@main

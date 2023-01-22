@@ -1,5 +1,7 @@
 # Version Info
 
+@tableofcontents
+
 ## v1.6 - Aug-Dec 2015
 - Address problems with stream functions like client.parseInt() or find()
 - Tested working with MQTT via [PubSub library](https://github.com/knolleary/pubsubclient)

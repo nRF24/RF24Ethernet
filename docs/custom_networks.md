@@ -1,4 +1,7 @@
 # Building an RF24Ethernet Network
+
+@tableofcontents
+
 The general configuration instructions set up a basic sensor network, with static nodes, using TCP/IP over RF24Network. The layered
 library design also allows some nodes to communicate solely at the RF24Network level, creating hybrid networks to extend range over
 large distances, or improve connectivity in distant areas.
