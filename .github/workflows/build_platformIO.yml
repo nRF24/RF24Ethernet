@@ -32,7 +32,7 @@ jobs:
     with:
       example-path: ${{ matrix.example }}
       board-id: ${{ matrix.board }}
-      lib-deps: knolleary/PubSubClient 256dpi/MQTT
+      lib-deps: -l knolleary/PubSubClient -l 256dpi/MQTT
     strategy:
       fail-fast: false
       matrix:
