@@ -14,6 +14,7 @@ Documentation & Setup Info: http://nRF24.github.io/RF24Ethernet
 Downloads: http://tmrh20.github.io/
 
 Note: Recent changes to support NRF5x boards prevent usage of RF24 devices with NRF5x boards. Users must use the internal radio with RF24Ethernet.
+See the [nrf_to_nrf Arduino library](https://github.com/TMRh20/nrf_to_nrf).
 
 
 --------------
