@@ -231,7 +231,6 @@ extern RF24EthernetClass RF24Ethernet;
 
 typedef RF24EthernetClass RF52EthernetClass;
 
-#endif // RF24Ethernet_h
 
 /**
  * @example Getting_Started_SimpleServer_Mesh.ino
@@ -294,4 +293,6 @@ typedef RF24EthernetClass RF52EthernetClass;
  * <br>This example uses [HTML.h](SLIP__InteractiveServer_2HTML_8h.html) from the
  * example's directory.
  */
+ 
+ #endif // RF24Ethernet_h
  
