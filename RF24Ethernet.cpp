@@ -38,12 +38,12 @@ RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Me
 
 #else
     #if defined(RF24_TAP)
-RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF24Network& _network) : radio(_radio), network(_network) // fn_uip_cb(NULL)
+RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network) : radio(_radio), network(_network) // fn_uip_cb(NULL)
 {
 }
 
     #else // Using RF24Mesh
-RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF24Network& _network, RF24Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
+RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network, RF52Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
 {
 }
     #endif

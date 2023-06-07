@@ -38,7 +38,7 @@ extern "C" {
 }
 
     #include "RF24Ethernet_config.h"
-    #if defined ARDUINO_ARCH_NRF52 || defined ARDUINO_ARCH_NRF52840 || defined ARDUINO_ARCH_NRF52833
+    #if defined (ARDUINO_ARCH_NRF52) || defined (ARDUINO_ARCH_NRF52840) || defined (ARDUINO_ARCH_NRF52833)
         #include <nrf_to_nrf.h>
     #endif
     #include <RF24.h>
@@ -99,8 +99,10 @@ typedef struct
     int a, b, c, d;
 } IP_ADDR;
 
+
 class RF24;
-class RF24Network;
+template<class radio_t>
+class ESB_Network;
 
 class RF24EthernetClass
 { //: public Print {
@@ -116,9 +118,9 @@ public:
     #endif
     #if defined NRF52_RADIO_LIBRARY
         #if !defined(RF24_TAP)
-    RF24EthernetClass(nrf_to_nrf& _radio, RF24Network& _network, RF24Mesh& _mesh);
+    RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network, RF52Mesh& _mesh);
         #else
-    RF24EthernetClass(nrf_to_nrf& _radio, RF24Network& _network);
+    RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network);
         #endif
     #endif
 
@@ -194,9 +196,16 @@ private:
     #else
     RF24& radio;
     #endif
-    RF24Network& network;
-    #if !defined(RF24_TAP) // Using RF24Mesh
-    RF24Mesh& mesh;
+    #if !defined NRF52_RADIO_LIBRARY    
+      RF24Network& network;
+      #if !defined(RF24_TAP) // Using RF24Mesh
+      RF24Mesh& mesh;
+      #endif
+    #else
+      RF52Network& network;
+      #if !defined(RF24_TAP) // Using RF24Mesh
+      RF52Mesh& mesh;
+      #endif
     #endif
 
     static IPAddress _dnsServerAddress;
@@ -219,6 +228,8 @@ private:
 };
 
 extern RF24EthernetClass RF24Ethernet;
+
+typedef RF24EthernetClass RF52EthernetClass;
 
 #endif // RF24Ethernet_h
 
@@ -283,3 +294,4 @@ extern RF24EthernetClass RF24Ethernet;
  * <br>This example uses [HTML.h](SLIP__InteractiveServer_2HTML_8h.html) from the
  * example's directory.
  */
+ 
