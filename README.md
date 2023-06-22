@@ -3,9 +3,9 @@
 [![Arduino CLI build](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_arduino.yml/badge.svg)](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_arduino.yml)
 [![PlatformIO build](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_platformIO.yml/badge.svg)](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_platformIO.yml)
 
-## Access your RF24Network sensors using a web browser
+## Easily create home automation scenarios and sensor networks
 
-### Current stage: Functional & Stable (Updated 2021)
+### Updated 2023:
 
 RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries
 
@@ -13,7 +13,11 @@ Documentation & Setup Info: http://nRF24.github.io/RF24Ethernet
 
 Downloads: http://tmrh20.github.io/
 
+Note: Recent changes to support NRF5x boards prevent usage of RF24 devices with NRF5x boards. Users must use the internal radio with RF24Ethernet.
+See the [nrf_to_nrf Arduino library](https://github.com/TMRh20/nrf_to_nrf).
 
+
+--------------
 
 
 Licenses include, but are not limited to the following.
