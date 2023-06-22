@@ -38,6 +38,9 @@ extern "C" {
 }
 
     #include "RF24Ethernet_config.h"
+    #if defined (ARDUINO_ARCH_NRF52) || defined (ARDUINO_ARCH_NRF52840) || defined (ARDUINO_ARCH_NRF52833)
+        #include <nrf_to_nrf.h>
+    #endif
     #include <RF24.h>
     #include <RF24Network.h>
     #if !defined(RF24_TAP) // Using RF24Mesh
@@ -76,7 +79,7 @@ extern "C" {
         } while (0)
     #define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
 
-    #define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) //TODO this is not IPV6 capable
+    #define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) // TODO this is not IPV6 capable
 
     #define uip_seteth_addr(eaddr)          \
         do {                                \
@@ -96,8 +99,10 @@ typedef struct
     int a, b, c, d;
 } IP_ADDR;
 
+
 class RF24;
-class RF24Network;
+template<class radio_t>
+class ESB_Network;
 
 class RF24EthernetClass
 { //: public Print {
@@ -110,6 +115,13 @@ public:
     RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh);
     #else
     RF24EthernetClass(RF24& _radio, RF24Network& _network);
+    #endif
+    #if defined NRF52_RADIO_LIBRARY
+        #if !defined(RF24_TAP)
+    RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network, RF52Mesh& _mesh);
+        #else
+    RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network);
+        #endif
     #endif
 
     /** Basic constructor */
@@ -176,13 +188,24 @@ public:
 
     /** Keeps the TCP/IP stack running & processing incoming data */
     void update();
-    //uint8_t *key;
+    // uint8_t *key;
 
 private:
+    #if defined NRF52_RADIO_LIBRARY
+    nrf_to_nrf& radio;
+    #else
     RF24& radio;
-    RF24Network& network;
-    #if !defined(RF24_TAP) // Using RF24Mesh
-    RF24Mesh& mesh;
+    #endif
+    #if !defined NRF52_RADIO_LIBRARY    
+      RF24Network& network;
+      #if !defined(RF24_TAP) // Using RF24Mesh
+      RF24Mesh& mesh;
+      #endif
+    #else
+      RF52Network& network;
+      #if !defined(RF24_TAP) // Using RF24Mesh
+      RF52Mesh& mesh;
+      #endif
     #endif
 
     static IPAddress _dnsServerAddress;
@@ -206,7 +229,8 @@ private:
 
 extern RF24EthernetClass RF24Ethernet;
 
-#endif // RF24Ethernet_h
+typedef RF24EthernetClass RF52EthernetClass;
+
 
 /**
  * @example Getting_Started_SimpleServer_Mesh.ino
@@ -225,7 +249,7 @@ extern RF24EthernetClass RF24Ethernet;
 /**
  * @example Getting_Started_SimpleClient_Mesh_DNS.ino
  *
- * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP, 
+ * This is an example of how to use the RF24Ethernet class to connect out to a web server and retrieve data via HTTP,
  * using DNS lookups instead of IP address.
  */
 
@@ -269,3 +293,6 @@ extern RF24EthernetClass RF24Ethernet;
  * <br>This example uses [HTML.h](SLIP__InteractiveServer_2HTML_8h.html) from the
  * example's directory.
  */
+ 
+ #endif // RF24Ethernet_h
+ 

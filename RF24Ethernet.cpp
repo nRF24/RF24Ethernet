@@ -21,20 +21,33 @@
 #include "RF24Ethernet.h"
 
 IPAddress RF24EthernetClass::_dnsServerAddress;
-//DhcpClass* RF24EthernetClass::_dhcp(NULL);
+// DhcpClass* RF24EthernetClass::_dhcp(NULL);
 
 /*************************************************************/
-#if defined(RF24_TAP)
-RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network) : radio(_radio), network(_network) //fn_uip_cb(NULL)
+#if !defined NRF52_RADIO_LIBRARY
+    #if defined(RF24_TAP)
+RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network) : radio(_radio), network(_network) // fn_uip_cb(NULL)
 {
 }
 
-#else // Using RF24Mesh
-RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) //fn_uip_cb(NULL)
+    #else // Using RF24Mesh
+RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
 {
 }
+    #endif
+
+#else
+    #if defined(RF24_TAP)
+RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network) : radio(_radio), network(_network) // fn_uip_cb(NULL)
+{
+}
+
+    #else // Using RF24Mesh
+RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network, RF52Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
+{
+}
+    #endif
 #endif
-
 /*************************************************************/
 
 void RF24EthernetClass::update()
@@ -58,14 +71,14 @@ void RF24EthernetClass::setMac(uint16_t address)
     }
 
     const uint8_t mac[6] = {0x52, 0x46, 0x32, 0x34, (uint8_t)address, (uint8_t)(address >> 8)};
-    //printf("MAC: %o %d\n", address, mac[0]);
+    // printf("MAC: %o %d\n", address, mac[0]);
 
 #if defined(RF24_TAP)
     uip_seteth_addr(mac);
     network.multicastRelay = 1;
 #else
     if (mac[0] == 1) {
-        //Dummy operation to prevent warnings if TAP not defined
+        // Dummy operation to prevent warnings if TAP not defined
     };
 #endif
     RF24_Channel = RF24_Channel ? RF24_Channel : 97;
@@ -274,8 +287,8 @@ void RF24EthernetClass::tick()
             should be sent out on the network, the global variable
             uip_len is set to a value > 0. */
         if (uip_len > 0) {
-            //uip_arp_out();
-            //network_send();
+            // uip_arp_out();
+            // network_send();
             RF24UDP::_send((uip_udp_userdata_t*)(uip_udp_conns[i].appstate));
         }
     }
@@ -288,7 +301,7 @@ void RF24EthernetClass::tick()
         uip_arp_timer();
     }
 }
-#endif //RF24_TAP
+#endif // RF24_TAP
 }
 
 /*******************************************************/
