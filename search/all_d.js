@@ -11,11 +11,12 @@ var searchData=
   ['rf24ethernet_2ecpp_8',['RF24Ethernet.cpp',['../RF24Ethernet_8cpp.html',1,'']]],
   ['rf24ethernet_2eh_9',['RF24Ethernet.h',['../RF24Ethernet_8h.html',1,'']]],
   ['rf24ethernet_5fconfig_2eh_10',['RF24Ethernet_config.h',['../RF24Ethernet__config_8h.html',1,'']]],
-  ['rf24ethernetclass_11',['RF24EthernetClass',['../classRF24EthernetClass.html#a5a20d594aa86901a1ee1f99dd6d3f8ad',1,'RF24EthernetClass::RF24EthernetClass()'],['../classRF24EthernetClass.html',1,'RF24EthernetClass'],['../classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8',1,'RF24EthernetClass::RF24EthernetClass()'],['../classRF24Client.html#a256f2ce38756f538e9a8de60f4cd3131',1,'RF24Client::RF24EthernetClass()']]],
+  ['rf24ethernetclass_11',['RF24EthernetClass',['../classRF24EthernetClass.html#ab9a096248116582739d059f0e8fd8bf8',1,'RF24EthernetClass::RF24EthernetClass()'],['../classRF24EthernetClass.html',1,'RF24EthernetClass'],['../classRF24EthernetClass.html#a5a20d594aa86901a1ee1f99dd6d3f8ad',1,'RF24EthernetClass::RF24EthernetClass()'],['../classRF24Client.html#a256f2ce38756f538e9a8de60f4cd3131',1,'RF24Client::RF24EthernetClass()']]],
   ['rf24server_12',['RF24Server',['../classRF24Client.html#a671e8c5a10e578dcaa6fcfae80d0d938',1,'RF24Client::RF24Server()'],['../classRF24EthernetClass.html#a671e8c5a10e578dcaa6fcfae80d0d938',1,'RF24EthernetClass::RF24Server()'],['../classRF24Server.html#ab287912e5d1580bce6c2d0ccc938c352',1,'RF24Server::RF24Server()'],['../classRF24Server.html',1,'RF24Server']]],
   ['rf24server_2ecpp_13',['RF24Server.cpp',['../RF24Server_8cpp.html',1,'']]],
   ['rf24server_2eh_14',['RF24Server.h',['../RF24Server_8h.html',1,'']]],
   ['rf24udp_15',['RF24UDP',['../classRF24EthernetClass.html#a0dad18b1dbafe3af50f582a64b470c6c',1,'RF24EthernetClass']]],
   ['rf24udp_2ecpp_16',['RF24Udp.cpp',['../RF24Udp_8cpp.html',1,'']]],
-  ['rf24udp_2eh_17',['RF24Udp.h',['../RF24Udp_8h.html',1,'']]]
+  ['rf24udp_2eh_17',['RF24Udp.h',['../RF24Udp_8h.html',1,'']]],
+  ['rf52ethernetclass_18',['RF52EthernetClass',['../RF24Ethernet_8h.html#a58956184aa1cffd3267a34317a889d6a',1,'RF24Ethernet.h']]]
 ];

@@ -28,7 +28,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.12</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.13</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -93,33 +93,33 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
-<ul><li class="level1"><a href="#autotoc_md16">RF24Mesh Networks</a><ul><li class="level2"><a href="#autotoc_md17">RF24Mesh - Additional Information</a></li>
+<ul><li class="level1"><a href="#autotoc_md17">RF24Mesh Networks</a><ul><li class="level2"><a href="#autotoc_md18">RF24Mesh - Additional Information</a></li>
 </ul>
 </li>
-<li class="level1"><a href="#autotoc_md18">RF24Gateway</a></li>
-<li class="level1"><a href="#autotoc_md19">Hybrid- RF24Network/RF24Ethernet Networks</a></li>
-<li class="level1"><a href="#autotoc_md20">Links</a></li>
+<li class="level1"><a href="#autotoc_md19">RF24Gateway</a></li>
+<li class="level1"><a href="#autotoc_md20">Hybrid- RF24Network/RF24Ethernet Networks</a></li>
+<li class="level1"><a href="#autotoc_md21">Links</a></li>
 </ul>
 </div>
 <div class="textblock"><p>The general configuration instructions set up a basic sensor network, with static nodes, using TCP/IP over RF24Network. The layered library design also allows some nodes to communicate solely at the RF24Network level, creating hybrid networks to extend range over large distances, or improve connectivity in distant areas.</p>
-<h1><a class="anchor" id="autotoc_md16"></a>
+<h1><a class="anchor" id="autotoc_md17"></a>
 RF24Mesh Networks</h1>
 <p>RF24Mesh allows dynamic configuration of RF24Network addresses, and allows the creation of dynamic sensor networks. Nodes are able to move around physically, releasing and renewing their RF24Network address as required. Once configured with a unique nodeID, nodes using RF24Mesh can automatically configure themselves and join the network as required, with no user interaction.</p>
 <p>See the included <a href="Getting_Started_SimpleServer_Mesh_8ino-example.html">Getting_Started_SimpleServer_Mesh example</a> for general usage and configuration information with RF24Ethernet.</p>
-<h2><a class="anchor" id="autotoc_md17"></a>
+<h2><a class="anchor" id="autotoc_md18"></a>
 RF24Mesh - Additional Information</h2>
 <p>When utilizing RF24Mesh along with RF24Ethernet, relay/routing nodes should be configured with RF24Mesh, or designated on the master node as static nodes with a pre-configured RF24Network address.</p>
 <p>RF24Mesh can be used with TAP/Ethernet configurations, but utilizing TUN/RF24Mesh together will reduce overhead.</p>
 <p>See the links below for more information on utilizing RF24Mesh with RF24Ethernet and RF24Network.</p>
-<h1><a class="anchor" id="autotoc_md18"></a>
+<h1><a class="anchor" id="autotoc_md19"></a>
 RF24Gateway</h1>
 <p>See <a href="http://nRF24.github.io/RF24Gateway/">http://nRF24.github.io/RF24Gateway/</a> for more information on RF24Gateway</p>
-<h1><a class="anchor" id="autotoc_md19"></a>
+<h1><a class="anchor" id="autotoc_md20"></a>
 Hybrid- RF24Network/RF24Ethernet Networks</h1>
 <p>The default configuration of RF24Ethernet and RF24Network enables both TCP/IP and the underlying messaging protocols provided by RF24Network.</p>
 <p>Relay/Routing nodes can be configured using only the RF24 and RF24Network layers (optionally RF24Mesh), and will automatically handle data accordingly, whether it is an external data type (TCP/IP) or an internal network message from another RF24Network node. This allows very small and inexpensive devices such as ATTiny to act as relay/routing nodes when extending network range and/or connectivity.</p>
 <p>Arduino/AVR devices can utilize custom or included sleep modes in RF24Network, and benefit from the lower power consumption and low-power features of the nrf24l01 chips directly.</p>
-<h1><a class="anchor" id="autotoc_md20"></a>
+<h1><a class="anchor" id="autotoc_md21"></a>
 Links</h1>
 <p>See <a href="http://nRF24.github.io/RF24Mesh">http://nRF24.github.io/RF24Mesh</a> for more information on using RF24Mesh to create a dynamic network, with automatic RF24Network addressing <br  />
  See <a href="http://nRF24.github.io/RF24Network">http://nRF24.github.io/RF24Network</a> for more information on using RF24Network as well as addressing and topology. </p>
@@ -127,7 +127,7 @@ Links</h1>
 </div><!-- PageDoc -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 7 2023 00:26:27 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
+Generated on Thu Jun 22 2023 11:29:54 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
 </small></address>
 </body>
 </html>
