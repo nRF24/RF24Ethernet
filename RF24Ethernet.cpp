@@ -219,6 +219,11 @@ void RF24EthernetClass::tick()
 #if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_RP2040)
     yield();
 #endif
+#if defined(ARDUINO_ARCH_ESP32)
+  const TickType_t xDelay = 1 / portTICK_PERIOD_MS;
+  vTaskDelay( xDelay );
+#endif
+
     if (RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE) {
         if (RF24Ethernet.network.frag_ptr->message_size <= UIP_BUFSIZE) {
             uip_len = RF24Ethernet.network.frag_ptr->message_size;
