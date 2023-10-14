@@ -262,11 +262,12 @@ void serialip_appcall(void)
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.println(F(" UIPClient uip_connected")););
 
         u = (uip_userdata_t*)EthernetClient::_allocateData();
-        #if UIP_CONNECTION_TIMEOUT > 0
-          u->connectTimer = millis();
-        #endif
+
         if (u)
         {
+            #if UIP_CONNECTION_TIMEOUT > 0
+              u->connectTimer = millis();
+            #endif
             uip_conn->appstate = u;
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print(F("UIPClient allocated state: ")); Serial.println(u->state, BIN););
         }
