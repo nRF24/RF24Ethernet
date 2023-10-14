@@ -87,7 +87,7 @@
  *
  * If uIP is polling the established connection, but an ack or data is not received for this duration in ms, kill the connection.
  */
-#define UIP_CONNECTION_TIMEOUT 30000
+#define UIP_CONNECTION_TIMEOUT 45000
 
 /**
  * @brief SLIP/TUN - 14 for Ethernet/TAP & 0 for TUN/SLIP

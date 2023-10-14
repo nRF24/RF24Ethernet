@@ -66,9 +66,10 @@ typedef struct
 #endif
     uint32_t restartTime;
     uint32_t restartInterval;
-    uint32_t connAbortTime;
+#if UIP_CONNECTION_TIMEOUT > 0
     uint32_t connectTimeout;
     uint32_t connectTimer;
+#endif
     uint8_t myData[OUTPUT_BUFFER_SIZE];
     bool initialData;
 } uip_userdata_t;

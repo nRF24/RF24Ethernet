@@ -241,12 +241,20 @@ void serialip_appcall(void)
 {
     uip_userdata_t* u = (uip_userdata_t*)uip_conn->appstate;
 
+#if UIP_CONNECTION_TIMEOUT > 0
     if (u && u->connectTimeout > 0) {
-        if (millis() - u->connectTimer > u->connectTimeout && u->initialData == false) {
-            uip_close();
+        if (millis() - u->connectTimer > u->connectTimeout){
+            u->state |= UIP_CLIENT_CLOSE;
+            u->connectTimer = millis();
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.println("UIP Client close(timeout)"););
+        }else{
+          if(!u->initialData){
+            u->connectTimer = millis();
+            u->initialData = true;
+          }
         }
     }
+#endif
 
     /*******Connected**********/
     if (!u && uip_connected())
@@ -254,7 +262,9 @@ void serialip_appcall(void)
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.println(F(" UIPClient uip_connected")););
 
         u = (uip_userdata_t*)EthernetClient::_allocateData();
-
+        #if UIP_CONNECTION_TIMEOUT > 0
+          u->connectTimer = millis();
+        #endif
         if (u)
         {
             uip_conn->appstate = u;
@@ -272,8 +282,9 @@ void serialip_appcall(void)
         if (uip_newdata())
         {
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.print(F(" UIPClient uip_newdata, uip_len:")); Serial.println(uip_len););
-
-            u->initialData = true;
+            #if UIP_CONNECTION_TIMEOUT > 0
+              u->connectTimer = millis();
+            #endif
 
             if (u->sent)
             {
@@ -284,7 +295,7 @@ void serialip_appcall(void)
                 uip_stop();
                 u->state &= ~UIP_CLIENT_RESTART;
                 u->windowOpened = false;
-                u->connAbortTime = u->restartTime = millis();
+                u->restartTime = millis();
                 memcpy(&u->myData[u->dataPos + u->dataCnt], uip_appdata, uip_datalen());
                 u->dataCnt += uip_datalen();
 
@@ -324,7 +335,10 @@ void serialip_appcall(void)
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.println(F(" UIPClient uip_acked")););
             u->state &= ~UIP_CLIENT_RESTART;
             u->hold = (u->out_pos = (u->windowOpened = (u->packets_out = false)));
-            u->connAbortTime = (u->restartTime = millis());
+            u->restartTime = millis();
+            #if UIP_CONNECTION_TIMEOUT > 0
+            u->connectTimer = millis();
+            #endif
         }
 
         /*******Polling**********/
@@ -350,36 +364,17 @@ void serialip_appcall(void)
                 if (u->windowOpened == true && u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > u->restartInterval)
                 {
                     u->restartTime = millis();
-// Abort the connection if the connection is dead after a set timeout period (uip-conf.h)
-#if defined UIP_CONNECTION_TIMEOUT
-                    if (millis() - u->connAbortTime >= UIP_CONNECTION_TIMEOUT)
-                    {
-    #if defined RF24ETHERNET_DEBUG_CLIENT || defined ETH_DEBUG_L1
-                        Serial.println();
-                        Serial.print(millis());
-                        Serial.println(F(" *********** ABORTING CONNECTION ***************"));
-    #endif
-                        u->windowOpened = false;
-                        u->state = 0;
-                        uip_conn->appstate = NULL;
-                        uip_abort();
-                        goto finish;
-                    }
-                    else
-                    {
-#endif
 #if defined RF24ETHERNET_DEBUG_CLIENT || defined ETH_DEBUG_L1
                         Serial.println();
                         Serial.print(millis());
-                        Serial.print(F(" UIPClient Re-Open TCP Window, time remaining before abort: "));
-                        Serial.println((UIP_CONNECTION_TIMEOUT - (millis() - u->connAbortTime)) / 1000.00);
+                        #if UIP_CONNECTION_TIMEOUT > 0
+                          Serial.print(F(" UIPClient Re-Open TCP Window, time remaining before abort: "));
+                          Serial.println(  UIP_CONNECTION_TIMEOUT - (millis() - u->connectTimer));
+                        #endif
 #endif
-                        u->restartInterval += 500;
-                        u->restartInterval = rf24_min(u->restartInterval, 7000);
-                        uip_restart();
-#if defined UIP_CONNECTION_TIMEOUT
-                    }
-#endif
+                    u->restartInterval += 500;
+                    u->restartInterval = rf24_min(u->restartInterval, 7000);
+                    uip_restart();
                 }
             }
         }
@@ -416,7 +411,7 @@ finish:;
 #endif
                 u->windowOpened = true;
                 u->restartInterval = UIP_WINDOW_REOPEN_DELAY; //.75 seconds
-                u->restartTime = u->connAbortTime = millis();
+                u->restartTime = millis();
             }
         }
     }
@@ -439,7 +434,10 @@ uip_userdata_t* RF24Client::_allocateData()
             data->out_pos = 0;
             data->hold = 0;
             data->initialData = false;
-            data->connectTimer = millis();
+            #if (UIP_CONNECTION_TIMEOUT > 0)
+              data->connectTimer = millis();
+              data->connectTimeout = UIP_CONNECTION_TIMEOUT;
+            #endif
             return data;
         }
     }
