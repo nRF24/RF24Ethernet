@@ -243,15 +243,14 @@ void serialip_appcall(void)
 
 #if UIP_CONNECTION_TIMEOUT > 0
     if (u && u->connectTimeout > 0) {
+        if(!u->initialData){
+            u->connectTimer = millis();
+            u->initialData = true;
+        }else
         if (millis() - u->connectTimer > u->connectTimeout){
             u->state |= UIP_CLIENT_CLOSE;
             u->connectTimer = millis();
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.println("UIP Client close(timeout)"););
-        }else{
-          if(!u->initialData){
-            u->connectTimer = millis();
-            u->initialData = true;
-          }
         }
     }
 #endif
