@@ -87,7 +87,7 @@
  *
  * If uIP is polling the established connection, but an ack or data is not received for this duration in ms, kill the connection.
  */
-#define UIP_CONNECTION_TIMEOUT 30000
+#define UIP_CONNECTION_TIMEOUT 45000
 
 /**
  * @brief SLIP/TUN - 14 for Ethernet/TAP & 0 for TUN/SLIP
@@ -186,7 +186,7 @@
     #define UIP_CONF_RECEIVE_WINDOW 511
 #else
     //#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE *2 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
-    #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size
+    #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN // This is set automatically to the max allowable size
 #endif
 
 #define UIP_CONF_TCP_MSS OUTPUT_BUFFER_SIZE

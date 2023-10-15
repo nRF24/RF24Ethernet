@@ -6,41 +6,41 @@
 
 #if UIP_CONF_UDP > 0
 
-#define SOCKET_NONE	255
-// Various flags and header field values for a DNS message
-#define UDP_HEADER_SIZE	8
-#define DNS_HEADER_SIZE	12
-#define TTL_SIZE        4
-#define QUERY_FLAG               (0)
-#define RESPONSE_FLAG            (1<<15)
-#define QUERY_RESPONSE_MASK      (1<<15)
-#define OPCODE_STANDARD_QUERY    (0)
-#define OPCODE_INVERSE_QUERY     (1<<11)
-#define OPCODE_STATUS_REQUEST    (2<<11)
-#define OPCODE_MASK              (15<<11)
-#define AUTHORITATIVE_FLAG       (1<<10)
-#define TRUNCATION_FLAG          (1<<9)
-#define RECURSION_DESIRED_FLAG   (1<<8)
-#define RECURSION_AVAILABLE_FLAG (1<<7)
-#define RESP_NO_ERROR            (0)
-#define RESP_FORMAT_ERROR        (1)
-#define RESP_SERVER_FAILURE      (2)
-#define RESP_NAME_ERROR          (3)
-#define RESP_NOT_IMPLEMENTED     (4)
-#define RESP_REFUSED             (5)
-#define RESP_MASK                (15)
-#define TYPE_A                   (0x0001)
-#define CLASS_IN                 (0x0001)
-#define LABEL_COMPRESSION_MASK   (0xC0)
-// Port number that DNS servers listen on
-#define DNS_PORT        53
+    #define SOCKET_NONE 255
+    // Various flags and header field values for a DNS message
+    #define UDP_HEADER_SIZE          8
+    #define DNS_HEADER_SIZE          12
+    #define TTL_SIZE                 4
+    #define QUERY_FLAG               (0)
+    #define RESPONSE_FLAG            (1 << 15)
+    #define QUERY_RESPONSE_MASK      (1 << 15)
+    #define OPCODE_STANDARD_QUERY    (0)
+    #define OPCODE_INVERSE_QUERY     (1 << 11)
+    #define OPCODE_STATUS_REQUEST    (2 << 11)
+    #define OPCODE_MASK              (15 << 11)
+    #define AUTHORITATIVE_FLAG       (1 << 10)
+    #define TRUNCATION_FLAG          (1 << 9)
+    #define RECURSION_DESIRED_FLAG   (1 << 8)
+    #define RECURSION_AVAILABLE_FLAG (1 << 7)
+    #define RESP_NO_ERROR            (0)
+    #define RESP_FORMAT_ERROR        (1)
+    #define RESP_SERVER_FAILURE      (2)
+    #define RESP_NAME_ERROR          (3)
+    #define RESP_NOT_IMPLEMENTED     (4)
+    #define RESP_REFUSED             (5)
+    #define RESP_MASK                (15)
+    #define TYPE_A                   (0x0001)
+    #define CLASS_IN                 (0x0001)
+    #define LABEL_COMPRESSION_MASK   (0xC0)
+    // Port number that DNS servers listen on
+    #define DNS_PORT 53
 
-// Possible return codes from ProcessResponse
-#define SUCCESS          1
-#define TIMED_OUT        -1
-#define INVALID_SERVER   -2
-#define TRUNCATED        -3
-#define INVALID_RESPONSE -4
+    // Possible return codes from ProcessResponse
+    #define SUCCESS          1
+    #define TIMED_OUT        -1
+    #define INVALID_SERVER   -2
+    #define TRUNCATED        -3
+    #define INVALID_RESPONSE -4
 
 void DNSClient::begin(const IPAddress& aDNSServer)
 {
@@ -48,13 +48,11 @@ void DNSClient::begin(const IPAddress& aDNSServer)
     iRequestId = 0;
 }
 
-
 int DNSClient::inet_aton(const char* aIPAddrString, IPAddress& aResult)
 {
     // See if we've been given a valid IP address
-    const char* p =aIPAddrString;
-    while (*p &&
-           ( (*p == '.') || (*p >= '0') || (*p <= '9') ))
+    const char* p = aIPAddrString;
+    while (*p && ((*p == '.') || (*p >= '0') || (*p <= '9')))
     {
         p++;
     }
@@ -63,8 +61,8 @@ int DNSClient::inet_aton(const char* aIPAddrString, IPAddress& aResult)
     {
         // It's looking promising, we haven't found any invalid characters
         p = aIPAddrString;
-        int segment =0;
-        int segmentValue =0;
+        int segment = 0;
+        int segmentValue = 0;
         while (*p && (segment < 4))
         {
             if (*p == '.')
@@ -85,7 +83,7 @@ int DNSClient::inet_aton(const char* aIPAddrString, IPAddress& aResult)
             else
             {
                 // Next digit
-                segmentValue = (segmentValue*10)+(*p - '0');
+                segmentValue = (segmentValue * 10) + (*p - '0');
             }
             p++;
         }
@@ -111,7 +109,7 @@ int DNSClient::inet_aton(const char* aIPAddrString, IPAddress& aResult)
 
 int DNSClient::getHostByName(const char* aHostname, IPAddress& aResult)
 {
-    int ret =0;
+    int ret = 0;
 
     // See if it's a numeric IP address
     if (inet_aton(aHostname, aResult))
@@ -123,12 +121,12 @@ int DNSClient::getHostByName(const char* aHostname, IPAddress& aResult)
     // Check we've got a valid DNS server to use
     if (iDNSServer == INADDR_NONE)
     {
-	    IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24DNS Invalid DNS Server")) );
+        IF_RF24ETHERNET_DEBUG_DNS(Serial.println(F("RF24DNS Invalid DNS Server")));
         return INVALID_SERVER;
     }
 
     // Find a socket to use
-    if (iUdp.begin(1024+(millis() & 0xF)) == 1)
+    if (iUdp.begin(1024 + (millis() & 0xF)) == 1)
     {
         // Try up to three times
         int retries = 0;
@@ -197,10 +195,10 @@ uint16_t DNSClient::BuildRequest(const char* aName)
     twoByteBuffer = htons(QUERY_FLAG | OPCODE_STANDARD_QUERY | RECURSION_DESIRED_FLAG);
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 
-    twoByteBuffer = htons(1);  // One question record
+    twoByteBuffer = htons(1); // One question record
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 
-    twoByteBuffer = 0;  // Zero answer records
+    twoByteBuffer = 0; // Zero answer records
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
@@ -208,28 +206,28 @@ uint16_t DNSClient::BuildRequest(const char* aName)
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 
     // Build question
-    const char* start =aName;
-    const char* end =start;
+    const char* start = aName;
+    const char* end = start;
     uint8_t len;
     // Run through the name being requested
     while (*end)
     {
         // Find out how long this section of the name is
         end = start;
-        while (*end && (*end != '.') )
+        while (*end && (*end != '.'))
         {
             end++;
         }
 
-        if (end-start > 0)
+        if (end - start > 0)
         {
             // Write out the size of this section
-            len = end-start;
+            len = end - start;
             iUdp.write(&len, sizeof(len));
             // And then write out the section
-            iUdp.write((uint8_t*)start, end-start);
+            iUdp.write((uint8_t*)start, end - start);
         }
-        start = end+1;
+        start = end + 1;
     }
 
     // We've got to the end of the question name, so
@@ -240,83 +238,80 @@ uint16_t DNSClient::BuildRequest(const char* aName)
     twoByteBuffer = htons(TYPE_A);
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 
-    twoByteBuffer = htons(CLASS_IN);  // Internet class of question
+    twoByteBuffer = htons(CLASS_IN); // Internet class of question
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
     // Success!  Everything buffered okay
     return 1;
 }
-
 
 uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
 {
     uint32_t startTime = millis();
 
     // Wait for a response packet
-    while(iUdp.parsePacket() <= 0)
+    while (iUdp.parsePacket() <= 0)
     {
-        if((millis() - startTime) > aTimeout){
-            IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24 DNS - Request timed out")); );
-			return TIMED_OUT;
-		}
-        //delay(50);
+        if ((millis() - startTime) > aTimeout) {
+            IF_RF24ETHERNET_DEBUG_DNS(Serial.println(F("RF24 DNS - Request timed out")););
+            return TIMED_OUT;
+        }
+        // delay(50);
     }
 
     // We've had a reply!
     // Read the UDP header
     uint8_t header[DNS_HEADER_SIZE]; // Enough space to reuse for the DNS header
     // Check that it's a response from the right server and the right port
-    if ( (iDNSServer != iUdp.remoteIP()) ||
-        (iUdp.remotePort() != DNS_PORT) )
+    if ((iDNSServer != iUdp.remoteIP()) || (iUdp.remotePort() != DNS_PORT))
     {
         // It's not from who we expected
-		IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24DNS - Invalid Server: ")); );
+        IF_RF24ETHERNET_DEBUG_DNS(Serial.println(F("RF24DNS - Invalid Server: ")););
         return INVALID_SERVER;
     }
 
     // Read through the rest of the response
     if (iUdp.available() < DNS_HEADER_SIZE)
     {
-		IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24DNS - Truncated")); );
+        IF_RF24ETHERNET_DEBUG_DNS(Serial.println(F("RF24DNS - Truncated")););
         return TRUNCATED;
     }
-	IF_RF24ETHERNET_DEBUG_DNS( Serial.print(F("RF24DNS - DNS Header Size: ")); Serial.println(DNS_HEADER_SIZE); );
+    IF_RF24ETHERNET_DEBUG_DNS(Serial.print(F("RF24DNS - DNS Header Size: ")); Serial.println(DNS_HEADER_SIZE););
     iUdp.read(header, DNS_HEADER_SIZE);
 
     uint16_t header_flags = htons(*((uint16_t*)&header[2]));
     // Check that it's a response to this request
-    if ( ( iRequestId != (*((uint16_t*)&header[0])) ) ||
-        ((header_flags & QUERY_RESPONSE_MASK) != (uint16_t)RESPONSE_FLAG) )
+    if ((iRequestId != (*((uint16_t*)&header[0]))) || ((header_flags & QUERY_RESPONSE_MASK) != (uint16_t)RESPONSE_FLAG))
     {
         // Mark the entire packet as read
         iUdp.flush();
-		IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24DNS - Invalid Response 1, Flushing")); );
+        IF_RF24ETHERNET_DEBUG_DNS(Serial.println(F("RF24DNS - Invalid Response 1, Flushing")););
         return INVALID_RESPONSE;
     }
     // Check for any errors in the response (or in our request)
     // although we don't do anything to get round these
-    if ( (header_flags & TRUNCATION_FLAG) || (header_flags & RESP_MASK) )
+    if ((header_flags & TRUNCATION_FLAG) || (header_flags & RESP_MASK))
     {
         // Mark the entire packet as read
-		IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24DNS - Invalid Response 2, Flushing")); );
+        IF_RF24ETHERNET_DEBUG_DNS(Serial.println(F("RF24DNS - Invalid Response 2, Flushing")););
         iUdp.flush();
-        return -5; //INVALID_RESPONSE;
+        return -5; // INVALID_RESPONSE;
     }
 
     // And make sure we've got (at least) one answer
     uint16_t answerCount = htons(*((uint16_t*)&header[6]));
-    if (answerCount == 0 )
+    if (answerCount == 0)
     {
         // Mark the entire packet as read
-		IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24DNS - No Answer, Flushing")); );
+        IF_RF24ETHERNET_DEBUG_DNS(Serial.println(F("RF24DNS - No Answer, Flushing")););
         iUdp.flush();
-        return -6; //INVALID_RESPONSE;
+        return -6; // INVALID_RESPONSE;
     }
 
-	IF_RF24ETHERNET_DEBUG_DNS( Serial.print(F("RF24DNS OK, skipping questions ")); Serial.println(header[5]); );
+    IF_RF24ETHERNET_DEBUG_DNS(Serial.print(F("RF24DNS OK, skipping questions ")); Serial.println(header[5]););
 
     // Skip over any questions
-    for (uint16_t i =0; i < HTONS(*((uint16_t*)&header[4])); i++)
-//	for (uint16_t i =0; i < wtf; i++)
+    for (uint16_t i = 0; i < HTONS(*((uint16_t*)&header[4])); i++)
+    //	for (uint16_t i =0; i < wtf; i++)
     {
         // Skip over the name
         uint8_t len;
@@ -327,8 +322,8 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
             {
                 // Don't need to actually read the data out for the string, just
                 // advance ptr to beyond it
-				IF_RF24ETHERNET_DEBUG_DNS( Serial.print(F("RF24DNS Reading ")); Serial.println(len); );
-                while(len--)
+                IF_RF24ETHERNET_DEBUG_DNS(Serial.print(F("RF24DNS Reading ")); Serial.println(len););
+                while (len--)
                 {
                     iUdp.read(); // we don't care about the returned byte
                 }
@@ -336,7 +331,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
         } while (len != 0);
 
         // Now jump over the type and class
-        for (int i =0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             iUdp.read(); // we don't care about the returned byte
         }
@@ -346,8 +341,8 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     // There might be more than one answer (although we'll just use the first
     // type A answer) and some authority and additional resource records but
     // we're going to ignore all of them.
-    IF_RF24ETHERNET_DEBUG_DNS( Serial.print(F("RF24DNS Answer Count: "));  Serial.println(answerCount); );
-    for (uint16_t i =0; i < answerCount; i++)
+    IF_RF24ETHERNET_DEBUG_DNS(Serial.print(F("RF24DNS Answer Count: ")); Serial.println(answerCount););
+    for (uint16_t i = 0; i < answerCount; i++)
     {
         // Skip the name
         uint8_t len;
@@ -362,7 +357,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
                     // And it's got a length
                     // Don't need to actually read the data out for the string,
                     // just advance ptr to beyond it
-                    while(len--)
+                    while (len--)
                     {
                         iUdp.read(); // we don't care about the returned byte
                     }
@@ -389,9 +384,9 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
         iUdp.read((uint8_t*)&answerType, sizeof(answerType));
         iUdp.read((uint8_t*)&answerClass, sizeof(answerClass));
 
-		IF_RF24ETHERNET_DEBUG_DNS( Serial.print(F("RF24DNS Type: ")); Serial.println(HTONS(answerType),HEX);   Serial.print(F("RF24DNS Class: ")); Serial.println(HTONS(answerClass),HEX);  );
+        IF_RF24ETHERNET_DEBUG_DNS(Serial.print(F("RF24DNS Type: ")); Serial.println(HTONS(answerType), HEX); Serial.print(F("RF24DNS Class: ")); Serial.println(HTONS(answerClass), HEX););
         // Ignore the Time-To-Live as we don't do any caching
-        for (int i =0; i < TTL_SIZE; i++)
+        for (int i = 0; i < TTL_SIZE; i++)
         {
             iUdp.read(); // we don't care about the returned byte
         }
@@ -400,16 +395,16 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
         // Don't need header_flags anymore, so we can reuse it here
         iUdp.read((uint8_t*)&header_flags, sizeof(header_flags));
 
-        if ( (HTONS(answerType) == TYPE_A) && (HTONS(answerClass) == CLASS_IN) )
-		//if ( (answerType == TYPE_A) && (answerClass == CLASS_IN) )
+        if ((HTONS(answerType) == TYPE_A) && (HTONS(answerClass) == CLASS_IN))
+        // if ( (answerType == TYPE_A) && (answerClass == CLASS_IN) )
         {
             if (HTONS(header_flags) != 4)
             {
                 // It's a weird size
                 // Mark the entire packet as read
-				IF_RF24ETHERNET_DEBUG_DNS( Serial.println(F("RF24DNS Flush invalid")); );
+                IF_RF24ETHERNET_DEBUG_DNS(Serial.println(F("RF24DNS Flush invalid")););
                 iUdp.flush();
-                return -9;//INVALID_RESPONSE;
+                return -9; // INVALID_RESPONSE;
             }
             iUdp.read(aAddress.raw_address(), 4);
             return SUCCESS;
@@ -417,9 +412,9 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
         else
         {
             // This isn't an answer type we're after, move onto the next one
-			IF_RF24ETHERNET_DEBUG_DNS( Serial.print(F("RF24DNS - Get next answer type")); Serial.println(header_flags,HEX); );
-            for (uint16_t i =0; i < HTONS(header_flags); i++)
-			//for (uint16_t i =0; i < header_flags; i++)
+            IF_RF24ETHERNET_DEBUG_DNS(Serial.print(F("RF24DNS - Get next answer type")); Serial.println(header_flags, HEX););
+            for (uint16_t i = 0; i < HTONS(header_flags); i++)
+            // for (uint16_t i =0; i < header_flags; i++)
             {
                 iUdp.read(); // we don't care about the returned byte
             }
@@ -430,7 +425,7 @@ uint16_t DNSClient::ProcessResponse(uint16_t aTimeout, IPAddress& aAddress)
     iUdp.flush();
 
     // If we get here then we haven't found an answer
-    return -10;//INVALID_RESPONSE;
+    return -10; // INVALID_RESPONSE;
 }
 
 #endif

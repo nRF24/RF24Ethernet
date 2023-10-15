@@ -115,7 +115,7 @@ int RF24UDP::beginPacket(IPAddress ip, uint16_t port)
         if (appdata.packet_out == 0)
         {
             appdata.packet_out = 1;
-            appdata.out_pos = 0; //UIP_UDP_PHYH_LEN;
+            appdata.out_pos = 0; // UIP_UDP_PHYH_LEN;
             if (appdata.packet_out != 0)
             {
                 return 1;
@@ -212,10 +212,10 @@ int RF24UDP::parsePacket()
 
     IF_RF24ETHERNET_DEBUG_UDP(if (appdata.packet_in != 0) { Serial.print(F("RF24UDP udp parsePacket freeing previous packet: ")); Serial.println(appdata.packet_in); });
 
-    //appdata.packet_in_size = 0;
+    // appdata.packet_in_size = 0;
 
-    //appdata.packet_in = appdata.packet_next;
-    //appdata.packet_next = 0;
+    // appdata.packet_in = appdata.packet_next;
+    // appdata.packet_next = 0;
 
     IF_RF24ETHERNET_DEBUG_UDP(if (appdata.packet_in != 0) { Serial.print(F("RF24UDP udp parsePacket received packet: ")); Serial.print(appdata.packet_in); } Serial.print(F(", size: ")); Serial.println(size););
 
@@ -324,7 +324,7 @@ void uipudp_appcall(void)
                 uip_udp_conn->rport = UDPBUF->srcport;
                 uip_ipaddr_copy(uip_udp_conn->ripaddr, UDPBUF->srcipaddr);
 
-                //discard Linklevel and IP and udp-header and any trailing bytes:
+                // discard Linklevel and IP and udp-header and any trailing bytes:
                 memcpy(RF24Client::all_data[0].myData, uip_appdata, uip_len);
                 data->packet_in_size += uip_len;
                 data->packet_in = 1;
@@ -334,7 +334,7 @@ void uipudp_appcall(void)
         }
         if (uip_poll() && data->send)
         {
-            //set uip_slen (uip private) by calling uip_udp_send
+            // set uip_slen (uip private) by calling uip_udp_send
             IF_RF24ETHERNET_DEBUG_UDP(Serial.print(F("udp, uip_poll preparing packet to send: ")); Serial.print(data->packet_out); Serial.print(F(", size: ")); Serial.println(data->out_pos););
 
             memcpy(uip_appdata, RF24Client::all_data[0].myData, data->out_pos);
@@ -348,22 +348,22 @@ void uipudp_appcall(void)
 void RF24UDP::_send(uip_udp_userdata_t* data)
 {
         #if defined(RF24_TAP)
-    uip_arp_out(); //add arp
+    uip_arp_out(); // add arp
         #endif
     if (uip_len == UIP_ARPHDRSIZE)
     {
-        //RF24EthernetClass::uip_packet = 0;
-        //RF24EthernetClass::packetstate &= ~UIPETHERNET_SENDPACKET;
+        // RF24EthernetClass::uip_packet = 0;
+        // RF24EthernetClass::packetstate &= ~UIPETHERNET_SENDPACKET;
 
         IF_RF24ETHERNET_DEBUG_UDP(Serial.println(F("udp, uip_poll results in ARP-packet")););
         RF24EthernetClass::network_send();
     }
     else
     {
-        //arp found ethaddr for ip (otherwise packet is replaced by arp-request)
+        // arp found ethaddr for ip (otherwise packet is replaced by arp-request)
         data->send = false;
         data->packet_out = 0;
-        //RF24EthernetClass::packetstate |= UIPETHERNET_SENDPACKET;
+        // RF24EthernetClass::packetstate |= UIPETHERNET_SENDPACKET;
         IF_RF24ETHERNET_DEBUG_UDP(Serial.println(data->out_pos); Serial.print(F("udp, uip_packet to send: ")); for (int i = 0; i < data->out_pos; i++) { Serial.print((char)RF24Client::all_data[0].myData[i]); } Serial.println(""););
 
         RF24NetworkHeader headerOut(00, EXTERNAL_DATA_TYPE);
