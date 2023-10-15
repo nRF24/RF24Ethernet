@@ -220,8 +220,8 @@ void RF24EthernetClass::tick()
     yield();
 #endif
 #if defined(ARDUINO_ARCH_ESP32)
-  const TickType_t xDelay = 1 / portTICK_PERIOD_MS;
-  vTaskDelay( xDelay );
+    const TickType_t xDelay = 1 / portTICK_PERIOD_MS;
+    vTaskDelay(xDelay);
 #endif
 
     if (RF24Ethernet.network.update() == EXTERNAL_DATA_TYPE) {

@@ -20,7 +20,7 @@
   */
 
 #ifndef RF24Ethernet_h
-    #define RF24Ethernet_h
+#define RF24Ethernet_h
 
 /**
  * @file RF24Ethernet.h
@@ -28,68 +28,68 @@
  * Class declaration for RF24Ethernet
  */
 
-    #include <Arduino.h>
+#include <Arduino.h>
 
 extern "C" {
-    #include "uip-conf.h"
-    #include "utility/uip.h"
-    #include "utility/uiptimer.h"
-    #include "utility/uip_arp.h"
+#include "uip-conf.h"
+#include "utility/uip.h"
+#include "utility/uiptimer.h"
+#include "utility/uip_arp.h"
 }
 
-    #include "RF24Ethernet_config.h"
-    #if defined (ARDUINO_ARCH_NRF52) || defined (ARDUINO_ARCH_NRF52840) || defined (ARDUINO_ARCH_NRF52833)
-        #include <nrf_to_nrf.h>
-    #endif
-    #include <RF24.h>
-    #include <RF24Network.h>
-    #if !defined(RF24_TAP) // Using RF24Mesh
-        #include <RF24Mesh.h>
-    #endif
+#include "RF24Ethernet_config.h"
+#if defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_NRF52840) || defined(ARDUINO_ARCH_NRF52833)
+    #include <nrf_to_nrf.h>
+#endif
+#include <RF24.h>
+#include <RF24Network.h>
+#if !defined(RF24_TAP) // Using RF24Mesh
+    #include <RF24Mesh.h>
+#endif
 
-    #include "ethernet_comp.h"
-    #include "IPAddress.h"
-    #include "RF24Client.h"
-    #include "RF24Server.h"
+#include "ethernet_comp.h"
+#include "IPAddress.h"
+#include "RF24Client.h"
+#include "RF24Server.h"
 
-    #if UIP_CONF_UDP > 0
-        #include "RF24Udp.h"
-        #include "Dns.h"
-    #endif
+#if UIP_CONF_UDP > 0
+    #include "RF24Udp.h"
+    #include "Dns.h"
+#endif
 
-    #define UIPETHERNET_FREEPACKET 1
-    #define UIPETHERNET_SENDPACKET 2
+#define UIPETHERNET_FREEPACKET 1
+#define UIPETHERNET_SENDPACKET 2
 
-    //#define TUN  // Use only the tcp protocol, no ethernet headers or arps
-    #define TAP // Include ethernet headers
+//#define TUN  // Use only the tcp protocol, no ethernet headers or arps
+#define TAP // Include ethernet headers
 
-    #if defined(TAP)
-        #define BUF ((struct uip_eth_hdr*)&uip_buf[0])
-    #endif
+#if defined(TAP)
+    #define BUF ((struct uip_eth_hdr*)&uip_buf[0])
+#endif
 //#define BUF ((struct uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
 
-    #define uip_seteth_addr(eaddr)          \
-        do {                                \
-            uip_ethaddr.addr[0] = eaddr[0]; \
-            uip_ethaddr.addr[1] = eaddr[1]; \
-            uip_ethaddr.addr[2] = eaddr[2]; \
-            uip_ethaddr.addr[3] = eaddr[3]; \
-            uip_ethaddr.addr[4] = eaddr[4]; \
-            uip_ethaddr.addr[5] = eaddr[5]; \
-        } while (0)
-    #define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
+#define uip_seteth_addr(eaddr)          \
+    do {                                \
+        uip_ethaddr.addr[0] = eaddr[0]; \
+        uip_ethaddr.addr[1] = eaddr[1]; \
+        uip_ethaddr.addr[2] = eaddr[2]; \
+        uip_ethaddr.addr[3] = eaddr[3]; \
+        uip_ethaddr.addr[4] = eaddr[4]; \
+        uip_ethaddr.addr[5] = eaddr[5]; \
+    } while (0)
+#define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
 
-    #define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) // TODO this is not IPV6 capable
+#define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) // TODO this is not IPV6 capable
 
-    #define uip_seteth_addr(eaddr)          \
-        do {                                \
-            uip_ethaddr.addr[0] = eaddr[0]; \
-            uip_ethaddr.addr[1] = eaddr[1]; \
-            uip_ethaddr.addr[2] = eaddr[2]; \
-            uip_ethaddr.addr[3] = eaddr[3]; \
-            uip_ethaddr.addr[4] = eaddr[4]; \
-            uip_ethaddr.addr[5] = eaddr[5]; \
-        } while (0)
+#define uip_seteth_addr(eaddr)          \
+    do {                                \
+        uip_ethaddr.addr[0] = eaddr[0]; \
+        uip_ethaddr.addr[1] = eaddr[1]; \
+        uip_ethaddr.addr[2] = eaddr[2]; \
+        uip_ethaddr.addr[3] = eaddr[3]; \
+        uip_ethaddr.addr[4] = eaddr[4]; \
+        uip_ethaddr.addr[5] = eaddr[5]; \
+    } while (0)
 
 /**
  * @warning <b>This is used internally. Use IPAddress instead. </b>
@@ -99,7 +99,6 @@ typedef struct
     int a, b, c, d;
 } IP_ADDR;
 
-
 class RF24;
 template<class radio_t>
 class ESB_Network;
@@ -107,22 +106,22 @@ class ESB_Network;
 class RF24EthernetClass
 { //: public Print {
 public:
-    /**
-     * Constructor to set up the Ethernet layer. Requires the radio and network to be configured by the user
-     * this allows users to set custom settings at the radio or network level
-     */
-    #if !defined(RF24_TAP) // Using RF24Mesh
+/**
+ * Constructor to set up the Ethernet layer. Requires the radio and network to be configured by the user
+ * this allows users to set custom settings at the radio or network level
+ */
+#if !defined(RF24_TAP) // Using RF24Mesh
     RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh);
-    #else
+#else
     RF24EthernetClass(RF24& _radio, RF24Network& _network);
-    #endif
-    #if defined NRF52_RADIO_LIBRARY
-        #if !defined(RF24_TAP)
+#endif
+#if defined NRF52_RADIO_LIBRARY
+    #if !defined(RF24_TAP)
     RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network, RF52Mesh& _mesh);
-        #else
+    #else
     RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network);
-        #endif
     #endif
+#endif
 
     /** Basic constructor */
     RF24EthernetClass();
@@ -191,22 +190,22 @@ public:
     // uint8_t *key;
 
 private:
-    #if defined NRF52_RADIO_LIBRARY
+#if defined NRF52_RADIO_LIBRARY
     nrf_to_nrf& radio;
-    #else
+#else
     RF24& radio;
+#endif
+#if !defined NRF52_RADIO_LIBRARY
+    RF24Network& network;
+    #if !defined(RF24_TAP) // Using RF24Mesh
+    RF24Mesh& mesh;
     #endif
-    #if !defined NRF52_RADIO_LIBRARY    
-      RF24Network& network;
-      #if !defined(RF24_TAP) // Using RF24Mesh
-      RF24Mesh& mesh;
-      #endif
-    #else
-      RF52Network& network;
-      #if !defined(RF24_TAP) // Using RF24Mesh
-      RF52Mesh& mesh;
-      #endif
+#else
+    RF52Network& network;
+    #if !defined(RF24_TAP) // Using RF24Mesh
+    RF52Mesh& mesh;
     #endif
+#endif
 
     static IPAddress _dnsServerAddress;
     void configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
@@ -219,9 +218,9 @@ private:
     uint8_t RF24_Channel;
 
     struct timer periodic_timer;
-    #if defined RF24_TAP
+#if defined RF24_TAP
     struct timer arp_timer;
-    #endif
+#endif
     friend class RF24Server;
     friend class RF24Client;
     friend class RF24UDP;
@@ -230,7 +229,6 @@ private:
 extern RF24EthernetClass RF24Ethernet;
 
 typedef RF24EthernetClass RF52EthernetClass;
-
 
 /**
  * @example Getting_Started_SimpleServer_Mesh.ino
@@ -293,6 +291,5 @@ typedef RF24EthernetClass RF52EthernetClass;
  * <br>This example uses [HTML.h](SLIP__InteractiveServer_2HTML_8h.html) from the
  * example's directory.
  */
- 
- #endif // RF24Ethernet_h
- 
+
+#endif // RF24Ethernet_h

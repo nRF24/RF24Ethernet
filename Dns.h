@@ -12,7 +12,6 @@
 class DNSClient
 {
 public:
-
     void begin(const IPAddress& aDNSServer);
 
     /**
@@ -22,7 +21,7 @@ public:
      * @result 1 if aIPAddrString was successfully converted to an IP address,
      * else error code
      */
-    int inet_aton(const char *aIPAddrString, IPAddress& aResult);
+    int inet_aton(const char* aIPAddrString, IPAddress& aResult);
 
     /**
      * Resolve the given hostname to an IP address.
