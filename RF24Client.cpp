@@ -241,20 +241,6 @@ void serialip_appcall(void)
 {
     uip_userdata_t* u = (uip_userdata_t*)uip_conn->appstate;
 
-#if UIP_CONNECTION_TIMEOUT > 0
-    if (u && u->connectTimeout > 0) {
-        if (!u->initialData) {
-            u->connectTimer = millis();
-            u->initialData = true;
-        }
-        else if (millis() - u->connectTimer > u->connectTimeout) {
-            u->state |= UIP_CLIENT_CLOSE;
-            u->connectTimer = millis();
-            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.println("UIP Client close(timeout)"););
-        }
-    }
-#endif
-
     /*******Connected**********/
     if (!u && uip_connected())
     {
@@ -264,9 +250,6 @@ void serialip_appcall(void)
 
         if (u)
         {
-#if UIP_CONNECTION_TIMEOUT > 0
-            u->connectTimer = millis();
-#endif
             uip_conn->appstate = u;
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print(F("UIPClient allocated state: ")); Serial.println(u->state, BIN););
         }
@@ -275,6 +258,16 @@ void serialip_appcall(void)
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(F("UIPClient allocation failed")););
         }
     }
+
+#if UIP_CONNECTION_TIMEOUT > 0
+    if (u && u->connectTimeout > 0) {
+        if (millis() - u->connectTimer > u->connectTimeout) {
+            u->state |= UIP_CLIENT_CLOSE;
+            u->connectTimer = millis();
+            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.println("UIP Client close(timeout)"););
+        }
+    }
+#endif
 
     /*******User Data RX**********/
     if (u)
@@ -433,7 +426,6 @@ uip_userdata_t* RF24Client::_allocateData()
             data->dataPos = 0;
             data->out_pos = 0;
             data->hold = 0;
-            data->initialData = false;
 #if (UIP_CONNECTION_TIMEOUT > 0)
             data->connectTimer = millis();
             data->connectTimeout = UIP_CONNECTION_TIMEOUT;

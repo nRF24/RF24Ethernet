@@ -71,7 +71,6 @@ typedef struct
     uint32_t connectTimer;
 #endif
     uint8_t myData[OUTPUT_BUFFER_SIZE];
-    bool initialData;
 } uip_userdata_t;
 
 class RF24Client : public Client
