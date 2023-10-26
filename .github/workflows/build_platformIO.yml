@@ -7,11 +7,19 @@ on:
       - ".github/workflows/build_platformIO.yml"
       - "library.json"
       - "examples/**"
+      - "*.cpp"
+      - "*.h"
+      - "!Dns.*"
+      - "!clock-arch.*"
   push:
     paths:
       - ".github/workflows/build_platformIO.yml"
       - "library.json"
       - "examples/**"
+      - "*.cpp"
+      - "*.h"
+      - "!Dns.*"
+      - "!clock-arch.*"
   release:
     types: [published, edited]
 
@@ -30,6 +38,7 @@ jobs:
 
   build:
     needs: [check_formatting, validate_lib_json]
+    if: 
     uses: nRF24/.github/.github/workflows/build_platformio.yaml@main
     with:
       example-path: ${{ matrix.example }}
