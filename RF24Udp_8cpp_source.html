@@ -28,7 +28,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.13</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.14</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -215,7 +215,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        <span class="keywordflow">if</span> (appdata.packet_out == 0)</div>
 <div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        {</div>
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            appdata.packet_out = 1;</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            appdata.out_pos = 0; <span class="comment">//UIP_UDP_PHYH_LEN;</span></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            appdata.out_pos = 0; <span class="comment">// UIP_UDP_PHYH_LEN;</span></div>
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            <span class="keywordflow">if</span> (appdata.packet_out != 0)</div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            {</div>
 <div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>                <span class="keywordflow">return</span> 1;</div>
@@ -312,10 +312,10 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
 <div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>    <a class="code hl_define" href="group__DebugOptions.html#gaa2088bbdfdd816f5343ebfc9082cdb7c">IF_RF24ETHERNET_DEBUG_UDP</a>(<span class="keywordflow">if</span> (appdata.packet_in != 0) { Serial.print(F(<span class="stringliteral">&quot;RF24UDP udp parsePacket freeing previous packet: &quot;</span>)); Serial.println(appdata.packet_in); });</div>
 <div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    <span class="comment">//appdata.packet_in_size = 0;</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    <span class="comment">// appdata.packet_in_size = 0;</span></div>
 <div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span> </div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="comment">//appdata.packet_in = appdata.packet_next;</span></div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <span class="comment">//appdata.packet_next = 0;</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="comment">// appdata.packet_in = appdata.packet_next;</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <span class="comment">// appdata.packet_next = 0;</span></div>
 <div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span> </div>
 <div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <a class="code hl_define" href="group__DebugOptions.html#gaa2088bbdfdd816f5343ebfc9082cdb7c">IF_RF24ETHERNET_DEBUG_UDP</a>(<span class="keywordflow">if</span> (appdata.packet_in != 0) { Serial.print(F(<span class="stringliteral">&quot;RF24UDP udp parsePacket received packet: &quot;</span>)); Serial.print(appdata.packet_in); } Serial.print(F(<span class="stringliteral">&quot;, size: &quot;</span>)); Serial.println(size););</div>
 <div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
@@ -424,7 +424,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>                uip_udp_conn-&gt;rport = UDPBUF-&gt;srcport;</div>
 <div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>                uip_ipaddr_copy(uip_udp_conn-&gt;ripaddr, UDPBUF-&gt;srcipaddr);</div>
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span> </div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>                <span class="comment">//discard Linklevel and IP and udp-header and any trailing bytes:</span></div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>                <span class="comment">// discard Linklevel and IP and udp-header and any trailing bytes:</span></div>
 <div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>                memcpy(<a class="code hl_variable" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myData, uip_appdata, uip_len);</div>
 <div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>                data-&gt;packet_in_size += uip_len;</div>
 <div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>                data-&gt;packet_in = 1;</div>
@@ -434,7 +434,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        }</div>
 <div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        <span class="keywordflow">if</span> (uip_poll() &amp;&amp; data-&gt;send)</div>
 <div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        {</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>            <span class="comment">//set uip_slen (uip private) by calling uip_udp_send</span></div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>            <span class="comment">// set uip_slen (uip private) by calling uip_udp_send</span></div>
 <div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>            <a class="code hl_define" href="group__DebugOptions.html#gaa2088bbdfdd816f5343ebfc9082cdb7c">IF_RF24ETHERNET_DEBUG_UDP</a>(Serial.print(F(<span class="stringliteral">&quot;udp, uip_poll preparing packet to send: &quot;</span>)); Serial.print(data-&gt;packet_out); Serial.print(F(<span class="stringliteral">&quot;, size: &quot;</span>)); Serial.println(data-&gt;out_pos););</div>
 <div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span> </div>
 <div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>            memcpy(uip_appdata, <a class="code hl_variable" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myData, data-&gt;out_pos);</div>
@@ -448,22 +448,22 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span><span class="keywordtype">void</span> RF24UDP::_send(uip_udp_userdata_t* data)</div>
 <div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>{</div>
 <div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span><span class="preprocessor">        #if defined(RF24_TAP)</span></div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>    uip_arp_out(); <span class="comment">//add arp</span></div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>    uip_arp_out(); <span class="comment">// add arp</span></div>
 <div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span><span class="preprocessor">        #endif</span></div>
 <div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>    <span class="keywordflow">if</span> (uip_len == UIP_ARPHDRSIZE)</div>
 <div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>    {</div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>        <span class="comment">//RF24EthernetClass::uip_packet = 0;</span></div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>        <span class="comment">//RF24EthernetClass::packetstate &amp;= ~UIPETHERNET_SENDPACKET;</span></div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>        <span class="comment">// RF24EthernetClass::uip_packet = 0;</span></div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>        <span class="comment">// RF24EthernetClass::packetstate &amp;= ~UIPETHERNET_SENDPACKET;</span></div>
 <div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span> </div>
 <div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>        <a class="code hl_define" href="group__DebugOptions.html#gaa2088bbdfdd816f5343ebfc9082cdb7c">IF_RF24ETHERNET_DEBUG_UDP</a>(Serial.println(F(<span class="stringliteral">&quot;udp, uip_poll results in ARP-packet&quot;</span>)););</div>
 <div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>        RF24EthernetClass::network_send();</div>
 <div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>    }</div>
 <div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>    <span class="keywordflow">else</span></div>
 <div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>    {</div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>        <span class="comment">//arp found ethaddr for ip (otherwise packet is replaced by arp-request)</span></div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>        <span class="comment">// arp found ethaddr for ip (otherwise packet is replaced by arp-request)</span></div>
 <div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>        data-&gt;send = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>        data-&gt;packet_out = 0;</div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>        <span class="comment">//RF24EthernetClass::packetstate |= UIPETHERNET_SENDPACKET;</span></div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>        <span class="comment">// RF24EthernetClass::packetstate |= UIPETHERNET_SENDPACKET;</span></div>
 <div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>        <a class="code hl_define" href="group__DebugOptions.html#gaa2088bbdfdd816f5343ebfc9082cdb7c">IF_RF24ETHERNET_DEBUG_UDP</a>(Serial.println(data-&gt;out_pos); Serial.print(F(<span class="stringliteral">&quot;udp, uip_packet to send: &quot;</span>)); <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; data-&gt;out_pos; i++) { Serial.print((<span class="keywordtype">char</span>)<a class="code hl_variable" href="classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734">RF24Client::all_data</a>[0].myData[i]); } Serial.println(<span class="stringliteral">&quot;&quot;</span>););</div>
 <div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span> </div>
 <div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>        RF24NetworkHeader headerOut(00, EXTERNAL_DATA_TYPE);</div>
@@ -486,7 +486,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jun 22 2023 11:29:54 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
+Generated on Fri Oct 27 2023 08:48:43 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
 </small></address>
 </body>
 </html>

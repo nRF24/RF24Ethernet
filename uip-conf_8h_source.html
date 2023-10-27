@@ -28,7 +28,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.13</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.14</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -187,7 +187,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="comment"> * If uIP is polling the established connection, but an ack or data is not received for this duration in ms, kill the connection.</span></div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment"> */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="group__UipConfiguration.html#ga0921001d8a4c23682bff63f133337a90">   90</a></span><span class="preprocessor">#define UIP_CONNECTION_TIMEOUT 30000</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="group__UipConfiguration.html#ga0921001d8a4c23682bff63f133337a90">   90</a></span><span class="preprocessor">#define UIP_CONNECTION_TIMEOUT 45000</span></div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="comment"></span> </div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="comment">/**</span></div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment"> * @brief SLIP/TUN - 14 for Ethernet/TAP &amp; 0 for TUN/SLIP</span></div>
@@ -286,7 +286,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="preprocessor">    #define UIP_CONF_RECEIVE_WINDOW 511</span></div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="comment">//#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE *2 - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN //This is set automatically to the max allowable size</span></div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno"><a class="line" href="uip-conf_8h.html#a8424f9c05b2933ad7a77d7f2b6be2081">  189</a></span><span class="preprocessor">    #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN </span><span class="comment">//This is set automatically to the max allowable size</span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno"><a class="line" href="uip-conf_8h.html#a8424f9c05b2933ad7a77d7f2b6be2081">  189</a></span><span class="preprocessor">    #define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE - UIP_CONF_LLH_LEN - UIP_TCPIP_HLEN </span><span class="comment">// This is set automatically to the max allowable size</span></div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno"><a class="line" href="uip-conf_8h.html#aba4a9ff490324610ba718aa0d50c3ca0">  192</a></span><span class="preprocessor">#define UIP_CONF_TCP_MSS OUTPUT_BUFFER_SIZE</span></div>
@@ -387,7 +387,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jun 22 2023 11:29:54 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
+Generated on Fri Oct 27 2023 08:48:43 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
 </small></address>
 </body>
 </html>

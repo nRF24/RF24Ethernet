@@ -28,7 +28,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.13</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.14</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -290,7 +290,7 @@ Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater. Lo
 <p>Read available data into a buffer </p><div class="fragment"><div class="line">uint8_t buf[size];</div>
 <div class="line">client.read(buf,size);</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00486">486</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00476">476</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="RF24Ethernet__config_8h_source.html#l00060">IF_ETH_DEBUG_L2</a>, <a class="el" href="RF24Client_8h_source.html#l00032">UIP_CLIENT_CLOSE</a>, <a class="el" href="RF24Client_8h_source.html#l00033">UIP_CLIENT_REMOTECLOSED</a>, <a class="el" href="RF24Client_8h_source.html#l00034">UIP_CLIENT_RESTART</a>, and <a class="el" href="RF24Client_8h_source.html#l00036">UIP_CLIENT_SOCKETS</a>.</p>
 
@@ -312,11 +312,11 @@ Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater. Lo
 </div><div class="memdoc">
 <p>Read data one byte at a time </p><div class="fragment"><div class="line"><span class="keywordtype">char</span> c = client.read();</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00535">535</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00525">525</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="RF24Client_8cpp_source.html#l00535">read()</a>.</p>
+<p class="reference">References <a class="el" href="RF24Client_8cpp_source.html#l00525">read()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="RF24Client_8cpp_source.html#l00535">read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="RF24Client_8cpp_source.html#l00525">read()</a>.</p>
 
 </div>
 </div>
@@ -435,11 +435,11 @@ Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater. Lo
 <p>Indicates whether data is available to be read by the client. </p><dl class="section return"><dt>Returns</dt><dd>Returns the number of bytes available to be read </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Calling client or server <a class="el" href="classRF24Client.html#aa3e897f86e5b5553a07c73ef556625d3">available()</a> keeps the IP stack and RF24Network layer running, so needs to be called regularly, even when disconnected or delaying for extended periods. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00465">465</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00455">455</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="RF24Client_8cpp_source.html#l00545">peek()</a>, and <a class="el" href="RF24Client_8cpp_source.html#l00449">waitAvailable()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="RF24Client_8cpp_source.html#l00535">peek()</a>, and <a class="el" href="RF24Client_8cpp_source.html#l00439">waitAvailable()</a>.</p>
 
 </div>
 </div>
@@ -463,9 +463,9 @@ Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater. Lo
 <p>Indicates whether data is available to be read by the client, after waiting a maximum period of time. </p><dl class="section return"><dt>Returns</dt><dd>Returns the number of bytes available to be read or 0 if timed out </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Calling client or server <a class="el" href="classRF24Client.html#aa3e897f86e5b5553a07c73ef556625d3">available()</a> keeps the IP stack and RF24Network layer running, so needs to be called regularly, even when disconnected or delaying for extended periods. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00449">449</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00439">439</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="RF24Client_8cpp_source.html#l00465">available()</a>, and <a class="el" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.</p>
+<p class="reference">References <a class="el" href="RF24Client_8cpp_source.html#l00455">available()</a>, and <a class="el" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.</p>
 
 </div>
 </div>
@@ -485,9 +485,9 @@ Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater. Lo
 </div><div class="memdoc">
 <p>Read a byte from the incoming buffer without advancing the point of reading </p>
 
-<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00545">545</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00535">535</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="RF24Client_8cpp_source.html#l00465">available()</a>.</p>
+<p class="reference">References <a class="el" href="RF24Client_8cpp_source.html#l00455">available()</a>.</p>
 
 </div>
 </div>
@@ -507,7 +507,7 @@ Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater. Lo
 </div><div class="memdoc">
 <p>Flush all incoming client data from the current connection/buffer </p>
 
-<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00556">556</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RF24Client_8cpp_source.html#l00546">546</a> of file <a class="el" href="RF24Client_8cpp_source.html">RF24Client.cpp</a>.</p>
 
 </div>
 </div>
@@ -720,14 +720,14 @@ Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater. Lo
 
 <p class="definition">Definition at line <a class="el" href="RF24Client_8h_source.html#l00163">163</a> of file <a class="el" href="RF24Client_8h_source.html">RF24Client.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="RF24Server_8cpp_source.html#l00035">RF24Server::available()</a>, <a class="el" href="RF24Server_8cpp_source.html#l00085">RF24Server::setTimeout()</a>, and <a class="el" href="RF24Server_8cpp_source.html#l00074">RF24Server::write()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="RF24Server_8cpp_source.html#l00035">RF24Server::available()</a>, <a class="el" href="RF24Server_8cpp_source.html#l00087">RF24Server::setTimeout()</a>, and <a class="el" href="RF24Server_8cpp_source.html#l00074">RF24Server::write()</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jun 22 2023 11:29:54 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
+Generated on Fri Oct 27 2023 08:48:43 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
 </small></address>
 </body>
 </html>
