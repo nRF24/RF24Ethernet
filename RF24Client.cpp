@@ -352,24 +352,24 @@ void serialip_appcall(void)
                 // Only call this if the TCP window has already been re-opened, the connection is being polled, but no data
                 // has been acked
                 if (!(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
-            {
-
-                if (u->windowOpened == true && u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > u->restartInterval)
                 {
-                    u->restartTime = millis();
+
+                    if (u->windowOpened == true && u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > u->restartInterval)
+                    {
+                        u->restartTime = millis();
 #if defined RF24ETHERNET_DEBUG_CLIENT || defined ETH_DEBUG_L1
-                    Serial.println();
-                    Serial.print(millis());
+                        Serial.println();
+                        Serial.print(millis());
     #if UIP_CONNECTION_TIMEOUT > 0
-                    Serial.print(F(" UIPClient Re-Open TCP Window, time remaining before abort: "));
-                    Serial.println(UIP_CONNECTION_TIMEOUT - (millis() - u->connectTimer));
+                        Serial.print(F(" UIPClient Re-Open TCP Window, time remaining before abort: "));
+                        Serial.println(UIP_CONNECTION_TIMEOUT - (millis() - u->connectTimer));
     #endif
 #endif
-                    u->restartInterval += 500;
-                    u->restartInterval = rf24_min(u->restartInterval, 7000);
-                    uip_restart();
+                        u->restartInterval += 500;
+                        u->restartInterval = rf24_min(u->restartInterval, 7000);
+                        uip_restart();
+                    }
                 }
-            }
         }
 
         /*******Close**********/
