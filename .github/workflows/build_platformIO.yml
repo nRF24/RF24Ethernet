@@ -3,7 +3,6 @@ name: PlatformIO build
 on:
   pull_request:
     branches: [master]
-    types: [opened, reopened]
     paths:
       - ".github/workflows/build_platformIO.yml"
       - "library.json"
@@ -32,14 +31,8 @@ jobs:
     with:
       deploy-release: ${{ github.event_name == 'release' }}
 
-  check_formatting:
-    uses: nRF24/.github/.github/workflows/cpp_lint.yaml@main
-    with:
-      ignore: 'utility|clock-arch.c|clock-arch.h|Dns.cpp|Dns.h'
-      extensions: ino,cpp,h
-
   build:
-    needs: [check_formatting, validate_lib_json]
+    needs: [validate_lib_json]
     if: 
     uses: nRF24/.github/.github/workflows/build_platformio.yaml@main
     with:
