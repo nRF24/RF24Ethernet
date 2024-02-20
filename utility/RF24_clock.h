@@ -49,8 +49,8 @@
  *
  * $Id: clock.h,v 1.3 2006/06/11 21:46:39 adam Exp $
  */
-#ifndef __CLOCK_H__
-#define __CLOCK_H__
+#ifndef __RF24_CLOCK_H__
+#define __RF24_CLOCK_H__
 
 #include "clock-arch.h"
 

@@ -61,7 +61,7 @@
 #ifndef __UIPTIMER_H__
 #define __UIPTIMER_H__
 
-#include "clock.h"
+#include "RF24_clock.h"
 
 /**
  * A timer.
