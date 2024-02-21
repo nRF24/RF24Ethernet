@@ -52,8 +52,6 @@ jobs:
         - name: arduino:megaavr
         - name: arduino:samd
         - name: arduino:mbed
-        - name: STMicroelectronics:stm32
-          source-url: https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json
       # - name: arduino:sam
     strategy:
       fail-fast: false
@@ -98,7 +96,6 @@ jobs:
           - "arduino:samd:tian"
           - "arduino:megaavr:uno2018"
           # - "arduino:megaavr:nano4809"  # board not found
-          - "STMicroelectronics:stm32:GenF1:pnum=BLUEPILL_F103C8"
         # By default, don't generate size deltas data.
         enable-deltas-report: 
           - false
