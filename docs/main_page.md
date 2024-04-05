@@ -21,18 +21,18 @@ See the releases' descriptions on
 [the library's release page](http://github.com/nRF24/RF24Ethernet/releases) for a list of
 changes.
 
-See [version history](md_docs_pre_nrf24_changelog.html) for more about the lineage of RF24Ethernet.
+See [version history](pre_nrf24_changelog.md) for more about the lineage of RF24Ethernet.
 
 ## Configuration and Setup
 The hardest part of setting up is getting the first radio module connected properly. <br>
 Scroll to the bottom of the [RF24 radio documentation for pin connections](http://nRF24.github.io/RF24/) <br><br>
-Once you have done that, see the [Configuration and Set-Up](md_docs_config_setup.html) page for general installation and configuration information
+Once you have done that, see the [Configuration and Set-Up](config_setup.md) page for general installation and configuration information
 
 ## Detailed Overview
-See the [**Overview**](md_docs_overview.html) page
+See the [**Overview**](overview.md) page
 
 ## Building a Network - Customizing your RF24 TCP/IP network
-See the [Building a network](md_docs_custom_networks.html) page
+See the [Building a network](custom_networks.md) page
 
 ## Home Automation with MQTT and Node-Red
 See the [Project Setup Info](https://create.arduino.cc/projecthub/TMRh20/iot-home-automation-w-nrf24l01-raspberry-pi-9ee904) at Arduino Project Hub
@@ -40,4 +40,4 @@ See the [Project Setup Info](https://create.arduino.cc/projecthub/TMRh20/iot-hom
 ## About Troubleshooting
 The RF24 libraries are divided into layers, generally according to the OSI model, which allows specialized testing and troubleshooting of individual layers.
 
-See the [Troubleshooting section](md_docs_troubleshooting.html) for general troubleshooting steps.
+See the [Troubleshooting section](troubleshooting.md) for general troubleshooting steps.

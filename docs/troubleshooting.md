@@ -16,7 +16,7 @@ Ensure proper library installation.
 
 ### RPi
 1. Navigate to the rf24libs/RF24/examples_RPi folder
-2. Configure the correct pins in gettingstarted.cpp (See [general Linux/RPi setup](https://nRF24.github.io/RF24/md_docs_rpi_general.html))
+2. Configure the correct pins in gettingstarted.cpp (See [general Linux/RPi setup](https://nRF24.github.io/RF24/md_docs_2rpi__general.html))
 <!-- http://www.airspayce.com/mikem/bcm2835/group__constants.html#ga63c029bd6500167152db4e57736d0939) -->
 3. Build the examples: `make`
 4. Run an example `sudo ./gettingstarted`
