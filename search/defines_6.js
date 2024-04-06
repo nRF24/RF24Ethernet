@@ -14,7 +14,7 @@ var searchData=
   ['uip_5fconf_5fstatistics_11',['UIP_CONF_STATISTICS',['../uip-conf_8h.html#a529648ad3b0b327a43689b0f1779ff55',1,'uip-conf.h']]],
   ['uip_5fconf_5ftcp_5fmss_12',['UIP_CONF_TCP_MSS',['../uip-conf_8h.html#aba4a9ff490324610ba718aa0d50c3ca0',1,'uip-conf.h']]],
   ['uip_5fip_5faddr_13',['uip_ip_addr',['../RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42',1,'RF24Ethernet.h']]],
-  ['uip_5fseteth_5faddr_14',['uip_seteth_addr',['../RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b',1,'uip_seteth_addr():&#160;RF24Ethernet.h'],['../RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b',1,'uip_seteth_addr():&#160;RF24Ethernet.h']]],
+  ['uip_5fseteth_5faddr_14',['uip_seteth_addr',['../RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b',1,'uip_seteth_addr:&#160;RF24Ethernet.h'],['../RF24Ethernet_8h.html#a998df07feeb7ea7b009277af95a3001b',1,'uip_seteth_addr:&#160;RF24Ethernet.h']]],
   ['uip_5fsocket_5fnumpackets_15',['UIP_SOCKET_NUMPACKETS',['../uip-conf_8h.html#afd1b5fa1b1fff25118fc9b209756e17f',1,'uip-conf.h']]],
   ['uip_5ftcp_5fphyh_5flen_16',['UIP_TCP_PHYH_LEN',['../RF24Client_8cpp.html#a4f563d1327b277f69f5d2eb69b4b8e51',1,'RF24Client.cpp']]],
   ['uip_5fudp_5fappcall_17',['UIP_UDP_APPCALL',['../uip-conf_8h.html#a3d768e989e308144190ae1a5ddfa9726',1,'uip-conf.h']]],
