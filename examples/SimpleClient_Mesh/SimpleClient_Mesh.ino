@@ -123,14 +123,15 @@ void loop() {
 
 void connect() {
   Serial.println(F("connecting"));
-  IPAddress pizza(94, 199, 58, 243);
-  if (client.connect(pizza, 80)) {
+  IPAddress ascii(208, 86, 224, 90);
+  if (client.connect(ascii, 80)) {
     Serial.println(F("connected"));
 
     // Make an HTTP request:
-    client.write("GET /asciiart/pizza.txt HTTP/1.1\n");
-    client.write("Host: fiikus.net\n");
-    client.write("Connection: close\n\n");
+    client.println("GET http://artscene.textfiles.com/asciiart/texthistory.txt HTTP/1.1");
+    client.println("Host: 208.86.224.90");
+    client.println("Connection: close");
+    client.println();
   } else {
     // if you didn't get a connection to the server:
     Serial.println(F("connection failed"));

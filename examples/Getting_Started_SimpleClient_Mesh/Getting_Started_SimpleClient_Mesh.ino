@@ -90,8 +90,8 @@ EthernetClient client;
 // The hosts we will be connecting to
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
 IPAddress icewind(109, 120, 203, 163);  //http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt
-IPAddress pizza(94, 199, 58, 243);      //http://fiikus.net/asciiart/pizza.txt
-IPAddress host(pizza);
+IPAddress ascii(208, 86, 224, 90);      //http://artscene.textfiles.com/asciiart/texthistory.txt
+IPAddress host(ascii);
 
 void setup() {
 
@@ -120,7 +120,7 @@ void loop() {
   if (Serial.available()) {
     char c = Serial.read();
     if (c == 'p') {
-      host = pizza;
+      host = ascii;
     } else if (c == 'g') {
       host = icewind;
     }
@@ -172,8 +172,9 @@ void connect() {
     Serial.println(F("connected"));
 
     // Make an HTTP request:
-    if (host == pizza) {
-      client.write("GET /asciiart/pizza.txt HTTP/1.1\nHost: fiikus.net\n");
+    if (host == ascii) {
+      client.println("GET http://artscene.textfiles.com/asciiart/texthistory.txt HTTP/1.1");
+      client.println("Host: 208.86.224.90");
     } else {
       client.println("GET /web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt HTTP/1.1");
       client.println("Host: 109.120.203.163");
