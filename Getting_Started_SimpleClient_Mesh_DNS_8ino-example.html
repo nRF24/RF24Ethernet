@@ -31,7 +31,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.14</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.15</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -128,8 +128,8 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"><span class="comment">// Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation</span></div>
 <div class="line"><span class="comment">// Note: DNS responses for www.domain.com will typically be shorter than requests for domain.com.</span></div>
 <div class="line"><span class="keywordtype">char</span> icewind[] = { <span class="stringliteral">&quot;109.120.203.163&quot;</span> };  <span class="comment">//http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt</span></div>
-<div class="line"><span class="keywordtype">char</span> pizza[] = { <span class="stringliteral">&quot;www.fiikus.net&quot;</span> };     <span class="comment">//http://fiikus.net/asciiart/pizza.txt</span></div>
-<div class="line"><span class="keywordtype">char</span>* host = pizza;</div>
+<div class="line"><span class="keywordtype">char</span> ascii[] = { <span class="stringliteral">&quot;artscene.textfiles.com&quot;</span> };  <span class="comment">//http://artscene.textfiles.com/asciiart/texthistory.txt</span></div>
+<div class="line"><span class="keywordtype">char</span>* host = ascii;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> setup() {</div>
 <div class="line"> </div>
@@ -141,7 +141,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line">  IPAddress myIP(10, 10, 2, 4);</div>
 <div class="line">  IPAddress myDNS(8, 8, 8, 8);  <span class="comment">//Use Google DNS in this example</span></div>
 <div class="line">  <a id="a3" name="a3"></a><a class="code hl_define" href="ethernet__comp_8h.html#a09a9c005ebde74019ca9562f422fa88e">Ethernet</a>.begin(myIP, myDNS);</div>
-<div class="line">  mesh.begin(30);</div>
+<div class="line">  mesh.begin();</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// If you&#39;ll be making outgoing connections from the Arduino to the rest of</span></div>
 <div class="line">  <span class="comment">// the world, you&#39;ll need a gateway set up.</span></div>
@@ -159,7 +159,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line">  <span class="keywordflow">if</span> (Serial.available()) {</div>
 <div class="line">    <span class="keywordtype">char</span> c = Serial.read();</div>
 <div class="line">    <span class="keywordflow">if</span> (c == <span class="charliteral">&#39;p&#39;</span>) {</div>
-<div class="line">      host = pizza;</div>
+<div class="line">      host = ascii;</div>
 <div class="line">    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (c == <span class="charliteral">&#39;g&#39;</span>) {</div>
 <div class="line">      host = icewind;</div>
 <div class="line">    }</div>
@@ -211,8 +211,9 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line">    Serial.println(F(<span class="stringliteral">&quot;connected&quot;</span>));</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Make an HTTP request:</span></div>
-<div class="line">    <span class="keywordflow">if</span> (host == pizza) {</div>
-<div class="line">      client.write(<span class="stringliteral">&quot;GET /asciiart/pizza.txt HTTP/1.1\nHost: fiikus.net\n&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (host == ascii) {</div>
+<div class="line">      client.println(<span class="stringliteral">&quot;GET http://artscene.textfiles.com/asciiart/texthistory.txt HTTP/1.1&quot;</span>);</div>
+<div class="line">      client.println(<span class="stringliteral">&quot;Host: 208.86.224.90&quot;</span>);</div>
 <div class="line">    } <span class="keywordflow">else</span> {</div>
 <div class="line">      client.println(<span class="stringliteral">&quot;GET /web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt HTTP/1.1&quot;</span>);</div>
 <div class="line">      client.println(<span class="stringliteral">&quot;Host: 109.120.203.163&quot;</span>);</div>
@@ -233,7 +234,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 6 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Tue Jun 11 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>

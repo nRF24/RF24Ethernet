@@ -31,7 +31,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.14</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.15</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -221,14 +221,15 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> connect() {</div>
 <div class="line">  Serial.println(F(<span class="stringliteral">&quot;connecting&quot;</span>));</div>
-<div class="line">  IPAddress pizza(94, 199, 58, 243);</div>
-<div class="line">  <span class="keywordflow">if</span> (client.connect(pizza, 80)) {</div>
+<div class="line">  IPAddress ascii(208, 86, 224, 90);</div>
+<div class="line">  <span class="keywordflow">if</span> (client.connect(ascii, 80)) {</div>
 <div class="line">    Serial.println(F(<span class="stringliteral">&quot;connected&quot;</span>));</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Make an HTTP request:</span></div>
-<div class="line">    client.write(<span class="stringliteral">&quot;GET /asciiart/pizza.txt HTTP/1.1\n&quot;</span>);</div>
-<div class="line">    client.write(<span class="stringliteral">&quot;Host: fiikus.net\n&quot;</span>);</div>
-<div class="line">    client.write(<span class="stringliteral">&quot;Connection: close\n\n&quot;</span>);</div>
+<div class="line">    client.println(<span class="stringliteral">&quot;GET http://artscene.textfiles.com/asciiart/texthistory.txt HTTP/1.1&quot;</span>);</div>
+<div class="line">    client.println(<span class="stringliteral">&quot;Host: 208.86.224.90&quot;</span>);</div>
+<div class="line">    client.println(<span class="stringliteral">&quot;Connection: close&quot;</span>);</div>
+<div class="line">    client.println();</div>
 <div class="line">  } <span class="keywordflow">else</span> {</div>
 <div class="line">    <span class="comment">// if you didn&#39;t get a connection to the server:</span></div>
 <div class="line">    Serial.println(F(<span class="stringliteral">&quot;connection failed&quot;</span>));</div>
@@ -242,7 +243,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 6 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Tue Jun 11 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
