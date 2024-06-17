@@ -173,8 +173,8 @@ void connect() {
 
     // Make an HTTP request:
     if (host == ascii) {
-      client.println("GET http://artscene.textfiles.com/asciiart/texthistory.txt HTTP/1.1");
-      client.println("Host: 208.86.224.90");
+      client.println("GET /asciiart/texthistory.txt HTTP/1.1");
+      client.println("Host: artscene.textfiles.com");
     } else {
       client.println("GET /web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt HTTP/1.1");
       client.println("Host: 109.120.203.163");
