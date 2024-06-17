@@ -5,7 +5,7 @@
 RF24Ethernet requires the RF24 and RF24Network libraries (optionally RF24Mesh) <br>
 See http://tmrh20.github.io for documentation and downloads
 
-See [this video walk-through](https://www.youtube.com/watch?v=rBAIqAaRu0g) of the software setup with Raspberry Pi and Arduino.
+See [this video walk-through](https://www.youtube.com/watch?v=eYiWUTjNSuc) of the software setup with Raspberry Pi and Arduino.
 
 ### Raspberry Pi
 On the Raspberry Pi, a companion program, <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a> must be installed along with the RF24 and RF24Network libraries
