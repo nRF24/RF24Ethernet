@@ -24,8 +24,8 @@ On the Raspberry Pi, a companion program, <a href="http://nRF24.github.io/RF24Ga
    ```
 3. The application will require the user to specify an IP address and Subnet Mask: 10.10.2.2 and 255.255.255.0 are the defaults with RF24Ethernet examples, but this only works when running as root. Run the following commands to configure the interface and IP, where `pi` is your username:
    ```shell
-   ip tuntap add dev tun_nrf24 mode tun user pi multi_queue
-   ifconfig tun_nrf24 10.10.2.2/24
+   sudo ip tuntap add dev tun_nrf24 mode tun user pi multi_queue
+   sudo ifconfig tun_nrf24 10.10.2.2/24
    ```
 4. Raspberry Pi defaults to the master node (00) using RF24Mesh. Secondary Raspberry pi nodes need to specify their RF24Network address or RF24Mesh nodeID.
 
