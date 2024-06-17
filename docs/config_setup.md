@@ -30,12 +30,12 @@ On the Raspberry Pi, a companion program, <a href="http://nRF24.github.io/RF24Ga
 4. Raspberry Pi defaults to the master node (00) using RF24Mesh. Secondary Raspberry pi nodes need to specify their RF24Network address or RF24Mesh nodeID.
 
 ### Arduino
-1. For Arduino devices, use the Arduino Library Manager to install the RF24 libraries
+1. For Arduino devices, use the Arduino Library Manager to install the RF24Ethernet library and all related dependencies
 2. Open the included Getting_Started_SimpleServer or Getting_Started_SimpleClient example
 3. Configure your chosen CE and CS pins for the radio connection.
 4. Configure the IP address according to your preferences, (last octet must == RF24Mesh nodeID) with the gateway set to the chosen IP of the RPi.
 5. Connect into your nodes web-server at `http://ip-of-your-node:1000` from the RPi or configure the client sketch to connect to a server
-running on the Raspberry Pi.
+running on the Raspberry Pi. Users should also be able to ping the IP of the node from the Raspberry Pi.
 
 @note To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment `#define DISABLE_USER_PAYLOADS`. This
 will disable standard RF24Network messages, and only allow external data, such as TCP/IP information. Remember to comment for normal operation!
