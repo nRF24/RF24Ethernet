@@ -1,28 +1,4 @@
 var searchData=
 [
-  ['a_20network_20customizing_20your_20rf24_20tcp_20ip_20network_0',['Building a Network - Customizing your RF24 TCP/IP network',['../index.html#autotoc_md28',1,'']]],
-  ['about_20troubleshooting_1',['About Troubleshooting',['../index.html#autotoc_md30',1,'']]],
-  ['accessing_20external_20systems_3a_20forwarding_20and_20routing_2',['Accessing External Systems: Forwarding and Routing',['../md_docs_2config__setup.html#autotoc_md14',1,'']]],
-  ['additional_20information_3',['RF24Mesh - Additional Information',['../md_docs_2custom__networks.html#autotoc_md18',1,'']]],
-  ['address_20formatting_4',['MAC address formatting',['../md_docs_2overview.html#autotoc_md39',1,'']]],
-  ['advanced_20uip_20configuration_20and_20info_5',['Advanced (uIP) Configuration and Info',['../md_docs_2config__setup.html#autotoc_md15',1,'']]],
-  ['all_5fdata_6',['all_data',['../classRF24Client.html#a12b2e871c95fb155e06e3ce8fcd64734',1,'RF24Client']]],
-  ['an_20rf24ethernet_20network_7',['Building an RF24Ethernet Network',['../md_docs_2custom__networks.html',1,'']]],
-  ['and_20info_8',['Advanced (uIP) Configuration and Info',['../md_docs_2config__setup.html#autotoc_md15',1,'']]],
-  ['and_20node_20red_9',['Home Automation with MQTT and Node-Red',['../index.html#autotoc_md29',1,'']]],
-  ['and_20rf24ethernet_10',['Testing RF24Gateway and RF24Ethernet',['../md_docs_2troubleshooting.html#autotoc_md58',1,'']]],
-  ['and_20routing_11',['Accessing External Systems: Forwarding and Routing',['../md_docs_2config__setup.html#autotoc_md14',1,'']]],
-  ['and_20sensor_20networks_12',['Easily create home automation scenarios and sensor networks',['../md_README.html#autotoc_md1',1,'']]],
-  ['and_20set_20up_13',['Configuration and Set-Up',['../md_docs_2config__setup.html',1,'']]],
-  ['and_20setup_14',['Configuration and Setup',['../index.html#autotoc_md26',1,'']]],
-  ['and_20tcp_20ip_20networking_20for_20rf24network_15',['Ethernet and TCP/IP Networking for RF24Network',['../md_README.html',1,'']]],
-  ['apr_207_202015_16',['v1.4b/1.411b - March 14 - Apr 7 2015',['../md_docs_2pre__nrf24__changelog.html#autotoc_md44',1,'']]],
-  ['apr15_2016_202015_17',['Apr15 16 2015',['../md_docs_2pre__nrf24__changelog.html#autotoc_md42',1,'v1.51RC1 - Apr15-16 2015'],['../md_docs_2pre__nrf24__changelog.html#autotoc_md43',1,'v1.5RC1 - Apr15-16 2015']]],
-  ['arduino_18',['Arduino',['../md_docs_2config__setup.html#autotoc_md12',1,'Arduino'],['../md_docs_2troubleshooting.html#autotoc_md54',1,'Arduino'],['../md_docs_2troubleshooting.html#autotoc_md57',1,'Arduino']]],
-  ['arduino_20rf24ethernet_19',['Arduino (RF24Ethernet)',['../md_docs_2troubleshooting.html#autotoc_md60',1,'']]],
-  ['are_20not_20limited_20to_20the_20following_20',['Licenses include, but are not limited to the following.',['../md_README.html#autotoc_md4',1,'']]],
-  ['aug_20dec_202015_21',['v1.6 - Aug-Dec 2015',['../md_docs_2pre__nrf24__changelog.html#autotoc_md41',1,'']]],
-  ['automation_20scenarios_20and_20sensor_20networks_22',['Easily create home automation scenarios and sensor networks',['../md_README.html#autotoc_md1',1,'']]],
-  ['automation_20with_20mqtt_20and_20node_20red_23',['Home Automation with MQTT and Node-Red',['../index.html#autotoc_md29',1,'']]],
-  ['available_24',['available',['../classRF24Client.html#aa3e897f86e5b5553a07c73ef556625d3',1,'RF24Client::available()'],['../classRF24EthernetClass.html#a3c92e8965529abe5e60baa5c659e057a',1,'RF24EthernetClass::available()'],['../classRF24Server.html#aed5308faf0652ddc150589956d35d7ed',1,'RF24Server::available()']]]
+  ['_5f_5fattribute_5f_5f_0',['__attribute__',['../RF24Client_8h.html#ad09246453a4dabd919c7541484046a87',1,'RF24Client.h']]]
 ];

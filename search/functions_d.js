@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['waitavailable_0',['waitAvailable',['../classRF24Client.html#a407fa36d4296151aebd8f9660c66740a',1,'RF24Client']]],
-  ['write_1',['write',['../classRF24Client.html#a0735631a999c8a2f8d5d027096efcd5c',1,'RF24Client::write(uint8_t)'],['../classRF24Client.html#a9facc0b9cd510e0381672eb722a7ea94',1,'RF24Client::write(const uint8_t *buf, size_t size)'],['../classRF24Server.html#a082d33da04786e2241e64a51b2486a44',1,'RF24Server::write(uint8_t)'],['../classRF24Server.html#af92146a76ffc12429c6909d54d254959',1,'RF24Server::write(const uint8_t *buf, size_t size)']]]
+  ['uip_5flog_0',['uip_log',['../RF24Client_8cpp.html#ab58e1ceb7cb73ca2bcd73146b6c1b4e7',1,'RF24Client.cpp']]],
+  ['uipudp_5fappcall_1',['uipudp_appcall',['../uip-conf_8h.html#aabcb6018b6d071112561466fcac249c0',1,'uip-conf.h']]],
+  ['update_2',['update',['../classRF24EthernetClass.html#a541fb5875321c9d5e92e623967333398',1,'RF24EthernetClass']]],
+  ['use_5fdevice_3',['use_device',['../classRF24EthernetClass.html#a272292f0089f7a0ea2bdedcb60b73cff',1,'RF24EthernetClass']]]
 ];

@@ -33,7 +33,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.15</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.16</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -461,33 +461,31 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>{</div>
 <div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>    RF24NetworkHeader headerOut(00, EXTERNAL_DATA_TYPE);</div>
 <div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span> </div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    <span class="keywordtype">bool</span> ok = <a class="code hl_variable" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.network.write(headerOut, uip_buf, uip_len);</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span> </div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span><span class="preprocessor">#if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2</span></div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    <span class="keywordtype">bool</span> ok = <a class="code hl_variable" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.network.write(headerOut, uip_buf, uip_len);</div>
 <div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    <span class="keywordflow">if</span> (!ok) {</div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        ok = <a class="code hl_variable" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.network.write(headerOut, uip_buf, uip_len);</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span><span class="preprocessor">#if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2</span></div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>        <span class="keywordflow">if</span> (!ok) {</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>            Serial.println();</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>            Serial.print(millis());</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>            Serial.println(F(<span class="stringliteral">&quot; *** RF24Ethernet Network Write Fail ***&quot;</span>));</div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>        }</div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    }</div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span> </div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span><span class="preprocessor">#if defined ETH_DEBUG_L2</span></div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>    <span class="keywordflow">if</span> (ok) {</div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        Serial.println();</div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        Serial.print(millis());</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        Serial.println(F(<span class="stringliteral">&quot; RF24Ethernet Network Write OK&quot;</span>));</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    }</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>}</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span> </div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span><span class="comment">/*******************************************************/</span></div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span><span class="comment">void uipudp_appcall() {</span></div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span><span class="comment"></span> </div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span><span class="comment">}*/</span></div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        Serial.println();</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        Serial.print(millis());</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>        Serial.println(F(<span class="stringliteral">&quot; *** RF24Ethernet Network Write Fail ***&quot;</span>));</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>    }</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>    <a class="code hl_variable" href="RF24Ethernet_8h.html#ad1e8d95d62a572cb61fc616b4be11702">RF24Ethernet</a>.network.write(headerOut, uip_buf, uip_len);</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span> </div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span><span class="preprocessor">#if defined ETH_DEBUG_L2</span></div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>    <span class="keywordflow">if</span> (ok) {</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        Serial.println();</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>        Serial.print(millis());</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        Serial.println(F(<span class="stringliteral">&quot; RF24Ethernet Network Write OK&quot;</span>));</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>    }</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>}</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span> </div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span><span class="comment">/*******************************************************/</span></div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span><span class="comment">/*</span></div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span><span class="comment">void uipudp_appcall() {</span></div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span><span class="comment"></span> </div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span><span class="comment">}*/</span></div>
 <div class="ttc" id="aRF24Ethernet_8h_html"><div class="ttname"><a href="RF24Ethernet_8h.html">RF24Ethernet.h</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_a24f52ac52d6e714cb04a5aa01be3bdd0"><div class="ttname"><a href="RF24Ethernet_8h.html#a24f52ac52d6e714cb04a5aa01be3bdd0">BUF</a></div><div class="ttdeci">#define BUF</div><div class="ttdef"><b>Definition</b> <a href="RF24Ethernet_8h_source.html#l00067">RF24Ethernet.h:67</a></div></div>
 <div class="ttc" id="aRF24Ethernet_8h_html_a448ccafaa1276dc5c1a187b4233b3c42"><div class="ttname"><a href="RF24Ethernet_8h.html#a448ccafaa1276dc5c1a187b4233b3c42">uip_ip_addr</a></div><div class="ttdeci">#define uip_ip_addr(addr, ip)</div><div class="ttdef"><b>Definition</b> <a href="RF24Ethernet_8h_source.html#l00080">RF24Ethernet.h:80</a></div></div>
@@ -511,7 +509,7 @@ $(function(){ initResizable(false); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 23 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.11.0
+Generated on Mon Jul 1 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.11.0
 </small></address>
 </div><!-- doc-content -->
 </body>

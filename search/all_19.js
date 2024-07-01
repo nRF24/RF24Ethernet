@@ -1,15 +1,19 @@
 var searchData=
 [
-  ['tap_0',['TAP',['../RF24Ethernet_8h.html#ad589d98db39967a5f5378b5f2a19231b',1,'TAP:&#160;RF24Ethernet.h'],['../md_docs_2overview.html#autotoc_md36',1,'TAP']]],
-  ['tap_20vs_20tun_1',['TAP vs TUN',['../md_docs_2overview.html#autotoc_md35',1,'']]],
-  ['tcp_20ip_20network_2',['Building a Network - Customizing your RF24 TCP/IP network',['../index.html#autotoc_md28',1,'']]],
-  ['tcp_20ip_20networking_20for_20rf24network_3',['Ethernet and TCP/IP Networking for RF24Network',['../md_README.html',1,'']]],
-  ['tcp_20ip_20over_20rf24network_4',['RF24Ethernet library: TCP/IP over RF24Network',['../index.html',1,'']]],
-  ['test_20hardware_20configuration_5',['Test hardware configuration',['../md_docs_2troubleshooting.html#autotoc_md55',1,'']]],
-  ['testing_20rf24gateway_20and_20rf24ethernet_6',['Testing RF24Gateway and RF24Ethernet',['../md_docs_2troubleshooting.html#autotoc_md58',1,'']]],
-  ['the_20following_7',['Licenses include, but are not limited to the following.',['../md_README.html#autotoc_md4',1,'']]],
-  ['to_20the_20following_8',['Licenses include, but are not limited to the following.',['../md_README.html#autotoc_md4',1,'']]],
-  ['troubleshooting_9',['Troubleshooting',['../index.html#autotoc_md30',1,'About Troubleshooting'],['../md_docs_2troubleshooting.html',1,'Troubleshooting']]],
-  ['troubleshooting_2emd_10',['troubleshooting.md',['../troubleshooting_8md.html',1,'']]],
-  ['tun_11',['TUN',['../md_docs_2overview.html#autotoc_md35',1,'TAP vs TUN'],['../md_docs_2overview.html#autotoc_md37',1,'TUN']]]
+  ['scenarios_20and_20sensor_20networks_0',['Easily create home automation scenarios and sensor networks',['../md_README.html#autotoc_md1',1,'']]],
+  ['sendpage_1',['sendPage',['../InteractiveServer__Mesh_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569',1,'sendPage(EthernetClient &amp;_client, const char *_pointer, size_t size):&#160;HTML.h'],['../InteractiveServer__Mesh__ESPWifi_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569',1,'sendPage(EthernetClient &amp;_client, const char *_pointer, size_t size):&#160;HTML.h'],['../SLIP__InteractiveServer_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569',1,'sendPage(EthernetClient &amp;_client, const char *_pointer, size_t size):&#160;HTML.h'],['../TAP_2InteractiveServer_2HTML_8h.html#ac75a4bcdd5a5cdaa6cce7736eaea2569',1,'sendPage(EthernetClient &amp;_client, const char *_pointer, size_t size):&#160;HTML.h']]],
+  ['sensor_20networks_2',['Easily create home automation scenarios and sensor networks',['../md_README.html#autotoc_md1',1,'']]],
+  ['serialip_5fappcall_3',['serialip_appcall',['../classRF24Client.html#a8d670dfd402546dd32b678660d609b49',1,'RF24Client::serialip_appcall'],['../RF24Client_8cpp.html#a8d670dfd402546dd32b678660d609b49',1,'serialip_appcall(void):&#160;RF24Client.cpp'],['../uip-conf_8h.html#a8d670dfd402546dd32b678660d609b49',1,'serialip_appcall(void):&#160;RF24Client.cpp']]],
+  ['set_20up_4',['Configuration and Set-Up',['../md_docs_2config__setup.html',1,'']]],
+  ['set_5fgateway_5',['set_gateway',['../classRF24EthernetClass.html#a9c11cc6c37a3fbb28750484f20ede422',1,'RF24EthernetClass']]],
+  ['setchannel_6',['setChannel',['../classRF24EthernetClass.html#a313d0b7cd7d6a4fab825f3770ac8486a',1,'RF24EthernetClass']]],
+  ['setmac_7',['setMac',['../classRF24EthernetClass.html#a307dddd1f2663939b4c4a626d633b3c2',1,'RF24EthernetClass']]],
+  ['settimeout_8',['setTimeout',['../classRF24Server.html#affb1848e66197273fb51564f874d9099',1,'RF24Server']]],
+  ['setup_9',['Configuration and Setup',['../index.html#autotoc_md26',1,'']]],
+  ['source_20iot_20wireless_20not_20wifi_20networks_10',['Open &amp; Open-Source IoT Wireless (not WiFi) Networks',['../index.html#autotoc_md23',1,'']]],
+  ['stats_5fpage_11',['stats_page',['../InteractiveServer__Mesh_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b',1,'stats_page(EthernetClient &amp;_client):&#160;HTML.h'],['../InteractiveServer__Mesh__ESPWifi_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b',1,'stats_page(EthernetClient &amp;_client):&#160;HTML.h'],['../SLIP__InteractiveServer_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b',1,'stats_page(EthernetClient &amp;_client):&#160;HTML.h'],['../TAP_2InteractiveServer_2HTML_8h.html#a81cb6f088916239a442b702e8fe1885b',1,'stats_page(EthernetClient &amp;_client):&#160;HTML.h']]],
+  ['stop_12',['stop',['../classRF24Client.html#a4fbc538b64c27747509475fcc047c60e',1,'RF24Client']]],
+  ['strncpy_5fp_13',['strncpy_P',['../InteractiveServer__Mesh_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0',1,'strncpy_P:&#160;HTML.h'],['../InteractiveServer__Mesh__ESPWifi_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0',1,'strncpy_P:&#160;HTML.h'],['../SLIP__InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0',1,'strncpy_P:&#160;HTML.h'],['../TAP_2InteractiveServer_2HTML_8h.html#a66e2441227ad9b205e8b684cf6001be0',1,'strncpy_P:&#160;HTML.h']]],
+  ['subnetmask_14',['subnetMask',['../classRF24EthernetClass.html#a93d4f56dbc030907229af878634eff5d',1,'RF24EthernetClass']]],
+  ['systems_3a_20forwarding_20and_20routing_15',['Accessing External Systems: Forwarding and Routing',['../md_docs_2config__setup.html#autotoc_md14',1,'']]]
 ];

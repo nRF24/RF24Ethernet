@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gatewayip_0',['gatewayIP',['../classRF24EthernetClass.html#afc1832fadf3992ae6ca0642137beaff5',1,'RF24EthernetClass']]]
+  ['flush_0',['flush',['../classRF24Client.html#adac638b4d71ed2d56c40591d37e52a46',1,'RF24Client']]]
 ];

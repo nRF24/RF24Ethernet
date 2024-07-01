@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['operator_20bool_0',['operator bool',['../classRF24Client.html#ae46384288378b1f71cce806dfc7dfbb2',1,'RF24Client']]],
-  ['operator_21_3d_1',['operator!=',['../classRF24Client.html#a61c2e9e2dcf9e272cb5215e5df441696',1,'RF24Client']]],
-  ['operator_3d_3d_2',['operator==',['../classRF24Client.html#a00e66ecc1dc3c0c2caec882492115db4',1,'RF24Client']]]
+  ['main_5fpage_0',['main_page',['../InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8',1,'main_page(EthernetClient &amp;_client):&#160;HTML.h'],['../InteractiveServer__Mesh__ESPWifi_2HTML_8h.html#a812118aa31981f2ff283d50506303af8',1,'main_page(EthernetClient &amp;_client):&#160;HTML.h'],['../SLIP__InteractiveServer_2HTML_8h.html#a812118aa31981f2ff283d50506303af8',1,'main_page(EthernetClient &amp;_client):&#160;HTML.h'],['../TAP_2InteractiveServer_2HTML_8h.html#a812118aa31981f2ff283d50506303af8',1,'main_page(EthernetClient &amp;_client):&#160;HTML.h']]]
 ];

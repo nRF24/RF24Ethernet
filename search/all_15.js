@@ -1,13 +1,14 @@
 var searchData=
 [
-  ['open_20open_20source_20iot_20wireless_20not_20wifi_20networks_0',['Open &amp; Open-Source IoT Wireless (not WiFi) Networks',['../index.html#autotoc_md23',1,'']]],
-  ['open_20source_20iot_20wireless_20not_20wifi_20networks_1',['Open &amp; Open-Source IoT Wireless (not WiFi) Networks',['../index.html#autotoc_md23',1,'']]],
-  ['operator_20bool_2',['operator bool',['../classRF24Client.html#ae46384288378b1f71cce806dfc7dfbb2',1,'RF24Client']]],
-  ['operator_21_3d_3',['operator!=',['../classRF24Client.html#a61c2e9e2dcf9e272cb5215e5df441696',1,'RF24Client']]],
-  ['operator_3d_3d_4',['operator==',['../classRF24Client.html#a00e66ecc1dc3c0c2caec882492115db4',1,'RF24Client']]],
-  ['options_5',['Debugging Options',['../group__DebugOptions.html',1,'']]],
-  ['output_5fbuffer_5fsize_6',['OUTPUT_BUFFER_SIZE',['../group__UipConfiguration.html#ga29a61474854edfeed19457644161249f',1,'uip-conf.h']]],
-  ['over_20rf24network_7',['RF24Ethernet library: TCP/IP over RF24Network',['../index.html',1,'']]],
-  ['overview_8',['Overview',['../index.html#autotoc_md27',1,'Detailed Overview'],['../md_docs_2overview.html#autotoc_md32',1,'Overview'],['../md_docs_2overview.html',1,'RF24Ethernet Overview']]],
-  ['overview_2emd_9',['overview.md',['../overview_8md.html',1,'']]]
+  ['network_0',['Building an RF24Ethernet Network',['../md_docs_2custom__networks.html',1,'']]],
+  ['network_1',['Building a Network - Customizing your RF24 TCP/IP network',['../index.html#autotoc_md28',1,'']]],
+  ['network_20customizing_20your_20rf24_20tcp_20ip_20network_2',['Building a Network - Customizing your RF24 TCP/IP network',['../index.html#autotoc_md28',1,'']]],
+  ['networking_20for_20rf24network_3',['Ethernet and TCP/IP Networking for RF24Network',['../md_README.html',1,'']]],
+  ['networks_4',['Networks',['../md_docs_2custom__networks.html#autotoc_md20',1,'Hybrid- RF24Network/RF24Ethernet Networks'],['../index.html#autotoc_md23',1,'Open &amp; Open-Source IoT Wireless (not WiFi) Networks'],['../md_docs_2custom__networks.html#autotoc_md17',1,'RF24Mesh Networks']]],
+  ['networks_5',['Easily create home automation scenarios and sensor networks',['../md_README.html#autotoc_md1',1,'']]],
+  ['news_6',['News',['../index.html#autotoc_md25',1,'']]],
+  ['node_20red_7',['Home Automation with MQTT and Node-Red',['../index.html#autotoc_md29',1,'']]],
+  ['non_20raspberry_20pi_20linux_20etc_20devices_8',['Non-Raspberry Pi (Linux etc) Devices',['../md_docs_2config__setup.html#autotoc_md13',1,'']]],
+  ['not_20limited_20to_20the_20following_9',['Licenses include, but are not limited to the following.',['../md_README.html#autotoc_md4',1,'']]],
+  ['not_20wifi_20networks_10',['Open &amp; Open-Source IoT Wireless (not WiFi) Networks',['../index.html#autotoc_md23',1,'']]]
 ];

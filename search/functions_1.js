@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['begin_0',['begin',['../classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe',1,'RF24EthernetClass::begin(IP_ADDR myIP, IP_ADDR subnet)'],['../classRF24EthernetClass.html#a3c96e88f0576871a72f09b20f221798d',1,'RF24EthernetClass::begin(IPAddress ip)'],['../classRF24EthernetClass.html#a8374e1d80f8b7232c478cbbf8af12ca0',1,'RF24EthernetClass::begin(IPAddress ip, IPAddress dns)'],['../classRF24EthernetClass.html#ae1b0b02c8769092278d80904fcf295c4',1,'RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway)'],['../classRF24EthernetClass.html#a15fcc92fc38107c86454fce601f160ea',1,'RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)'],['../classRF24Server.html#a7a805094f2ff0ef355a1e62d9bda174f',1,'RF24Server::begin()']]]
+  ['available_0',['available',['../classRF24Client.html#aa3e897f86e5b5553a07c73ef556625d3',1,'RF24Client::available()'],['../classRF24EthernetClass.html#a3c92e8965529abe5e60baa5c659e057a',1,'RF24EthernetClass::available()'],['../classRF24Server.html#aed5308faf0652ddc150589956d35d7ed',1,'RF24Server::available()']]]
 ];

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['main_5fpage_0',['main_page',['../InteractiveServer__Mesh_2HTML_8h.html#a812118aa31981f2ff283d50506303af8',1,'main_page(EthernetClient &amp;_client):&#160;HTML.h'],['../InteractiveServer__Mesh__ESPWifi_2HTML_8h.html#a812118aa31981f2ff283d50506303af8',1,'main_page(EthernetClient &amp;_client):&#160;HTML.h'],['../SLIP__InteractiveServer_2HTML_8h.html#a812118aa31981f2ff283d50506303af8',1,'main_page(EthernetClient &amp;_client):&#160;HTML.h'],['../TAP_2InteractiveServer_2HTML_8h.html#a812118aa31981f2ff283d50506303af8',1,'main_page(EthernetClient &amp;_client):&#160;HTML.h']]]
+  ['listen_0',['listen',['../classRF24EthernetClass.html#a84961d1dec7dd8dbaeac538656084b45',1,'RF24EthernetClass']]],
+  ['localip_1',['localIP',['../classRF24EthernetClass.html#a8725f1af4ae093b5030997d690ddf4ae',1,'RF24EthernetClass']]]
 ];

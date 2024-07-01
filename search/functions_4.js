@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flush_0',['flush',['../classRF24Client.html#adac638b4d71ed2d56c40591d37e52a46',1,'RF24Client']]]
+  ['dnsserverip_0',['dnsServerIP',['../classRF24EthernetClass.html#a7e70612c15de96f2dd6528cdfbcb5171',1,'RF24EthernetClass']]]
 ];
