@@ -323,7 +323,7 @@ void RF24EthernetClass::network_send()
         Serial.println(F(" *** RF24Ethernet Network Write Fail ***"));
     }
 #else
-        RF24Ethernet.network.write(headerOut, uip_buf, uip_len);
+    RF24Ethernet.network.write(headerOut, uip_buf, uip_len);
 #endif
 
 #if defined ETH_DEBUG_L2
