@@ -336,7 +336,7 @@ void serialip_appcall(void)
         if (uip_poll() || uip_rexmit())
         {
             if (uip_rexmit()) {
-                IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(F("ReXmit, Len: ")););
+                IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print(F("ReXmit, Len: ")););
                 IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(u->data_pos));
                 uip_len = u->data_pos;
                 uip_send(u->myData, u->data_pos);
