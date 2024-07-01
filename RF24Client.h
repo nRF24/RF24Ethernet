@@ -50,7 +50,7 @@ typedef struct
  * Data structure for holding per connection data
  * @warning <b> This is used internally and should not be accessed directly by users </b>
  */
-typedef __attribute__((__packed__)) struct
+typedef struct __attribute__((__packed__))
 {
     bool hold;
     bool packets_in;

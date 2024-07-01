@@ -315,14 +315,15 @@ void RF24EthernetClass::network_send()
 {
     RF24NetworkHeader headerOut(00, EXTERNAL_DATA_TYPE);
 
-    bool ok = RF24Ethernet.network.write(headerOut, uip_buf, uip_len);
-
 #if defined ETH_DEBUG_L1 || defined ETH_DEBUG_L2
+    bool ok = RF24Ethernet.network.write(headerOut, uip_buf, uip_len);
     if (!ok) {
         Serial.println();
         Serial.print(millis());
         Serial.println(F(" *** RF24Ethernet Network Write Fail ***"));
     }
+#else
+        RF24Ethernet.network.write(headerOut, uip_buf, uip_len);
 #endif
 
 #if defined ETH_DEBUG_L2
