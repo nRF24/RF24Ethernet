@@ -50,16 +50,15 @@ typedef struct
  * Data structure for holding per connection data
  * @warning <b> This is used internally and should not be accessed directly by users </b>
  */
-typedef struct
+typedef struct __attribute__((__packed__))
 {
     bool hold;
-    bool sent;
     bool packets_in;
     bool packets_out;
     bool windowOpened;
     uint8_t state;
+    uint16_t in_pos;
     uint16_t out_pos;
-    uint16_t dataPos;
     uint16_t dataCnt;
 #if UIP_CLIENT_TIMER >= 0
     uint32_t timer;

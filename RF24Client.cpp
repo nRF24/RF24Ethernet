@@ -217,6 +217,7 @@ test2:
             // RF24EthernetClass::tick();
             goto test2;
         }
+        u->hold = false;
         return u->out_pos;
     }
     u->hold = false;
@@ -278,18 +279,15 @@ void serialip_appcall(void)
 #if UIP_CONNECTION_TIMEOUT > 0
             u->connectTimer = millis();
 #endif
+            u->hold = (u->out_pos = (u->windowOpened = (u->packets_out = false)));
 
-            if (u->sent)
-            {
-                u->hold = (u->out_pos = (u->windowOpened = (u->packets_out = false)));
-            }
             if (uip_len && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
             {
                 uip_stop();
                 u->state &= ~UIP_CLIENT_RESTART;
                 u->windowOpened = false;
                 u->restartTime = millis();
-                memcpy(&u->myData[u->dataPos + u->dataCnt], uip_appdata, uip_datalen());
+                memcpy(&u->myData[u->in_pos + u->dataCnt], uip_appdata, uip_datalen());
                 u->dataCnt += uip_datalen();
 
                 u->packets_in = 1;
@@ -337,39 +335,46 @@ void serialip_appcall(void)
         /*******Polling**********/
         if (uip_poll() || uip_rexmit())
         {
+            if (uip_rexmit()) {
+                IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print(F("ReXmit, Len: ")););
+                IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(u->out_pos));
+                uip_len = u->out_pos;
+                uip_send(u->myData, u->out_pos);
+                u->hold = true;
+                goto finish;
+            }
             // IF_RF24ETHERNET_DEBUG_CLIENT( Serial.println(); Serial.println(F("UIPClient uip_poll")); );
 
-            if (u->packets_out != 0)
+            if (u->packets_out != 0 && !u->hold)
             {
                 uip_len = u->out_pos;
                 uip_send(u->myData, u->out_pos);
                 u->hold = true;
-                u->sent = true;
                 goto finish;
             }
-            else
-                // Restart mechanism to keep connections going
-                // Only call this if the TCP window has already been re-opened, the connection is being polled, but no data
-                // has been acked
-                if (!(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
-                {
 
-                    if (u->windowOpened == true && u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > u->restartInterval)
-                    {
-                        u->restartTime = millis();
+            // Restart mechanism to keep connections going
+            // Only call this if the TCP window has already been re-opened, the connection is being polled, but no data
+            // has been acked
+            if (!(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
+            {
+
+                if (u->windowOpened == true && u->state & UIP_CLIENT_RESTART && millis() - u->restartTime > u->restartInterval)
+                {
+                    u->restartTime = millis();
 #if defined RF24ETHERNET_DEBUG_CLIENT || defined ETH_DEBUG_L1
-                        Serial.println();
-                        Serial.print(millis());
+                    Serial.println();
+                    Serial.print(millis());
     #if UIP_CONNECTION_TIMEOUT > 0
-                        Serial.print(F(" UIPClient Re-Open TCP Window, time remaining before abort: "));
-                        Serial.println(UIP_CONNECTION_TIMEOUT - (millis() - u->connectTimer));
+                    Serial.print(F(" UIPClient Re-Open TCP Window, time remaining before abort: "));
+                    Serial.println(UIP_CONNECTION_TIMEOUT - (millis() - u->connectTimer));
     #endif
 #endif
-                        u->restartInterval += 500;
-                        u->restartInterval = rf24_min(u->restartInterval, 7000);
-                        uip_restart();
-                    }
+                    u->restartInterval += 500;
+                    u->restartInterval = rf24_min(u->restartInterval, 7000);
+                    uip_restart();
                 }
+            }
         }
 
         /*******Close**********/
@@ -423,9 +428,11 @@ uip_userdata_t* RF24Client::_allocateData()
             data->packets_in = 0;
             data->packets_out = 0;
             data->dataCnt = 0;
-            data->dataPos = 0;
+            data->in_pos = 0;
             data->out_pos = 0;
             data->hold = 0;
+            data->restartTime = millis();
+            data->restartInterval = 5000;
 #if (UIP_CONNECTION_TIMEOUT > 0)
             data->connectTimer = millis();
             data->connectTimeout = UIP_CONNECTION_TIMEOUT;
@@ -483,15 +490,15 @@ int RF24Client::read(uint8_t* buf, size_t size)
         }
 
         size = rf24_min(data->dataCnt, size);
-        memcpy(buf, &data->myData[data->dataPos], size);
+        memcpy(buf, &data->myData[data->in_pos], size);
         data->dataCnt -= size;
 
-        data->dataPos += size;
+        data->in_pos += size;
 
         if (!data->dataCnt)
         {
             data->packets_in = 0;
-            data->dataPos = 0;
+            data->in_pos = 0;
 
             if (uip_stopped(&uip_conns[data->state & UIP_CLIENT_SOCKETS]) && !(data->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)))
             {
@@ -536,7 +543,7 @@ int RF24Client::peek()
 {
     if (available())
     {
-        return data->myData[data->dataPos];
+        return data->myData[data->in_pos];
     }
     return -1;
 }
