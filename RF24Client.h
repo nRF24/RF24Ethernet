@@ -57,7 +57,8 @@ typedef struct __attribute__((__packed__))
     bool packets_out;
     bool windowOpened;
     uint8_t state;
-    uint16_t data_pos;
+    uint16_t in_pos;
+    uint16_t out_pos;
     uint16_t dataCnt;
 #if UIP_CLIENT_TIMER >= 0
     uint32_t timer;
