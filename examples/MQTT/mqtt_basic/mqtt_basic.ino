@@ -64,6 +64,7 @@ void connect() {
     Serial.print(".");
     if (millis() - clTimeout > 5001) {
       Serial.println();
+      mesh.renewAddress();
       return;
     }
     uint32_t timer = millis();

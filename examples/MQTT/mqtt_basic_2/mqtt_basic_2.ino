@@ -64,6 +64,7 @@ void connect() {
   while (!client.connect(clientID)) {
     Serial.print(".");
     if (millis() - clTimeout > 5001) {
+      mesh.renewAddress();
       Serial.println();
       return;
     }
