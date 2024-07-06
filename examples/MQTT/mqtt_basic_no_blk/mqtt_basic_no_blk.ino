@@ -1,6 +1,6 @@
 /*
  *************************************************************************
-   RF24Ethernet Arduino library by TMRh20 - 2014-2020
+   RF24Ethernet Arduino library by TMRh20 - 2014-2021
 
    Automated (mesh) wireless networking and TCP/IP communication stack for RF24 radio modules
 
@@ -10,23 +10,23 @@
         Documentation: http://nRF24.github.io/RF24Ethernet/
 
  *************************************************************************
- *
+
  **** EXAMPLE REQUIRES: Arduino MQTT library: https://github.com/256dpi/arduino-mqtt/ ***
- * Shown in Arduino Library Manager as 'MQTT' by Joel Gaehwiler
- *
+   Shown in Arduino Library Manager as 'MQTT' by Joel Gaehwiler
+
  *************************************************************************
   Basic MQTT example
 
- This sketch demonstrates the basic capabilities of the library.
- It connects to an MQTT server then:
+  This sketch demonstrates the basic capabilities of the library.
+  It connects to an MQTT server then:
   - publishes "hello world" to the topic "outTopic"
   - subscribes to the topic "inTopic", printing out any messages
     it receives.
   - it assumes the received payloads are strings not binary
   - Continually publishes its nodeID to the outTopic
 
- It will reconnect to the server if the connection is lost using a blocking
- reconnect function.
+  It will reconnect to the server if the connection is lost using a non-blocking
+  reconnect function.
 
 */
 
@@ -47,8 +47,7 @@ IPAddress gateway(10, 10, 2, 2);  //Specify the gateway in case different from t
 IPAddress server(10, 10, 2, 2);   //The ip of the MQTT server
 char clientID[] = { "arduinoClient   " };
 
-void messageReceived(String& topic, String& payload) {
-  //Serial.println("incoming: " + topic + " - " + payload);
+void messageReceived(MQTTClient* client, char topic[], char payload[], int length) {
   Serial.println("incoming: ");
   Serial.print(topic);
   Serial.print(" - ");
@@ -59,28 +58,18 @@ EthernetClient ethClient;
 MQTTClient client;
 
 void connect() {
-  Serial.print("connecting...");
-  uint32_t clTimeout = millis() + 5001;
-  while (!client.connect(clientID)) {
-    Serial.print(".");
-    if (millis() > clTimeout) {
-      mesh.renewAddress();
-      Serial.println();
-      return;
-    }
-    uint32_t timer = millis() + 1000;
-    //Instead of delay, keep the RF24 stack updating
-    while (millis() < timer) {
-      Ethernet.update();
-    }
+  Serial.println("connecting...");
+  if (!client.connect(clientID)) {
+    mesh.renewAddress();
+    return;
   }
-
   Serial.println("\nconnected!");
   client.publish("outTopic", "hello world");
   client.subscribe("inTopic", 2);
 }
 
 void setup() {
+
   Serial.begin(115200);
 
   Ethernet.begin(ip, gateway);
@@ -98,31 +87,29 @@ void setup() {
   Serial.println(clientID);
 
   client.begin(server, ethClient);
-  client.onMessage(messageReceived);
+  client.onMessageAdvanced(messageReceived);
 }
 
-uint32_t mesh_timer = 0;
+
 uint32_t pub_timer = 0;
 
 void loop() {
+
   Ethernet.update();
 
-  if (millis() - mesh_timer > 30000) {  //Every 30 seconds, test mesh connectivity
-    mesh_timer = millis();
+  if (!client.connected()) {
     if (!mesh.checkConnection()) {
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
         mesh.begin();
       }
     }
-    Serial.println();
-  }
-  if (!client.connected()) {
     connect();
+    Serial.println();
   }
 
   client.loop();
 
-  // Every second, report to the MQTT server the Node ID of this node
+  // Every so often, report to the MQTT server the Node ID of this node
   if (client.connected() && millis() - pub_timer > 3000) {
     pub_timer = millis();
     char str[4];
