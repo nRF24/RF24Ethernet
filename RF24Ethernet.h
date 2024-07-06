@@ -277,7 +277,6 @@ typedef RF24EthernetClass RF52EthernetClass;
  *
  * This is similar to the mqtt_basic example, but uses a non-blocking connect function.
  */
- 
 /**
  * @example mqtt_basic_2.ino
  *
