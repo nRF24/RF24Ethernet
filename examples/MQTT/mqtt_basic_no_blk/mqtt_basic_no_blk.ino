@@ -48,7 +48,7 @@ IPAddress server(10, 10, 2, 2);   //The ip of the MQTT server
 char clientID[] = { "arduinoClient   " };
 
 void messageReceived(MQTTClient* client, char topic[], char payload[], int length) {
-  (void*)client;
+  (void)*client;
   (void)length;
   Serial.println("incoming: ");
   Serial.print(topic);
