@@ -38,7 +38,7 @@ jobs:
     with:
       example-path: ${{ matrix.example }}
       board-id: ${{ matrix.board }}
-      lib-deps: -l knolleary/PubSubClient -l 256dpi/MQTT
+      lib-deps: -l 256dpi/MQTT
     strategy:
       fail-fast: false
       matrix:
@@ -48,6 +48,7 @@ jobs:
           - "examples/InteractiveServer_Mesh/*"
           - "examples/MQTT/mqtt_basic/mqtt_basic.ino"
           - "examples/MQTT/mqtt_basic_2/mqtt_basic_2.ino"
+          - "examples/MQTT/mqtt_basic_no_blk/mqtt_basic_no_blk.ino"
           - "examples/SimpleClient_Mesh/SimpleClient_Mesh.ino"
 
         # these need RF24_TAP defined

@@ -24,6 +24,7 @@ jobs:
         - examples/InteractiveServer_Mesh
         - examples/MQTT/mqtt_basic
         - examples/MQTT/mqtt_basic_2
+        - examples/MQTT/mqtt_basic_no_blk
         - examples/SimpleClient_Mesh
 
       # these need RF24_TAP defined
@@ -42,7 +43,6 @@ jobs:
         - source-url: https://github.com/nRF24/RF24.git
         - source-url: https://github.com/nRF24/RF24Network.git
         - source-url: https://github.com/nRF24/RF24Mesh.git
-        - name: PubSubClient
         - name: MQTT
         - source-path: ./
       fqbn: ${{ matrix.fqbn }}
@@ -58,7 +58,6 @@ jobs:
       matrix:
         fqbn:
           - "arduino:avr:yun"
-          - "arduino:avr:uno"
           - "arduino:avr:diecimila"
           - "arduino:avr:mega"
           - "arduino:avr:megaADK"
@@ -102,9 +101,9 @@ jobs:
         # Generate size deltas data for this board
         include:
           - fqbn: arduino:avr:nano
-            enable-deltas-report: true
+            enable-deltas-report: ${{ github.event_name == 'pull_request' }}
           - fqbn: arduino:samd:mkrzero
-            enable-deltas-report: true
+            enable-deltas-report: ${{ github.event_name == 'pull_request' }}
 
   # When using a matrix to compile for multiple boards, it's necessary to use a separate job for the deltas report
   report:

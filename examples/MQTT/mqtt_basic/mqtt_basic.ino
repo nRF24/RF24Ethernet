@@ -59,16 +59,17 @@ MQTTClient client;
 
 void connect() {
   Serial.print("connecting...");
-  uint32_t clTimeout = millis();
+  uint32_t clTimeout = millis() + 5001;
   while (!client.connect(clientID)) {
     Serial.print(".");
-    if (millis() - clTimeout > 5001) {
+    if (millis() > clTimeout) {
       Serial.println();
+      mesh.renewAddress();
       return;
     }
-    uint32_t timer = millis();
+    uint32_t timer = millis() + 1000;
     //Instead of delay, keep the RF24 stack updating
-    while (millis() - timer < 1000) {
+    while (millis() < timer) {
       Ethernet.update();
     }
   }
@@ -91,7 +92,6 @@ void setup() {
 
   //Convert the last octet of the IP address to an identifier used
   char str[4];
-  int test = ip[3];
   itoa(ip[3], str, 10);
   memcpy(&clientID[13], &str, strlen(str));
   Serial.println(clientID);
@@ -125,7 +125,6 @@ void loop() {
   if (client.connected() && millis() - pub_timer > 3000) {
     pub_timer = millis();
     char str[4];
-    int test = ip[3];
     itoa(ip[3], str, 10);
     char str1[] = "Node      \r\n";
     memcpy(&str1[5], &str, strlen(str));

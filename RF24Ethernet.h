@@ -273,6 +273,11 @@ typedef RF24EthernetClass RF52EthernetClass;
  */
 
 /**
+ * @example mqtt_basic_no_blk.ino
+ *
+ * This is similar to the mqtt_basic example, but uses a non-blocking connect function.
+ */
+/**
  * @example mqtt_basic_2.ino
  *
  * A copy of the initial MQTT example using MQTT library https://github.com/256dpi/arduino-mqtt/ slightly modified to include RF24Ethernet/RF24Mesh.
