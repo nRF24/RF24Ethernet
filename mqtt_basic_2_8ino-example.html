@@ -33,7 +33,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.16</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.17</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -171,16 +171,17 @@ $(function(){ initResizable(false); });
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> connect() {</div>
 <div class="line">  Serial.print(<span class="stringliteral">&quot;connecting...&quot;</span>);</div>
-<div class="line">  uint32_t clTimeout = millis();</div>
+<div class="line">  uint32_t clTimeout = millis() + 5001;</div>
 <div class="line">  <span class="keywordflow">while</span> (!client.connect(clientID)) {</div>
 <div class="line">    Serial.print(<span class="stringliteral">&quot;.&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">if</span> (millis() - clTimeout &gt; 5001) {</div>
+<div class="line">    <span class="keywordflow">if</span> (millis() &gt; clTimeout) {</div>
+<div class="line">      mesh.renewAddress();</div>
 <div class="line">      Serial.println();</div>
 <div class="line">      <span class="keywordflow">return</span>;</div>
 <div class="line">    }</div>
-<div class="line">    uint32_t timer = millis();</div>
+<div class="line">    uint32_t timer = millis() + 1000;</div>
 <div class="line">    <span class="comment">//Instead of delay, keep the RF24 stack updating</span></div>
-<div class="line">    <span class="keywordflow">while</span> (millis() - timer &lt; 1000) {</div>
+<div class="line">    <span class="keywordflow">while</span> (millis() &lt; timer) {</div>
 <div class="line">      <a id="a3" name="a3"></a><a class="code hl_define" href="ethernet__comp_8h.html#a09a9c005ebde74019ca9562f422fa88e">Ethernet</a>.update();</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
@@ -203,7 +204,6 @@ $(function(){ initResizable(false); });
 <div class="line"> </div>
 <div class="line">  <span class="comment">//Convert the last octet of the IP address to an identifier used</span></div>
 <div class="line">  <span class="keywordtype">char</span> str[4];</div>
-<div class="line">  <span class="keywordtype">int</span> test = ip[3];</div>
 <div class="line">  itoa(ip[3], str, 10);</div>
 <div class="line">  memcpy(&amp;clientID[13], &amp;str, strlen(str));</div>
 <div class="line">  Serial.println(clientID);</div>
@@ -237,7 +237,6 @@ $(function(){ initResizable(false); });
 <div class="line">  <span class="keywordflow">if</span> (client.connected() &amp;&amp; millis() - pub_timer &gt; 3000) {</div>
 <div class="line">    pub_timer = millis();</div>
 <div class="line">    <span class="keywordtype">char</span> str[4];</div>
-<div class="line">    <span class="keywordtype">int</span> test = ip[3];</div>
 <div class="line">    itoa(ip[3], str, 10);</div>
 <div class="line">    <span class="keywordtype">char</span> str1[] = <span class="stringliteral">&quot;Node      \r\n&quot;</span>;</div>
 <div class="line">    memcpy(&amp;str1[5], &amp;str, strlen(str));</div>
@@ -253,7 +252,7 @@ $(function(){ initResizable(false); });
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 1 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.11.0
+Generated on Sun Oct 6 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.11.0
 </small></address>
 </div><!-- doc-content -->
 </body>

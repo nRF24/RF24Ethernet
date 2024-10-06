@@ -1,14 +1,8 @@
 var searchData=
 [
-  ['debugging_20options_0',['Debugging Options',['../group__DebugOptions.html',1,'']]],
-  ['dec_202014_1',['v1.0b - Dec 2014',['../md_docs_2pre__nrf24__changelog.html#autotoc_md50',1,'']]],
-  ['dec_202015_2',['v1.6 - Aug-Dec 2015',['../md_docs_2pre__nrf24__changelog.html#autotoc_md41',1,'']]],
-  ['detailed_20overview_3',['Detailed Overview',['../index.html#autotoc_md27',1,'']]],
-  ['devices_4',['Non-Raspberry Pi (Linux etc) Devices',['../md_docs_2config__setup.html#autotoc_md13',1,'']]],
-  ['dns_2ecpp_5',['Dns.cpp',['../Dns_8cpp.html',1,'']]],
-  ['dns_2eh_6',['Dns.h',['../Dns_8h.html',1,'']]],
-  ['dnsserverip_7',['dnsServerIP',['../classRF24EthernetClass.html#a7e70612c15de96f2dd6528cdfbcb5171',1,'RF24EthernetClass']]],
-  ['do_8',['What does it do?',['../md_docs_2overview.html#autotoc_md33',1,'']]],
-  ['does_20it_20do_9',['What does it do?',['../md_docs_2overview.html#autotoc_md33',1,'']]],
-  ['does_20it_20work_10',['How does it work?',['../md_docs_2overview.html#autotoc_md34',1,'']]]
+  ['begin_0',['begin',['../classRF24EthernetClass.html#ae612b73fa0069a548096e729a607debe',1,'RF24EthernetClass::begin(IP_ADDR myIP, IP_ADDR subnet)'],['../classRF24EthernetClass.html#a3c96e88f0576871a72f09b20f221798d',1,'RF24EthernetClass::begin(IPAddress ip)'],['../classRF24EthernetClass.html#a8374e1d80f8b7232c478cbbf8af12ca0',1,'RF24EthernetClass::begin(IPAddress ip, IPAddress dns)'],['../classRF24EthernetClass.html#ae1b0b02c8769092278d80904fcf295c4',1,'RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway)'],['../classRF24EthernetClass.html#a15fcc92fc38107c86454fce601f160ea',1,'RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)'],['../classRF24Server.html#a7a805094f2ff0ef355a1e62d9bda174f',1,'RF24Server::begin()']]],
+  ['buf_1',['BUF',['../RF24Ethernet_8h.html#a24f52ac52d6e714cb04a5aa01be3bdd0',1,'RF24Ethernet.h']]],
+  ['building_20a_20network_20customizing_20your_20rf24_20tcp_20ip_20network_2',['Building a Network - Customizing your RF24 TCP/IP network',['../index.html#autotoc_md100',1,'']]],
+  ['building_20an_20rf24ethernet_20network_3',['Building an RF24Ethernet Network',['../md_docs_2custom__networks.html',1,'']]],
+  ['but_20are_20not_20limited_20to_20the_20following_4',['Licenses include, but are not limited to the following.',['../md_README.html#autotoc_md76',1,'']]]
 ];

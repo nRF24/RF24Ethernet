@@ -33,7 +33,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.16</span>
+   <div id="projectname">RF24Ethernet - TCP/IP over RF24Network<span id="projectnumber">&#160;v1.6.17</span>
    </div>
    <div id="projectbrief">TMRh20 - Pushing the practical limits of RF24 modules</div>
   </td>
@@ -109,19 +109,19 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
-<ul><ul><li class="level2"><a href="#autotoc_md11">Raspberry Pi</a></li>
-<li class="level2"><a href="#autotoc_md12">Arduino</a></li>
-<li class="level2"><a href="#autotoc_md13">Non-Raspberry Pi (Linux etc) Devices</a></li>
-<li class="level2"><a href="#autotoc_md14">Accessing External Systems: Forwarding and Routing</a></li>
+<ul><ul><li class="level2"><a href="#autotoc_md83">Raspberry Pi</a></li>
+<li class="level2"><a href="#autotoc_md84">Arduino</a></li>
+<li class="level2"><a href="#autotoc_md85">Non-Raspberry Pi (Linux etc) Devices</a></li>
+<li class="level2"><a href="#autotoc_md86">Accessing External Systems: Forwarding and Routing</a></li>
 </ul>
-<li class="level1"><a href="#autotoc_md15">Advanced (uIP) Configuration and Info</a></li>
+<li class="level1"><a href="#autotoc_md87">Advanced (uIP) Configuration and Info</a></li>
 </ul>
 </div>
-<div class="textblock"><p><a class="anchor" id="autotoc_md10"></a></p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md82"></a></p>
 <p>RF24Ethernet requires the RF24 and RF24Network libraries (optionally RF24Mesh) <br  />
  See <a href="http://tmrh20.github.io">http://tmrh20.github.io</a> for documentation and downloads</p>
 <p>See <a href="https://www.youtube.com/watch?v=eYiWUTjNSuc">this video walk-through</a> of the software setup with Raspberry Pi and Arduino.</p>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md83"></a>
 Raspberry Pi</h2>
 <p>On the Raspberry Pi, a companion program, <a href="http://nRF24.github.io/RF24Gateway/">RF24Gateway</a> must be installed along with the RF24 and RF24Network libraries</p><ol type="1">
 <li>Enter the following to download an install script that will build and install the needed RF24* libraries: <div class="fragment"><div class="line">wget https://raw.githubusercontent.com/nRF24/.github/main/installer/install.sh</div>
@@ -138,7 +138,7 @@ Raspberry Pi</h2>
 </div><!-- fragment --></li>
 <li>Raspberry Pi defaults to the master node (00) using RF24Mesh. Secondary Raspberry pi nodes need to specify their RF24Network address or RF24Mesh nodeID.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md84"></a>
 Arduino</h2>
 <ol type="1">
 <li>For Arduino devices, use the Arduino Library Manager to install the RF24Ethernet library and all related dependencies</li>
@@ -148,11 +148,11 @@ Arduino</h2>
 <li>Connect into your nodes web-server at <code><a href="http://ip-of-your-node:1000">http://ip-of-your-node:1000</a></code> from the RPi or configure the client sketch to connect to a server running on the Raspberry Pi. Users should also be able to ping the IP of the node from the Raspberry Pi.</li>
 </ol>
 <dl class="section note"><dt>Note</dt><dd>To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment <code>#define DISABLE_USER_PAYLOADS</code>. This will disable standard RF24Network messages, and only allow external data, such as TCP/IP information. Remember to comment for normal operation!</dd></dl>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md85"></a>
 Non-Raspberry Pi (Linux etc) Devices</h2>
 <p>Arduino can also function as a gateway for any Linux machine or PC/MAC that supports SLIP. <br  />
  See the SLIP_Gateway and SLIP_InteractiveServer examples for usage without the need for a Raspberry Pi.</p>
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md86"></a>
 Accessing External Systems: Forwarding and Routing</h2>
 <p>In order to give your network or nodes access to your network or the internet beyond the RPi, it needs to be configured to route traffic between the networks.</p><ol type="1">
 <li>Run <div class="fragment"><div class="line">sudo sysctl -w net.ipv4.ip_forward=1</div>
@@ -165,14 +165,14 @@ Accessing External Systems: Forwarding and Routing</h2>
  <a href="http://www.karlrupp.net/en/computer/nat_tutorial">http://www.karlrupp.net/en/computer/nat_tutorial</a><br  />
  <a href="http://serverfault.com/questions/326493/basic-iptables-nat-port-forwarding">http://serverfault.com/questions/326493/basic-iptables-nat-port-forwarding</a></dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd><b>Note:</b> Users are responsible to manage further routing rules along with their IP traffic in order to prevent unauthorized access.</dd></dl>
-<h1><a class="anchor" id="autotoc_md15"></a>
+<h1><a class="anchor" id="autotoc_md87"></a>
 Advanced (uIP) Configuration and Info</h1>
 <p>See the <a href="group__UipConfiguration.html">User Configuration</a> section for modifying <a class="el" href="uip-conf_8h.html">uip-conf.h</a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 1 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.11.0
+Generated on Sun Oct 6 2024 for RF24Ethernet - TCP/IP over RF24Network by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.11.0
 </small></address>
 </div><!-- doc-content -->
 </body>
