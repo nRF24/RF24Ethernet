@@ -28,6 +28,11 @@ On the Raspberry Pi, a companion program, <a href="http://nRF24.github.io/RF24Ga
    sudo ifconfig tun_nrf24 10.10.2.2/24
    ```
 4. Raspberry Pi defaults to the master node (00) using RF24Mesh. Secondary Raspberry pi nodes need to specify their RF24Network address or RF24Mesh nodeID.
+5. To maximize throughput between Raspberry Pi or other Linux devices, run the following commands. To make these changes permanent, edit `/etc/sysctl.conf`
+   ```shell
+   sudo sysctl net.ipv4.tcp_wmem="1500 1500 1500"
+   sudo sysctl net.ipv4.tcp_rmem="1500 1500 1500"
+   ```
 
 ### Arduino
 1. For Arduino devices, use the Arduino Library Manager to install the RF24Ethernet library and all related dependencies
