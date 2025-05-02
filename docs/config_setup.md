@@ -34,6 +34,8 @@ On the Raspberry Pi, a companion program, <a href="http://nRF24.github.io/RF24Ga
    sudo sysctl net.ipv4.tcp_rmem="1500 1500 1500"
    ```
 
+@note These commands can severely impact other network functionality. Run `sudo sysctl net.ipv4.tcp_wmem` and `sudo sysctl net.ipv4.tcp_rmem` to get the default settings so they can be restored.
+
 ### Arduino
 1. For Arduino devices, use the Arduino Library Manager to install the RF24Ethernet library and all related dependencies
 2. Open the included Getting_Started_SimpleServer or Getting_Started_SimpleClient example
