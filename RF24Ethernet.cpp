@@ -322,9 +322,9 @@ void RF24EthernetClass::network_send()
         Serial.print(millis());
         Serial.println(F(" *** RF24Ethernet Network Write Fail ***"));
     }
-#else
+#else // clang-format off
     RF24Ethernet.network.write(headerOut, uip_buf, uip_len);
-#endif
+#endif // clang-format on
 
 #if defined ETH_DEBUG_L2
     if (ok) {
