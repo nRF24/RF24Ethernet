@@ -17,7 +17,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 
-PROJECT_ICON = favicon.ico
+PROJECT_ICON = images/favicon.ico
 
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded by
 # double-quotes, unless you are using Doxywizard) that should identify the
@@ -228,7 +228,7 @@ EXAMPLE_RECURSIVE      = YES
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             = ../images
+IMAGE_PATH             = ./images/
 
 # If the USE_MDFILE_AS_MAINPAGE tag refers to the name of a markdown file that
 # is part of the input, its contents will be placed on the main page
@@ -236,6 +236,12 @@ IMAGE_PATH             = ../images
 # and want to reuse the introduction page also for the doxygen output.
 
 USE_MDFILE_AS_MAINPAGE = main_page.md
+
+# Don't display the ugly/complicated "tree view" side menu.
+# And, restore the top (simpler) navigation bar.
+# As of doxygen v1.13.0, these default values changed from NO to YES
+GENERATE_TREEVIEW      = NO
+DISABLE_INDEX          = NO
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing

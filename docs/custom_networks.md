@@ -7,6 +7,7 @@ library design also allows some nodes to communicate solely at the RF24Network l
 large distances, or improve connectivity in distant areas.
 
 ## RF24Mesh Networks
+
 RF24Mesh allows dynamic configuration of RF24Network addresses, and allows the creation of dynamic sensor networks. Nodes are able
 to move around physically, releasing and renewing their RF24Network address as required. Once configured with a unique nodeID, nodes using RF24Mesh
 can automatically configure themselves and join the network as required, with no user interaction.
@@ -15,6 +16,7 @@ See the included [Getting_Started_SimpleServer_Mesh example](Getting_Started_Sim
 with RF24Ethernet.
 
 ### RF24Mesh - Additional Information
+
 When utilizing RF24Mesh along with RF24Ethernet, relay/routing nodes should be configured with RF24Mesh, or designated on the master node as static nodes
 with a pre-configured RF24Network address.
 
@@ -23,9 +25,11 @@ RF24Mesh can be used with TAP/Ethernet configurations, but utilizing TUN/RF24Mes
 See the links below for more information on utilizing RF24Mesh with RF24Ethernet and RF24Network.
 
 ## RF24Gateway
-See http://nRF24.github.io/RF24Gateway/ for more information on RF24Gateway
+
+See <http://nRF24.github.io/RF24Gateway/> for more information on RF24Gateway
 
 ## Hybrid- RF24Network/RF24Ethernet Networks
+
 The default configuration of RF24Ethernet and RF24Network enables both TCP/IP and the underlying messaging protocols provided by RF24Network.
 
 Relay/Routing nodes can be configured using only the RF24 and RF24Network layers (optionally RF24Mesh), and will automatically handle data
@@ -36,5 +40,7 @@ Arduino/AVR devices can utilize custom or included sleep modes in RF24Network, a
 of the nrf24l01 chips directly.
 
 ## Links
-See http://nRF24.github.io/RF24Mesh for more information on using RF24Mesh to create a dynamic network, with automatic RF24Network addressing <br>
-See http://nRF24.github.io/RF24Network for more information on using RF24Network as well as addressing and topology.
+
+See <http://nRF24.github.io/RF24Mesh> for more information on using RF24Mesh to create a dynamic network, with automatic RF24Network addressing.
+
+See <http://nRF24.github.io/RF24Network> for more information on using RF24Network as well as addressing and topology.
