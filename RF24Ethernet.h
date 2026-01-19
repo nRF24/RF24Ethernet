@@ -49,7 +49,6 @@
     #endif
 #endif
 
-
 #if USE_LWIP < 1
 extern "C" {
     #include "uip-conf.h"
@@ -57,35 +56,33 @@ extern "C" {
 
     #include "utility/uiptimer.h"
     #include "utility/uip_arp.h"
-}    
+}
 #else
 
     #if defined ARDUINO_ARCH_ESP32
-      #if defined CONFIG_LWIP_TCPIP_CORE_LOCKING
-         #define RF24ETHERNET_CORE_REQUIRES_LOCKING
-         #include <WiFi.h>
-         #include "esp_wifi.h"
-         #define ETHERNET_APPLY_LOCK LOCK_TCPIP_CORE
-         #define ETHERNET_REMOVE_LOCK UNLOCK_TCPIP_CORE
-      #endif
+        #if defined CONFIG_LWIP_TCPIP_CORE_LOCKING
+            #define RF24ETHERNET_CORE_REQUIRES_LOCKING
+            #include <WiFi.h>
+            #include "esp_wifi.h"
+            #define ETHERNET_APPLY_LOCK  LOCK_TCPIP_CORE
+            #define ETHERNET_REMOVE_LOCK UNLOCK_TCPIP_CORE
+        #endif
     #endif
-    
+
     #if (defined ARDUINO_ARCH_RP2040 || defined ARDUINO_ARCH_RP2350) && !defined ARDUINO_ARCH_MBED
         //#define RF24ETHERNET_CORE_REQUIRES_LOCKING
         #include <pico/cyw43_arch.h>
-        #define ETHERNET_APPLY_LOCK cyw43_arch_lwip_begin
+        #define ETHERNET_APPLY_LOCK  cyw43_arch_lwip_begin
         #define ETHERNET_REMOVE_LOCK cyw43_arch_lwip_end
     #endif
-    
-    
 
     #include "ethernet_comp.h"
     #include "RF24Client.h"
     #include "RF24Server.h"
     #define HTONS htons
     #if RF24ETHERNET_USE_UDP > 0
-      #include "RF24Udp.h"
-      #include "Dns.h"
+        #include "RF24Udp.h"
+        #include "Dns.h"
     #endif
 
     #if !defined ETHERNET_USING_LWIP_ARDUINO
@@ -157,8 +154,7 @@ extern "C" {
             uip_ethaddr.addr[5] = eaddr[5]; \
         } while (0)
 
-
-#endif  //USE_LWIP < 1
+#endif //USE_LWIP < 1
 
 /**
  * @warning <b>This is used internally. Use IPAddress instead. </b>
@@ -167,8 +163,6 @@ typedef struct
 {
     int a, b, c, d;
 } IP_ADDR;
-
-
 
 class RF24;
 template<class radio_t>
@@ -262,7 +256,6 @@ public:
 
     uint32_t networkCorruption;
 
-
 #if !defined NRF52_RADIO_LIBRARY
     RF24Network& network;
     #if !defined(RF24_TAP) // Using RF24Mesh
@@ -275,16 +268,15 @@ public:
     #endif
 #endif
 
-
 #if USE_LWIP > 0
 
     static bool useCoreLocking;
-    static constexpr unsigned MAX_FRAME_SIZE = MAX_PAYLOAD_SIZE-14; // packet size excluding FCS
+    static constexpr unsigned MAX_FRAME_SIZE = MAX_PAYLOAD_SIZE - 14; // packet size excluding FCS
     static constexpr unsigned MIN_FRAME_SIZE = 60;
     static constexpr unsigned MAX_RX_QUEUE = 5;
     static constexpr uint32_t NetIF_Speed_BPS = 1000000;
     static netif myNetif;
-    
+
     struct EthQueue
     {
         uint8_t data[MAX_RX_QUEUE][MAX_FRAME_SIZE];
@@ -301,18 +293,16 @@ public:
     /** Used internally to write to the internal data queue */
     static void writeRXQueue(EthQueue* RXQueue, const uint8_t* ethFrame, uint16_t lenEthFrame);
 
-    
 private:
     static constexpr uint16_t ETHERNET_MTU = 1500;
     static constexpr uint8_t MacAddr[6] = {0, 1, 2, 3, 4};
     static bool isConnected;
-    
+
     static pbuf* readRXQueue(EthQueue* RXQueue);
 
     static void EthRX_Handler(const uint8_t* ethFrame, const uint16_t lenEthFrame);
     static uint8_t networkBuffer[MAX_PAYLOAD_SIZE];
 #endif
-
 
 #if defined NRF52_RADIO_LIBRARY
     nrf_to_nrf& radio;

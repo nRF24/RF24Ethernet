@@ -123,20 +123,20 @@ err_t netif_output(struct netif* netif, struct pbuf* p)
 
     //If not the master node
     if (Ethernet.mesh.mesh_address != 0) {
-        if (gwIP[3] != buf[19]) {                                       // If not sending to the gateway
+        if (gwIP[3] != buf[19]) { // If not sending to the gateway
             IPAddress local_ip = Ethernet.localIP();
-            if(local_ip[0] == buf[16] && local_ip[1] == buf[17]){       // If we are local within the nRF24 network
+            if (local_ip[0] == buf[16] && local_ip[1] == buf[17]) { // If we are local within the nRF24 network
                 //Request an address lookup from the Master node
-                nodeAddress = Ethernet.mesh.getAddress((char)buf[19]);  // Do an address lookup
+                nodeAddress = Ethernet.mesh.getAddress((char)buf[19]); // Do an address lookup
                 if (nodeAddress < 0) {
-                    nodeAddress = 0;                                    // If the result is negative, send to master
+                    nodeAddress = 0; // If the result is negative, send to master
                 }
-            }                                                           // If this address is outside the nRF24 network, it will be send to master (00)
+            } // If this address is outside the nRF24 network, it will be send to master (00)
         }
     }
     else {
         IPAddress local_ip = Ethernet.localIP();
-        if(local_ip[0] == buf[16] && local_ip[1] == buf[17]){          // If within the nRF24 radio network, do a lookup, else send to self (00)
+        if (local_ip[0] == buf[16] && local_ip[1] == buf[17]) { // If within the nRF24 radio network, do a lookup, else send to self (00)
             nodeAddress = Ethernet.mesh.getAddress((char)buf[19]);
             if (nodeAddress < 0) {
                 return ERR_OK;
@@ -144,8 +144,8 @@ err_t netif_output(struct netif* netif, struct pbuf* p)
         }
     }
 
-    IF_ETH_DEBUG_L1( Serial.print("Net: Out "); Serial.println(nodeAddress, OCT); );
-    
+    IF_ETH_DEBUG_L1(Serial.print("Net: Out "); Serial.println(nodeAddress, OCT););
+
     RF24NetworkHeader headerOut(nodeAddress, EXTERNAL_DATA_TYPE);
 
     if (total_len && total_len < MAX_PAYLOAD_SIZE) {
@@ -174,7 +174,7 @@ err_t netif_init(struct netif* myNetif)
     myNetif->name[1] = '0';
     myNetif->linkoutput = netif_output;
     myNetif->output = tun_netif_output;
-    myNetif->mtu = MAX_PAYLOAD_SIZE-14; //ETHERNET_MTU;
+    myNetif->mtu = MAX_PAYLOAD_SIZE - 14; //ETHERNET_MTU;
     myNetif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6 | NETIF_FLAG_LINK_UP;
     myNetif->hostname = "TmrNet";
     MIB2_INIT_NETIF(&Ethernet.myNetif, snmp_ifType_ppp, Ethernet.NetIF_Speed_BPS);
@@ -197,7 +197,6 @@ RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network) : radi
     #else // Using RF24Mesh
 RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
 {
-
 }
     #endif
 
@@ -210,7 +209,6 @@ RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network) 
     #else // Using RF24Mesh
 RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network, RF52Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
 {
-    
 }
     #endif
 #endif
@@ -265,7 +263,7 @@ void RF24EthernetClass::setChannel(uint8_t channel)
 
 void RF24EthernetClass::begin(IPAddress ip)
 {
-    IPAddress dns = {8,8,8,8};
+    IPAddress dns = {8, 8, 8, 8};
     begin(ip, dns);
 }
 
@@ -291,7 +289,6 @@ void RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway)
 void RF24EthernetClass::begin(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
 {
     configure(ip, dns, gateway, subnet);
-
 }
 
 /*******************************************************/
@@ -325,38 +322,43 @@ void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway
     uip_arp_init();
     #endif
 #else
-    
+
     RF24Client::activeState = 0;
     // Allocate data for a single client
     RF24Client::incomingData[RF24Client::activeState] = (char*)malloc(INCOMING_DATA_SIZE);
 
-        #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING && defined ESP32
-            wifi_mode_t mode;
-            esp_err_t err = esp_wifi_get_mode(&mode);
-            if (err == ESP_OK) {
-                useCoreLocking = true;
-            }else{
-                useCoreLocking = false;
-            }
-        #elif defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            useCoreLocking = true;
-        #endif
-        
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING && defined ESP32
+    wifi_mode_t mode;
+    esp_err_t err = esp_wifi_get_mode(&mode);
+    if (err == ESP_OK) {
+        useCoreLocking = true;
+    }
+    else {
+        useCoreLocking = false;
+    }
+    #elif defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+    useCoreLocking = true;
+    #endif
+
     ip4_addr_t myIp, myMask, myGateway;
     IP4_ADDR(&myIp, ip[0], ip[1], ip[2], ip[3]);
     IP4_ADDR(&myMask, subnet[0], subnet[1], subnet[2], subnet[3]);
     IP4_ADDR(&myGateway, gateway[0], gateway[1], gateway[2], gateway[3]);
     _dnsServerAddress = dns;
-    
+
     void* context = nullptr;
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-    if(useCoreLocking){ ETHERNET_APPLY_LOCK(); }
+    if (useCoreLocking) {
+        ETHERNET_APPLY_LOCK();
+    }
     #endif
     netif_add(&Ethernet.myNetif, &myIp, &myMask, &myGateway, context, netif_init, ip_input);
     netif_set_default(&Ethernet.myNetif);
     netif_set_up(&Ethernet.myNetif);
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-    if(useCoreLocking){ ETHERNET_REMOVE_LOCK(); }
+    if (useCoreLocking) {
+        ETHERNET_REMOVE_LOCK();
+    }
     #endif
 
 #endif
@@ -374,11 +376,15 @@ void RF24EthernetClass::set_gateway(IPAddress gwIP)
     ip4_addr_t new_gw;
     IP4_ADDR(&new_gw, gwIP[0], gwIP[1], gwIP[2], gwIP[3]);
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-    if(useCoreLocking){ ETHERNET_APPLY_LOCK(); }
+    if (useCoreLocking) {
+        ETHERNET_APPLY_LOCK();
+    }
     #endif
     netif_set_gw(&Ethernet.myNetif, &new_gw);
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-    if(useCoreLocking){ ETHERNET_REMOVE_LOCK(); }
+    if (useCoreLocking) {
+        ETHERNET_REMOVE_LOCK();
+    }
     #endif
 #endif
 }
@@ -392,11 +398,12 @@ void RF24EthernetClass::listen(uint16_t port)
 #else
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-    if(useCoreLocking){ ETHERNET_APPLY_LOCK(); } 
+    if (useCoreLocking) {
+        ETHERNET_APPLY_LOCK();
+    }
     #endif
     RF24Client::myPcb = tcp_new();
     tcp_err(RF24Client::myPcb, RF24Client::error_callback);
-
 
     err_t err = tcp_bind(RF24Client::myPcb, IP_ADDR_ANY, port);
     if (err != ERR_OK) {
@@ -414,7 +421,9 @@ void RF24EthernetClass::listen(uint16_t port)
     tcp_accept(RF24Client::myPcb, RF24Client::accept);
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-    if(useCoreLocking){ ETHERNET_REMOVE_LOCK(); }
+    if (useCoreLocking) {
+        ETHERNET_REMOVE_LOCK();
+    }
     #endif
 #endif
 }
@@ -506,7 +515,7 @@ void RF24EthernetClass::EthRX_Handler(const uint8_t* ethFrame, const uint16_t le
 void RF24EthernetClass::tick()
 {
 
-#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_RP2040) || defined (ARDUINO_ARCH_NRF52) || defined ARDUINO_ARCH_RP2350
+#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_NRF52) || defined ARDUINO_ARCH_RP2350
     yield();
 #elif defined(ARDUINO_ARCH_ESP32)
     const TickType_t xDelay = pdMS_TO_TICKS(1);
@@ -516,10 +525,10 @@ void RF24EthernetClass::tick()
 #if USE_LWIP < 1
     uint8_t result = RF24Ethernet.mesh.update();
 
-   if(Ethernet.mesh.mesh_address == 0){
-       Ethernet.mesh.DHCP();
-   }
-   
+    if (Ethernet.mesh.mesh_address == 0) {
+        Ethernet.mesh.DHCP();
+    }
+
     if (result == EXTERNAL_DATA_TYPE) {
         if (RF24Ethernet.network.frag_ptr->message_size <= UIP_BUFSIZE && RF24Ethernet.network.frag_ptr->message_size >= 28) {
             uip_len = RF24Ethernet.network.frag_ptr->message_size;
@@ -610,36 +619,42 @@ void RF24EthernetClass::tick()
 #else // Using LWIP
 
     uint8_t result = RF24Ethernet.mesh.update();
-    
-    if(Ethernet.mesh.mesh_address == 0){
-       Ethernet.mesh.DHCP();
+
+    if (Ethernet.mesh.mesh_address == 0) {
+        Ethernet.mesh.DHCP();
     }
-   
+
     if (result == EXTERNAL_DATA_TYPE) {
         if (RF24Ethernet.network.frag_ptr->message_size > 28) {
             uint16_t len = RF24Ethernet.network.frag_ptr->message_size;
-            memcpy(networkBuffer,RF24Ethernet.network.frag_ptr->message_buffer,len);
+            memcpy(networkBuffer, RF24Ethernet.network.frag_ptr->message_buffer, len);
             Ethernet.EthRX_Handler(networkBuffer, len);
-            IF_ETH_DEBUG_L1( Serial.println("Net: In"); );
+            IF_ETH_DEBUG_L1(Serial.println("Net: In"););
         }
     }
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-         if(useCoreLocking ){ ETHERNET_APPLY_LOCK(); } 
+    if (useCoreLocking) {
+        ETHERNET_APPLY_LOCK();
+    }
     #endif
     sys_check_timeouts();
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-         if(useCoreLocking ){ ETHERNET_REMOVE_LOCK();  } 
+    if (useCoreLocking) {
+        ETHERNET_REMOVE_LOCK();
+    }
     #endif
-    
+
     pbuf* p = readRXQueue(&RXQueue);
     if (p != nullptr)
     {
 
-         #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-         if(useCoreLocking){ ETHERNET_APPLY_LOCK(); } 
-        #endif
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+        if (useCoreLocking) {
+            ETHERNET_APPLY_LOCK();
+        }
+    #endif
         if (myNetif.input(p, &myNetif) != ERR_OK)
         {
             LWIP_DEBUGF(NETIF_DEBUG, ("IP input error\r\n"));
@@ -647,11 +662,12 @@ void RF24EthernetClass::tick()
             p = NULL;
         }
 
-        #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-        if(useCoreLocking){ ETHERNET_REMOVE_LOCK();}
-        #endif
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+        if (useCoreLocking) {
+            ETHERNET_REMOVE_LOCK();
+        }
+    #endif
     }
-    
 
 #endif
 }
@@ -667,20 +683,20 @@ void RF24EthernetClass::network_send()
 
     //If not the master node
     if (Ethernet.mesh.mesh_address != 0) {
-        if (gwIP[3] != uip_buf[19]) {                                       // If not sending to the gateway
+        if (gwIP[3] != uip_buf[19]) { // If not sending to the gateway
             IPAddress local_ip = Ethernet.localIP();
-            if(local_ip[0] == uip_buf[16] && local_ip[1] == uip_buf[17]){       // If we are local within the nRF24 network
+            if (local_ip[0] == uip_buf[16] && local_ip[1] == uip_buf[17]) { // If we are local within the nRF24 network
                 //Request an address lookup from the Master node
-                nodeAddress = Ethernet.mesh.getAddress((char)uip_buf[19]);  // Do an address lookup
+                nodeAddress = Ethernet.mesh.getAddress((char)uip_buf[19]); // Do an address lookup
                 if (nodeAddress < 0) {
-                    nodeAddress = 0;                                    // If the result is negative, send to master
+                    nodeAddress = 0; // If the result is negative, send to master
                 }
-            }                                                           // If this address is outside the nRF24 network, it will be send to master (00)
+            } // If this address is outside the nRF24 network, it will be send to master (00)
         }
     }
     else {
         IPAddress local_ip = Ethernet.localIP();
-        if(local_ip[0] == uip_buf[16] && local_ip[1] == uip_buf[17]){          // If within the nRF24 radio network, do a lookup, else send to self (00)
+        if (local_ip[0] == uip_buf[16] && local_ip[1] == uip_buf[17]) { // If within the nRF24 radio network, do a lookup, else send to self (00)
             nodeAddress = Ethernet.mesh.getAddress((char)uip_buf[19]);
             if (nodeAddress < 0) {
                 return;

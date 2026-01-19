@@ -39,7 +39,6 @@ RF24Server::RF24Server(uint16_t port)
     _port = port;
     // Allocate data for a second server/client
     RF24Client::incomingData[1] = (char*)malloc(INCOMING_DATA_SIZE);
-
 }
 
 #endif
@@ -73,16 +72,18 @@ void RF24Server::begin()
 #else
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-    if(Ethernet.useCoreLocking){ ETHERNET_APPLY_LOCK(); }
+    if (Ethernet.useCoreLocking) {
+        ETHERNET_APPLY_LOCK();
+    }
     #endif
 
     bool closed = false;
 
-    if(sPcb == nullptr){
-      sPcb = tcp_new();
+    if (sPcb == nullptr) {
+        sPcb = tcp_new();
     }
-    
-    if(sPcb != nullptr){
+
+    if (sPcb != nullptr) {
         tcp_err(sPcb, RF24Client::error_callback);
     }
 
@@ -93,36 +94,39 @@ void RF24Server::begin()
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: Unable to bind to port"););
     }
 
-    if(serverState == nullptr){
+    if (serverState == nullptr) {
         serverState = new RF24Client::ConnectState;
     }
-      
+
     if (RF24Client::gState[0] == nullptr) {
         RF24Client::gState[0] = new RF24Client::ConnectState;
     }
-    
+
     if (RF24Client::gState[1] == nullptr) {
         RF24Client::gState[1] = new RF24Client::ConnectState;
         RF24Client::gState[1]->stateActiveID = 1;
     }
-    
-    if(serverState != nullptr){
+
+    if (serverState != nullptr) {
         serverState->finished = false;
         serverState->connected = false;
         serverState->result = 0;
         serverState->waiting_for_ack = false;
     }
     sPcb = tcp_listen_with_backlog(sPcb, 1);
-  
-    if(sPcb != nullptr){
-      tcp_arg(sPcb, serverState);
-      tcp_accept(sPcb, RF24Client::accept);
-    }else{
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: Failed to initialize"); );
+
+    if (sPcb != nullptr) {
+        tcp_arg(sPcb, serverState);
+        tcp_accept(sPcb, RF24Client::accept);
+    }
+    else {
+        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: Failed to initialize"););
     }
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-    if(Ethernet.useCoreLocking){ ETHERNET_REMOVE_LOCK(); }
+    if (Ethernet.useCoreLocking) {
+        ETHERNET_REMOVE_LOCK();
+    }
     #endif
 
 #endif
