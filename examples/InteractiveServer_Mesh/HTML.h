@@ -7,6 +7,8 @@
 #define strncpy_P strncpy
 #endif
 
+#define OUTPUT_BUFFER_SIZE MAX_PAYLOAD_SIZE
+
 bool led_state = 0;
 
 /**
