@@ -29,13 +29,77 @@
  */
 
 #include <Arduino.h>
+#if (!defined F_CPU || F_CPU > 50000000)
+    #if (defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_MBED) || (defined ARDUINO_ARCH_RP2350 && !defined ARDUINO_ARCH_MBED)
+        #ifndef USE_LWIP
+            #define USE_LWIP 1
+        #endif
+        #ifndef RF24ETHERNET_USE_UDP
+            #define RF24ETHERNET_USE_UDP 1
+        #endif
+    #else
+        #if !defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_RP2350
+            #ifndef USE_LWIP
+                #define USE_LWIP 1
+            #endif
+            #ifndef RF24ETHERNET_USE_UDP
+                #define RF24ETHERNET_USE_UDP 1
+            #endif
+        #endif
+    #endif
+#endif
 
+
+#if USE_LWIP < 1
 extern "C" {
-#include "uip-conf.h"
-#include "utility/uip.h"
-#include "utility/uiptimer.h"
-#include "utility/uip_arp.h"
-}
+    #include "uip-conf.h"
+    #include "utility/uip.h"
+
+    #include "utility/uiptimer.h"
+    #include "utility/uip_arp.h"
+}    
+#else
+
+    #if defined ARDUINO_ARCH_ESP32
+      #if defined CONFIG_LWIP_TCPIP_CORE_LOCKING
+         #define RF24ETHERNET_CORE_REQUIRES_LOCKING
+         #include <WiFi.h>
+         #include "esp_wifi.h"
+         #define ETHERNET_APPLY_LOCK LOCK_TCPIP_CORE
+         #define ETHERNET_REMOVE_LOCK UNLOCK_TCPIP_CORE
+      #endif
+    #endif
+    
+    #if (defined ARDUINO_ARCH_RP2040 || defined ARDUINO_ARCH_RP2350) && !defined ARDUINO_ARCH_MBED
+        //#define RF24ETHERNET_CORE_REQUIRES_LOCKING
+        #include <pico/cyw43_arch.h>
+        #define ETHERNET_APPLY_LOCK cyw43_arch_lwip_begin
+        #define ETHERNET_REMOVE_LOCK cyw43_arch_lwip_end
+    #endif
+    
+    
+
+    #include "ethernet_comp.h"
+    #include "RF24Client.h"
+    #include "RF24Server.h"
+    #define HTONS htons
+    #if RF24ETHERNET_USE_UDP > 0
+      #include "RF24Udp.h"
+      #include "Dns.h"
+    #endif
+
+    #if !defined ETHERNET_USING_LWIP_ARDUINO
+        #include "lwip\ip.h"
+        #include "lwip\stats.h"
+        #include "lwip\netif.h"
+        #include "lwip\snmp.h"
+        #include "lwip\timeouts.h"
+    #else
+        #include <lwIP_Arduino.h>
+        #include "lwip\include\lwip\ip.h"
+    #endif
+
+#endif
 
 #include "RF24Ethernet_config.h"
 #if defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_NRF52840) || defined(ARDUINO_ARCH_NRF52833)
@@ -43,53 +107,58 @@ extern "C" {
 #endif
 #include <RF24.h>
 #include <RF24Network.h>
+#include <RF24Mesh.h>
 #if !defined(RF24_TAP) // Using RF24Mesh
     #include <RF24Mesh.h>
 #endif
 
-#include "ethernet_comp.h"
-#include "IPAddress.h"
-#include "RF24Client.h"
-#include "RF24Server.h"
+#if USE_LWIP < 1
+    #include "ethernet_comp.h"
+    #include "IPAddress.h"
+    #include "RF24Client.h"
+    #include "RF24Server.h"
 
-#if UIP_CONF_UDP > 0
-    #include "RF24Udp.h"
-    #include "Dns.h"
-#endif
+    #if UIP_CONF_UDP > 0 || USE_LWIP > 0
+        #include "RF24Udp.h"
+        #include "Dns.h"
+    #endif
 
-#define UIPETHERNET_FREEPACKET 1
-#define UIPETHERNET_SENDPACKET 2
+    #define UIPETHERNET_FREEPACKET 1
+    #define UIPETHERNET_SENDPACKET 2
 
-//#define TUN  // Use only the tcp protocol, no ethernet headers or arps
-#define TAP // Include ethernet headers
+    //#define TUN  // Use only the tcp protocol, no ethernet headers or arps
+    #define TAP // Include ethernet headers
 
-#if defined(TAP)
-    #define BUF ((struct uip_eth_hdr*)&uip_buf[0])
-#endif
-//#define BUF ((struct uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
+    #if defined(TAP)
+        #define BUF ((struct uip_eth_hdr*)&uip_buf[0])
+    #endif
+    //#define BUF ((struct uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
 
-#define uip_seteth_addr(eaddr)          \
-    do {                                \
-        uip_ethaddr.addr[0] = eaddr[0]; \
-        uip_ethaddr.addr[1] = eaddr[1]; \
-        uip_ethaddr.addr[2] = eaddr[2]; \
-        uip_ethaddr.addr[3] = eaddr[3]; \
-        uip_ethaddr.addr[4] = eaddr[4]; \
-        uip_ethaddr.addr[5] = eaddr[5]; \
-    } while (0)
-#define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
+    #define uip_seteth_addr(eaddr)          \
+        do {                                \
+            uip_ethaddr.addr[0] = eaddr[0]; \
+            uip_ethaddr.addr[1] = eaddr[1]; \
+            uip_ethaddr.addr[2] = eaddr[2]; \
+            uip_ethaddr.addr[3] = eaddr[3]; \
+            uip_ethaddr.addr[4] = eaddr[4]; \
+            uip_ethaddr.addr[5] = eaddr[5]; \
+        } while (0)
+    #define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
 
-#define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) // TODO this is not IPV6 capable
+    #define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) // TODO this is not IPV6 capable
 
-#define uip_seteth_addr(eaddr)          \
-    do {                                \
-        uip_ethaddr.addr[0] = eaddr[0]; \
-        uip_ethaddr.addr[1] = eaddr[1]; \
-        uip_ethaddr.addr[2] = eaddr[2]; \
-        uip_ethaddr.addr[3] = eaddr[3]; \
-        uip_ethaddr.addr[4] = eaddr[4]; \
-        uip_ethaddr.addr[5] = eaddr[5]; \
-    } while (0)
+    #define uip_seteth_addr(eaddr)          \
+        do {                                \
+            uip_ethaddr.addr[0] = eaddr[0]; \
+            uip_ethaddr.addr[1] = eaddr[1]; \
+            uip_ethaddr.addr[2] = eaddr[2]; \
+            uip_ethaddr.addr[3] = eaddr[3]; \
+            uip_ethaddr.addr[4] = eaddr[4]; \
+            uip_ethaddr.addr[5] = eaddr[5]; \
+        } while (0)
+
+
+#endif  //USE_LWIP < 1
 
 /**
  * @warning <b>This is used internally. Use IPAddress instead. </b>
@@ -98,6 +167,8 @@ typedef struct
 {
     int a, b, c, d;
 } IP_ADDR;
+
+
 
 class RF24;
 template<class radio_t>
@@ -189,12 +260,9 @@ public:
     void update();
     // uint8_t *key;
 
-private:
-#if defined NRF52_RADIO_LIBRARY
-    nrf_to_nrf& radio;
-#else
-    RF24& radio;
-#endif
+    uint32_t networkCorruption;
+
+
 #if !defined NRF52_RADIO_LIBRARY
     RF24Network& network;
     #if !defined(RF24_TAP) // Using RF24Mesh
@@ -207,8 +275,59 @@ private:
     #endif
 #endif
 
+
+#if USE_LWIP > 0
+
+    static bool useCoreLocking;
+    static constexpr unsigned MAX_FRAME_SIZE = MAX_PAYLOAD_SIZE-14; // packet size excluding FCS
+    static constexpr unsigned MIN_FRAME_SIZE = 60;
+    static constexpr unsigned MAX_RX_QUEUE = 5;
+    static constexpr uint32_t NetIF_Speed_BPS = 1000000;
+    static netif myNetif;
+    
+    struct EthQueue
+    {
+        uint8_t data[MAX_RX_QUEUE][MAX_FRAME_SIZE];
+        uint16_t len[MAX_RX_QUEUE];
+        uint32_t nRead;
+        uint32_t nWrite;
+    };
+    static EthQueue RXQueue __attribute__((aligned(4)));
+
+    typedef uint32_t err_t;
+    static bool isUnicast(const uint8_t frame);
+    /** Used internally to initialize incoming data queue */
+    static void initRXQueue(EthQueue* RXQueue);
+    /** Used internally to write to the internal data queue */
+    static void writeRXQueue(EthQueue* RXQueue, const uint8_t* ethFrame, uint16_t lenEthFrame);
+
+    
+private:
+    static constexpr uint16_t ETHERNET_MTU = 1500;
+    static constexpr uint8_t MacAddr[6] = {0, 1, 2, 3, 4};
+    static bool isConnected;
+    
+    static pbuf* readRXQueue(EthQueue* RXQueue);
+
+    static void EthRX_Handler(const uint8_t* ethFrame, const uint16_t lenEthFrame);
+    static uint8_t networkBuffer[MAX_PAYLOAD_SIZE];
+#endif
+
+
+#if defined NRF52_RADIO_LIBRARY
+    nrf_to_nrf& radio;
+#else
+    RF24& radio;
+#endif
+
+#if USE_LWIP < 1
+    IPAddress _dnsServerAddress;
+#else
     static IPAddress _dnsServerAddress;
+#endif
+
     void configure(IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
+
     // tick() must be called at regular intervals to process the incoming serial
     // data and issue IP events to the sketch.  It does not return until all IP
     // events have been processed.
@@ -217,10 +336,13 @@ private:
 
     uint8_t RF24_Channel;
 
+#if USE_LWIP < 1
     struct timer periodic_timer;
-#if defined RF24_TAP
+    #if defined RF24_TAP
     struct timer arp_timer;
+    #endif
 #endif
+
     friend class RF24Server;
     friend class RF24Client;
     friend class RF24UDP;
@@ -269,7 +391,7 @@ typedef RF24EthernetClass RF52EthernetClass;
 /**
  * @example mqtt_basic.ino
  *
- * This is the example taken from the PubSub library (https://github.com/knolleary/pubsubclient) & slightly modified to include RF24Ethernet/RF24Mesh.
+ * This is the example taken from the MQTT library https://github.com/256dpi/arduino-mqtt/ & slightly modified to include RF24Ethernet/RF24Mesh.
  */
 
 /**
@@ -284,17 +406,15 @@ typedef RF24EthernetClass RF52EthernetClass;
  */
 
 /**
- * @example SLIP_Gateway.ino
+ * @example InteractiveServer_Mesh_Headless.ino
  *
- * This example demonstrates how to use an Arduino as a gateway to a SLIP enabled device.
+ * This example demonstrates "headless' use of a server, without a gateway device like Raspberry Pi/Linux.
  */
 
 /**
- * @example SLIP_InteractiveServer.ino
+ * @example SimpleClient_Mesh_Headless.ino
  *
- * This example demonstrates how to use RF24Mesh with RF24Ethernet when working with a SLIP or TUN interface.
- * <br>This example uses [HTML.h](SLIP__InteractiveServer_2HTML_8h.html) from the
- * example's directory.
+ * This example demonstrates "headless" use of a client, without a gateway device like Raspberry Pi/Linux
  */
 
 #endif // RF24Ethernet_h

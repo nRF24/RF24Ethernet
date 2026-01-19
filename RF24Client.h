@@ -28,12 +28,13 @@
 //#define UIP_SOCKET_NUMPACKETS 5
 //#endif
 
-#define UIP_CLIENT_CONNECTED    0x10
-#define UIP_CLIENT_CLOSE        0x20
-#define UIP_CLIENT_REMOTECLOSED 0x40
-#define UIP_CLIENT_RESTART      0x80
-#define UIP_CLIENT_STATEFLAGS   (UIP_CLIENT_CONNECTED | UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED | UIP_CLIENT_RESTART)
-#define UIP_CLIENT_SOCKETS      ~UIP_CLIENT_STATEFLAGS
+#if USE_LWIP < 1
+    #define UIP_CLIENT_CONNECTED    0x10
+    #define UIP_CLIENT_CLOSE        0x20
+    #define UIP_CLIENT_REMOTECLOSED 0x40
+    #define UIP_CLIENT_RESTART      0x80
+    #define UIP_CLIENT_STATEFLAGS   (UIP_CLIENT_CONNECTED | UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED | UIP_CLIENT_RESTART)
+    #define UIP_CLIENT_SOCKETS      ~UIP_CLIENT_STATEFLAGS
 
 /**
  * @warning <b> This is used internally and should not be accessed directly by users </b>
@@ -60,17 +61,36 @@ typedef struct __attribute__((__packed__))
     uint16_t in_pos;
     uint16_t out_pos;
     uint16_t dataCnt;
-#if UIP_CLIENT_TIMER >= 0
+    #if UIP_CLIENT_TIMER >= 0
     uint32_t timer;
-#endif
+    #endif
     uint32_t restartTime;
     uint32_t restartInterval;
-#if UIP_CONNECTION_TIMEOUT > 0
+    #if UIP_CONNECTION_TIMEOUT > 0
     uint32_t connectTimeout;
     uint32_t connectTimer;
-#endif
+    #endif
     uint8_t myData[OUTPUT_BUFFER_SIZE];
 } uip_userdata_t;
+#else
+    #include "RF24Network_config.h"
+    #define INCOMING_DATA_SIZE MAX_PAYLOAD_SIZE * 2
+    
+    // If using an internal IP stack, TCP_MSS should be defined
+    #if defined TCP_MSS
+    #define LWIP_DNS 1
+extern "C" {
+        #include "lwip\tcp.h"
+        #include "lwip\tcpip.h"
+        #include "lwip\raw.h"
+}
+    #else
+        #define ETHERNET_USING_LWIP_ARDUINO
+        #include <lwIP_Arduino.h>
+        #include "lwip\include\lwip\tcp.h"
+        #include "lwip\include\lwip\raw.h"
+    #endif
+#endif
 
 class RF24Client : public Client
 {
@@ -84,7 +104,7 @@ public:
 
     /**
      * Establish a connection to a given hostname and port
-     * @note UDP must be enabled in uip-conf.h for DNS lookups to work
+     * @note With slower devices < 50Mhz, or if using the uIP stack, UDP must be enabled in uip-conf.h for DNS lookups to work
      *
      * @note Tip: DNS lookups generally require a buffer size of 250-300 bytes or greater.
      * Lookups will generally return responses with a single A record if using hostnames like
@@ -112,7 +132,13 @@ public:
     /** Disconnects from the current active connection */
     void stop();
 
-    /** Indicates whether the client is connected or not */
+    /** 
+    * Indicates whether the client is connected or not 
+    * When using slower devices < 50MHz (uIP stack) there is a default connection timeout of 45 seconds. If data is not received or sent successfully
+    * within that timeframe the client will be disconnected. 
+    * With faster devices > 50Mhz (lwIP stack), there is NO default connection timeout. Use the clientConnectionTimeout functions to set the timeout on 
+    * connect or disconnect, and utilize application side timeouts to disconnect as necessary after a connection has been established.
+    */
     uint8_t connected();
 
     /**
@@ -158,25 +184,105 @@ public:
     {
         return !this->operator==(rhs);
     };
-
+    
+    
+protected:
+#if USE_LWIP < 1
     static uip_userdata_t all_data[UIP_CONNS];
+#else
+
+    /**
+    * Connection state structure, used internally to monitor the state of connections
+    */
+    struct ConnectState
+    {
+        volatile bool finished = false;
+        volatile bool connected = false;
+        volatile bool waiting_for_ack = false;
+        volatile bool backlogWasClosed = false;
+        
+        volatile bool backlogWasAccepted = false;
+        volatile bool clientPollingSetup = 0;
+        volatile bool stateActiveID = 0;
+        volatile err_t result = 0;
+        
+        volatile uint32_t connectTimestamp = millis();
+        volatile uint32_t sConnectionTimeout = serverConnectionTimeout;
+        volatile uint32_t serverTimer = millis();
+        volatile uint32_t cConnectionTimeout = clientConnectionTimeout;
+        volatile uint32_t clientTimer = millis();
+        volatile uint32_t closeTimer = millis();
+        volatile uint32_t identifier = 0;
+
+        
+    };
+
+    /** Connection states */
+    static ConnectState* gState[2];
+    
+    /** Used internally when data is ACKed */
+    static err_t sent_callback(void* arg, struct tcp_pcb* tpcb, uint16_t len);
+    /** Used internally for receiving data via the client functions */
+    static err_t recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p, err_t err);
+    /** Used internally for receiving data via the server functions */
+    static err_t srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p, err_t err);
+    /** Used internally when there is an error */
+    static void error_callback(void* arg, err_t err);
+    
+    /** Used to set client timeouts. Whenever there is no data sent, received, or acked in 
+    * the given timeout period (mS) the connection will be closed. Set to 0 to disable
+    **/
+    //static void setConnectionTimeout(uint32_t timeout);
+    static bool activeState;
+
+
+#endif
 
 private:
+#if USE_LWIP < 1
+
     RF24Client(struct uip_conn* _conn);
     RF24Client(uip_userdata_t* conn_data);
 
     uip_userdata_t* data;
 
     static int _available(uip_userdata_t*);
-
     static uip_userdata_t* _allocateData();
     static size_t _write(uip_userdata_t*, const uint8_t* buf, size_t size);
 
-    friend class RF24EthernetClass;
-    friend class RF24Server;
-
     friend void serialip_appcall(void);
     friend void uip_log(char* msg);
+    
+#else
+    RF24Client(uint32_t data);
+    RF24Client(uint8_t data);
+    uint8_t* data;
+    static size_t _write(uint8_t* data, const uint8_t* buf, size_t size);
+    static int _available(uint8_t* data);
+
+    static err_t accept(void* arg, struct tcp_pcb* tpcb, err_t err);
+    static err_t closed(void* arg, struct tcp_pcb* tpcb, err_t err);
+    static err_t closed_port(void* arg, struct tcp_pcb* tpcb);
+    static err_t closeConn(void* arg, struct tcp_pcb* tpcb);
+    static err_t serverTimeouts(void* arg, struct tcp_pcb* tpcb);
+    static err_t clientTimeouts(void* arg, struct tcp_pcb* tpcb);
+    static err_t on_connected(void* arg, struct tcp_pcb* tpcb, err_t err);
+    static err_t blocking_write(struct tcp_pcb* pcb, ConnectState* fstate, const char* data, size_t len);
+    static void dnsCallback(const char *name, const ip_addr_t *ipaddr, void *callback_arg);
+        
+    static uint32_t clientConnectionTimeout;
+    static uint32_t serverConnectionTimeout;
+    static uint16_t dataSize[2];
+    static struct tcp_pcb* myPcb; // = nullptr;//tcp_new();// = nullptr;//tcp_new();
+    
+    static char* incomingData[2];
+    static uint32_t simpleCounter;
+    
+#endif
+
+    friend class RF24EthernetClass;
+    friend class RF24Server;
+    
 };
 
 #endif // RF24CLIENT_H

@@ -1,54 +1,58 @@
 /*
- * TMRh20 2021
+ * *************************************************************************
+ * RF24Ethernet Arduino library by TMRh20 - 2014-2015
  *
- * RF24Ethernet simple web client using DNS example
+ * Automated (mesh) wireless networking and TCP/IP communication stack for RF24 radio modules
  *
- * In order to use DNS, UDP must be enabled in the uIP stack:
- * 1. Open the RF24Ethernet library folder
- * 2. Edit the uip_conf.h file
- * 3. Uncomment #define UIP_CONF_UDP 1
- * 4. The gateway device must be able to forward DNS requests to the DNS server
+ * RF24 -> RF24Network -> UIP(TCP/IP) -> RF24Ethernet
+ *                     -> RF24Mesh
  *
- * This example connects to get you a pizza or a book to read using DNS lookups instead of IP address
+ *      Documentation: http://nRF24.github.io/RF24Ethernet/
+ *
+ * *************************************************************************
+ *
+ * This example demonstrates how to configure a Headless Master node running an HTTP server
+ * It does NOT require a Gateway node, just two nodes running RF24Ethernet
+ *
  */
 
-#include <RF24.h>
+#include <nrf_to_nrf.h>
 #include <RF24Network.h>
 #include <RF24Mesh.h>
 #include <RF24Ethernet.h>
 //#include <printf.h>
 
 /*** Configure the radio CE & CS pins ***/
-RF24 radio(7, 8);
-RF24Network network(radio);
-RF24Mesh mesh(radio, network);
-RF24EthernetClass RF24Ethernet(radio, network, mesh);
+nrf_to_nrf radio;
+RF52Network network(radio);
+RF52Mesh mesh(radio, network);
+RF52EthernetClass RF24Ethernet(radio, network, mesh);
 
 EthernetClient client;
 
 // The hosts we will be connecting to
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
-// Note: DNS responses for www.domain.com will typically be shorter than requests for domain.com.
-char icewind[] = { "109.120.203.163" };  //http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt
-char ascii[] = { "artscene.textfiles.com" };  //http://artscene.textfiles.com/asciiart/texthistory.txt
-char* host = ascii;
+IPAddress ascii(10, 1, 3, 1);      //http://artscene.textfiles.com/asciiart/texthistory.txt
+IPAddress host(ascii);
 
 void setup() {
 
   Serial.begin(115200);
   //printf_begin();
+  while(!Serial){}
   Serial.println(F("Start"));
 
   // Set the IP address we'll be using. The last octet mast match the nodeID (9)
-  IPAddress myIP(10, 10, 2, 4);
-  IPAddress myDNS(8, 8, 8, 8);  //Use Google DNS in this example
-  Ethernet.begin(myIP, myDNS);
-  mesh.begin();
-
+  IPAddress myIP(10, 1, 3, 2);
   // If you'll be making outgoing connections from the Arduino to the rest of
   // the world, you'll need a gateway set up.
-  IPAddress gwIP(10, 10, 2, 2);
+  IPAddress gwIP(10, 1, 3, 1);
   Ethernet.set_gateway(gwIP);
+
+  Ethernet.begin(myIP);
+  mesh.begin(65);
+
+
 }
 
 uint32_t counter = 0;
@@ -57,31 +61,23 @@ uint32_t mesh_timer = 0;
 
 void loop() {
 
-  // Send a p or g character over serial to switch between hosts
-  if (Serial.available()) {
-    char c = Serial.read();
-    if (c == 'p') {
-      host = ascii;
-    } else if (c == 'g') {
-      host = icewind;
-    }
-  }
 
   // Optional: If the node needs to move around physically, or using failover nodes etc.,
   // enable address renewal
   if (millis() - mesh_timer > 12000) {  //Every 12 seconds, test mesh connectivity
     mesh_timer = millis();
     if (!mesh.checkConnection()) {
+      Serial.println("Renew");
       //refresh the network address
       if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
-        mesh.begin();
+        mesh.begin(65);
       }
     }
   }
 
   size_t size;
 
-  if ((size = client.available()) > 0) {
+  while ((size = client.available()) > 0) {
     char c = client.read();
     Serial.print(c);
     counter++;
@@ -114,11 +110,8 @@ void connect() {
 
     // Make an HTTP request:
     if (host == ascii) {
-      client.println("GET /asciiart/texthistory.txt HTTP/1.1");
-      client.println("Host: artscene.textfiles.com");
-    } else {
-      client.println("GET /web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt HTTP/1.1");
-      client.println("Host: 109.120.203.163");
+      client.println("GET / HTTP/1.1");
+      client.println("Host: 10.1.3.1");
     }
 
     client.println("Connection: close");

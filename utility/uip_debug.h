@@ -1,8 +1,8 @@
 #ifndef UIP_DEBUG_H
 #define UIP_DEBUG_H
-extern "C" {
+//extern "C" {
   #include "utility/uip.h"
-}
+//}
 
 class UIPDebug {
 

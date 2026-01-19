@@ -27,6 +27,7 @@ class RF24Server : public Server
 
 public:
     RF24Server(uint16_t);
+    RF24Server();
     RF24Client available();
     void begin();
 #if defined(ESP32)
@@ -36,10 +37,21 @@ public:
     size_t write(uint8_t);
     size_t write(const uint8_t* buf, size_t size);
     using Print::write;
+    
+    /*
+    * Set server side timeouts in mS. If data is not succesfully sent or received in this timeframe, disconnect the client.
+    */    
     void setTimeout(uint32_t timeout);
 
 private:
+#if USE_LWIP > 0
+    static struct tcp_pcb* sPcb;
+    static struct tcp_pcb* bindPcb;
+    static uint16_t _port;
+    static EthernetClient::ConnectState* serverState;
+#else
     uint16_t _port;
+#endif
 };
 
 #endif
