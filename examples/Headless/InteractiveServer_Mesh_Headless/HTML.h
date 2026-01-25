@@ -93,7 +93,6 @@ static const PROGMEM char credits_html[] = "<body>"
  * This allows the HTML code to be modified as desired, with no need to change any other code
  */
 void sendPage(EthernetClient& _client, const char* _pointer, size_t size) {
-  
   //char buf[size];
   for (uint16_t i = 0; i < size; i++) {
     _client.print((char)pgm_read_byte(_pointer++));
