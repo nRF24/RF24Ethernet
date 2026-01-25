@@ -552,7 +552,7 @@ RF24Client::RF24Client() : data(0)
 #if USE_LWIP < 1
 RF24Client::RF24Client(uip_userdata_t* conn_data) : data(conn_data) {}
 #else
-/** \cond */    
+/** \cond */
 RF24Client::RF24Client(uint32_t data) : data(0)
 {
 }
