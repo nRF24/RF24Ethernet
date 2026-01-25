@@ -35,7 +35,7 @@ uip_userdata_t RF24Client::all_data[UIP_CONNS];
     #endif
 
     #include "RF24Ethernet.h"
-
+/** \cond */
 RF24Client::ConnectState* RF24Client::gState[2];
 char* RF24Client::incomingData[2];
 uint16_t RF24Client::dataSize[2];
@@ -534,8 +534,9 @@ err_t RF24Client::on_connected(void* arg, struct tcp_pcb* tpcb, err_t err)
     }
     return err;
 }
-
+/** \endcond */
 #endif // USE_LWIP > 1
+
 /***************************************************************************************************/
 
 #if USE_LWIP < 1
@@ -551,9 +552,11 @@ RF24Client::RF24Client() : data(0)
 #if USE_LWIP < 1
 RF24Client::RF24Client(uip_userdata_t* conn_data) : data(conn_data) {}
 #else
+/** \cond */    
 RF24Client::RF24Client(uint32_t data) : data(0)
 {
 }
+/** \endcond */
 #endif
 /*************************************************************/
 
