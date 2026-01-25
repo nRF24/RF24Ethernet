@@ -51,8 +51,6 @@ void setup() {
 
   Ethernet.begin(myIP);
   mesh.begin(65);
-
-
 }
 
 uint32_t counter = 0;
