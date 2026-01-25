@@ -56,7 +56,7 @@ static unsigned short generate_tcp_stats();
 void setup() {
 
   Serial.begin(115200);
-  while(!Serial){}
+  while (!Serial) {}
   //printf_begin();
   Serial.println("start");
   pinMode(LED_PIN, OUTPUT);
