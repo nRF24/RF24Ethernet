@@ -29,7 +29,7 @@ EthernetClient client;
 // The hosts we will be connecting to
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
 // Note: DNS responses for www.domain.com will typically be shorter than requests for domain.com.
-char icewind[] = { "109.120.203.163" };  //http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt
+char icewind[] = { "109.120.203.163" };       //http://109.120.203.163/web/blyad.club/library/litrature/Salvatore,%20R.A/Salvatore,%20R.A%20-%20Icewind%20Dale%20Trilogy%201%20-%20Crystal%20Shard,%20The.txt
 char ascii[] = { "artscene.textfiles.com" };  //http://artscene.textfiles.com/asciiart/texthistory.txt
 char* host = ascii;
 
