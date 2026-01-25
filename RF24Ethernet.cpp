@@ -326,6 +326,8 @@ void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway
     RF24Client::activeState = 0;
     // Allocate data for a single client
     RF24Client::incomingData[RF24Client::activeState] = (char*)malloc(INCOMING_DATA_SIZE);
+    RF24Client::clientConnectionTimeout = 0;
+    RF24Client::serverConnectionTimeout = 30000;    
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING && defined ESP32
     wifi_mode_t mode;

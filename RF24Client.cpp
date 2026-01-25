@@ -207,9 +207,10 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: srecv - Out of incoming buffer space"););
     }
 
-    // Process data
-    tcp_recved(tpcb, p->len);
-
+    if(tpcb != nullptr){
+        tcp_recved(tpcb, p->len);
+    }
+    
     pbuf_free(p);
     return ERR_OK;
 }
@@ -542,8 +543,6 @@ RF24Client::RF24Client() : data(NULL) {}
 #else
 RF24Client::RF24Client() : data(0)
 {
-    clientConnectionTimeout = 0;
-    serverConnectionTimeout = 30000;
 }
 
 #endif
@@ -554,8 +553,6 @@ RF24Client::RF24Client(uip_userdata_t* conn_data) : data(conn_data) {}
 #else
 RF24Client::RF24Client(uint32_t data) : data(0)
 {
-    clientConnectionTimeout = 0;
-    serverConnectionTimeout = 30000;
 }
 #endif
 /*************************************************************/

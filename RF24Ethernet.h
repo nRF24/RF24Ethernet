@@ -29,7 +29,7 @@
  */
 
 #include <Arduino.h>
-#if (!defined F_CPU || F_CPU > 50000000)
+#if (!defined F_CPU || F_CPU >= 50000000)
     #if (defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_MBED) || (defined ARDUINO_ARCH_RP2350 && !defined ARDUINO_ARCH_MBED)
         #ifndef USE_LWIP
             #define USE_LWIP 1
