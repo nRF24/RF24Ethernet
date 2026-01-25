@@ -25,7 +25,7 @@
 #include <RF24Ethernet.h>
 #include "HTML.h"
 
-RF24 radio(7,8);
+RF24 radio(7, 8);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
