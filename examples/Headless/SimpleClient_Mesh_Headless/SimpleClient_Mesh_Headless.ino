@@ -39,7 +39,7 @@ void setup() {
 
   Serial.begin(115200);
   //printf_begin();
-  while(!Serial){}
+  while (!Serial) {}
   Serial.println(F("Start"));
 
   // Set the IP address we'll be using. The last octet mast match the nodeID (9)
