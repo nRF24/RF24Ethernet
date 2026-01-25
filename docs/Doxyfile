@@ -181,9 +181,6 @@ WARN_AS_ERROR          = YES
 INPUT                  = ../ \
                          ../RF24Ethernet_config.h \
                          ../examples/InteractiveServer_Mesh/HTML.h \
-                         ../examples/InteractiveServer_Mesh_ESPWifi/HTML.h \
-                         ../examples/SLIP_InteractiveServer/HTML.h \
-                         ../examples/TAP/InteractiveServer/HTML.h \
                          ./
 
 # The EXCLUDE tag can be used to specify files and/or directories that should be
