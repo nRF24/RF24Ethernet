@@ -207,10 +207,10 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: srecv - Out of incoming buffer space"););
     }
 
-    if(tpcb != nullptr){
+    if (tpcb != nullptr) {
         tcp_recved(tpcb, p->len);
     }
-    
+
     pbuf_free(p);
     return ERR_OK;
 }
