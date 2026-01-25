@@ -55,7 +55,9 @@ RF24UDP::RF24UDP() : _uip_udp_conn(NULL)
     memset(&appdata, 0, sizeof(appdata));
 }
         #else
-RF24UDP::RF24UDP() {}
+RF24UDP::RF24UDP()
+{
+}
         #endif
 /*******************************************************/
 
