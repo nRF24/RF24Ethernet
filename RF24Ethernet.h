@@ -271,7 +271,7 @@ public:
 #if USE_LWIP > 0
 
     static bool useCoreLocking;
-    static constexpr unsigned MAX_FRAME_SIZE = MAX_PAYLOAD_SIZE - 14; // packet size excluding FCS
+    static constexpr unsigned MAX_FRAME_SIZE = MAX_PAYLOAD_SIZE; // packet size excluding FCS
     static constexpr unsigned MIN_FRAME_SIZE = 60;
     static constexpr unsigned MAX_RX_QUEUE = 5;
     static constexpr uint32_t NetIF_Speed_BPS = 1000000;
@@ -284,7 +284,7 @@ public:
         uint32_t nRead;
         uint32_t nWrite;
     };
-    static EthQueue RXQueue __attribute__((aligned(4)));
+    static EthQueue RXQueue;
 
     typedef uint32_t err_t;
     static bool isUnicast(const uint8_t frame);

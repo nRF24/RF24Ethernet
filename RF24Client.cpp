@@ -164,8 +164,10 @@ void RF24Client::error_callback(void* arg, err_t err)
         state->connected = false;
         state->finished = true; // Break the blocking loop
         state->waiting_for_ack = false;
+        dataSize[activeState] = 0;
+        myPcb = nullptr;
     }
-    IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: Err cb: "); Serial.println((int)err););
+    IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Client: Err cb: "); Serial.println((int)err););
 }
 
 /***************************************************************************************************/
@@ -210,8 +212,9 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
     if (tpcb != nullptr) {
         tcp_recved(tpcb, p->len);
     }
-
-    pbuf_free(p);
+    if (p) {
+        pbuf_free(p);
+    }
     return ERR_OK;
 }
 
@@ -254,8 +257,9 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
     if (tpcb != nullptr) {
         tcp_recved(tpcb, p->len);
     }
-    pbuf_free(p);
-
+    if (p) {
+        pbuf_free(p);
+    }
     return ERR_OK;
 }
 
@@ -628,15 +632,22 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
                 ETHERNET_APPLY_LOCK();
             }
     #endif
-            tcp_close(myPcb);
-
+            tcp_abort(myPcb);
+            myPcb = NULL;
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
             if (Ethernet.useCoreLocking) {
                 ETHERNET_REMOVE_LOCK();
             }
     #endif
             Ethernet.update();
-            return false;
+        }
+        else {
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+            if (Ethernet.useCoreLocking) {
+                ETHERNET_REMOVE_LOCK();
+            }
+    #endif
+            myPcb = NULL;
         }
     }
 
@@ -645,7 +656,11 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
         ETHERNET_APPLY_LOCK();
     }
     #endif
-    myPcb = tcp_new();
+
+    if (myPcb == nullptr) {
+        myPcb = tcp_new();
+    }
+
     if (!myPcb) {
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
@@ -659,9 +674,6 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     dataSize[activeState] = 0;
     memset(incomingData[activeState], 0, sizeof(incomingData[activeState]));
 
-    if (gState[activeState] == nullptr) {
-        gState[activeState] = new ConnectState;
-    }
     gState[activeState]->finished = false;
     gState[activeState]->connected = false;
     gState[activeState]->result = 0;
@@ -685,12 +697,8 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     err = tcp_connect(myPcb, &myIp, port, on_connected);
     #endif
 
-    if (err != ERR_OK) {
-        if (myPcb) {
-            tcp_close(myPcb);
-        }
-        gState[activeState]->connected = false;
-        gState[activeState]->finished = true;
+    if (err != ERR_OK || gState[activeState]->result != ERR_OK) {
+        stop();
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
         if (Ethernet.useCoreLocking) {
@@ -830,13 +838,12 @@ void RF24Client::stop()
             }
     #endif
         }
+        myPcb == nullptr;
     }
 
-    if (gState[activeState] != nullptr) {
-        gState[activeState]->connected = false;
-        gState[activeState]->finished = true;
-    }
-
+    gState[activeState]->connected = false;
+    gState[activeState]->finished = true;
+    dataSize[activeState] = 0;
 #endif
 }
 
@@ -1295,13 +1302,19 @@ int RF24Client::read(uint8_t* buf, size_t size)
 
     if (available()) {
 
-        int32_t remainder = dataSize[activeState] - size;
-        memcpy(&buf[0], &incomingData[activeState][0], size);
-        if (remainder > 0) {
-            memmove(&incomingData[activeState][0], &incomingData[activeState][size], dataSize[activeState] - size);
+        if (size >= dataSize[activeState]) {
+            memcpy(&buf[0], &incomingData[activeState][0], dataSize[activeState]);
+            memmove(&incomingData[activeState][0], &incomingData[activeState][dataSize[activeState]], dataSize[activeState]);
+            size = dataSize[activeState];
+            dataSize[activeState] = 0;
+            return size;
         }
-        dataSize[activeState] = rf24_max(0, remainder);
-        return size;
+        else {
+            memcpy(&buf[0], &incomingData[activeState][0], size);
+            memmove(&incomingData[activeState][0], &incomingData[activeState][size], dataSize[activeState] - size);
+            dataSize[activeState] -= size;
+            return size;
+        }
     }
     return -1;
 #endif

@@ -98,14 +98,7 @@ void RF24Server::begin()
         serverState = new RF24Client::ConnectState;
     }
 
-    if (RF24Client::gState[0] == nullptr) {
-        RF24Client::gState[0] = new RF24Client::ConnectState;
-    }
-
-    if (RF24Client::gState[1] == nullptr) {
-        RF24Client::gState[1] = new RF24Client::ConnectState;
-        RF24Client::gState[1]->stateActiveID = 1;
-    }
+    RF24Client::gState[1]->stateActiveID = 1;
 
     if (serverState != nullptr) {
         serverState->finished = false;

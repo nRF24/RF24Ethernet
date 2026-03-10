@@ -148,7 +148,7 @@ err_t netif_output(struct netif* netif, struct pbuf* p)
 
     RF24NetworkHeader headerOut(nodeAddress, EXTERNAL_DATA_TYPE);
 
-    if (total_len && total_len < MAX_PAYLOAD_SIZE) {
+    if (total_len && total_len <= MAX_PAYLOAD_SIZE) {
         if (!RF24Ethernet.network.write(headerOut, buf, total_len)) {
             return ERR_OK;
         }
@@ -174,7 +174,7 @@ err_t netif_init(struct netif* myNetif)
     myNetif->name[1] = '0';
     myNetif->linkoutput = netif_output;
     myNetif->output = tun_netif_output;
-    myNetif->mtu = MAX_PAYLOAD_SIZE - 14; //ETHERNET_MTU;
+    myNetif->mtu = MAX_PAYLOAD_SIZE; //ETHERNET_MTU;
     myNetif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6 | NETIF_FLAG_LINK_UP;
     myNetif->hostname = "TmrNet";
     MIB2_INIT_NETIF(&Ethernet.myNetif, snmp_ifType_ppp, Ethernet.NetIF_Speed_BPS);
@@ -192,11 +192,19 @@ err_t netif_init(struct netif* myNetif)
     #if defined(RF24_TAP)
 RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network) : radio(_radio), network(_network) // fn_uip_cb(NULL)
 {
+        #if USE_LWIP > 0
+    RF24Client::gState[0] = new RF24Client::ConnectState;
+    RF24Client::gState[1] = new RF24Client::ConnectState;
+        #endif
 }
 
     #else // Using RF24Mesh
 RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
 {
+        #if USE_LWIP > 0
+    RF24Client::gState[0] = new RF24Client::ConnectState;
+    RF24Client::gState[1] = new RF24Client::ConnectState;
+        #endif
 }
     #endif
 
@@ -204,11 +212,19 @@ RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Me
     #if defined(RF24_TAP)
 RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network) : radio(_radio), network(_network) // fn_uip_cb(NULL)
 {
+        #if USE_LWIP > 0
+    RF24Client::gState[0] = new RF24Client::ConnectState;
+    RF24Client::gState[1] = new RF24Client::ConnectState;
+        #endif
 }
 
     #else // Using RF24Mesh
 RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network, RF52Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
 {
+        #if USE_LWIP > 0
+    RF24Client::gState[0] = new RF24Client::ConnectState;
+    RF24Client::gState[1] = new RF24Client::ConnectState;
+        #endif
 }
     #endif
 #endif
