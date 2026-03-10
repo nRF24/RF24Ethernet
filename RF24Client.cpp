@@ -698,13 +698,12 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     #endif
 
     if (err != ERR_OK || gState[activeState]->result != ERR_OK) {
-        stop();
-
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
         if (Ethernet.useCoreLocking) {
             ETHERNET_REMOVE_LOCK();
         }
     #endif
+        stop();
         return ERR_CLSD;
     }
 

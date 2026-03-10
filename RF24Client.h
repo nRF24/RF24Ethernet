@@ -76,8 +76,8 @@ typedef struct __attribute__((__packed__))
     #include "RF24Network_config.h"
     #define INCOMING_DATA_SIZE MAX_PAYLOAD_SIZE * 2
 
-    // If using an internal IP stack, TCP_MSS should be defined
-    #if defined TCP_MSS
+    // ESP32 and ESP8266 use internal IP stack
+    #ifndef ETHERNET_USING_LWIP_ARDUINO
         #define LWIP_DNS 1
 extern "C" {
         #include "lwip\tcp.h"
@@ -85,7 +85,6 @@ extern "C" {
         #include "lwip\raw.h"
 }
     #else
-        #define ETHERNET_USING_LWIP_ARDUINO
         #include <lwIP_Arduino.h>
         #include "lwip\include\lwip\tcp.h"
         #include "lwip\include\lwip\raw.h"

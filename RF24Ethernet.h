@@ -59,6 +59,12 @@ extern "C" {
 }
 #else
 
+    #if defined ARDUINO_ARCH_ESP32 || defined ARDUINO_ARCH_ESP8266
+        // Use internal IP stack
+    #else
+        #define ETHERNET_USING_LWIP_ARDUINO
+    #endif
+
     #if defined ARDUINO_ARCH_ESP32
         #if defined CONFIG_LWIP_TCPIP_CORE_LOCKING
             #define RF24ETHERNET_CORE_REQUIRES_LOCKING
