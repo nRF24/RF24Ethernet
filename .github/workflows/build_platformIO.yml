@@ -46,6 +46,7 @@ jobs:
         -DPIO_FRAMEWORK_ARDUINO_LWIP2_HIGHER_BANDWIDTH
         -DLWIP_VERSION=2
         -DLWIP_OPEN_SRC=1
+        -I$PROJECT_PACKAGES_DIR/framework-arduinoespressif8266/tools/sdk/lwip2/include
     strategy:
       fail-fast: false
       matrix:
