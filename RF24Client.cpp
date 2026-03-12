@@ -445,7 +445,6 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
 err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
 {
     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Accept cb, ID: "); Serial.println(simpleCounter + 1););
-    ConnectState* state = (ConnectState*)arg;
 
     if (tpcb != nullptr) {
     #if !defined ESP32 && !defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_RP2350
@@ -837,7 +836,7 @@ void RF24Client::stop()
             }
     #endif
         }
-        myPcb == nullptr;
+        myPcb = nullptr;
     }
 
     gState[activeState]->connected = false;
