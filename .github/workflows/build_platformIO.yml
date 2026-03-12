@@ -42,7 +42,10 @@ jobs:
       example-path: ${{ matrix.example }}
       board-id: ${{ matrix.board }}
       lib-deps: -l 256dpi/MQTT
-      build_flags: "-D PIO_FRAMEWORK_ARDUINO_LWIP2_HIGHER_BANDWIDTH"
+      build_flags: >-
+        -DPIO_FRAMEWORK_ARDUINO_LWIP2_HIGHER_BANDWIDTH
+        -DLWIP_VERSION=2
+        -DLWIP_OPEN_SRC=1
     strategy:
       fail-fast: false
       matrix:
