@@ -1,6 +1,5 @@
 name: PlatformIO
-env:
-    PLATFORMIO_BUILD_FLAGS: -D PIO_FRAMEWORK_ARDUINO_LWIP2_HIGHER_BANDWIDTH
+
 on:
   pull_request:
     branches: [master]
@@ -43,6 +42,7 @@ jobs:
       example-path: ${{ matrix.example }}
       board-id: ${{ matrix.board }}
       lib-deps: -l 256dpi/MQTT
+      build_flags: "-D PIO_FRAMEWORK_ARDUINO_LWIP2_HIGHER_BANDWIDTH"
     strategy:
       fail-fast: false
       matrix:
