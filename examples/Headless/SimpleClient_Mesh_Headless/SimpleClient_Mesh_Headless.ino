@@ -117,5 +117,6 @@ void connect() {
   } else {
     // if you didn't get a connection to the server:
     Serial.println(F("connection failed"));
+    mesh.renewAddress();
   }
 }
