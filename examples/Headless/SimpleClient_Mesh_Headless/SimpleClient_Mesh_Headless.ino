@@ -16,17 +16,31 @@
  *
  */
 
+//*********************** USER CONFIG ***********************
+// Comment this out to use the nrf_to_nrf driver for nRF52 radios
+#define USE_NRF24
+//**********************************************************
+
+#ifdef USE_NRF24
+#include <RF24.h>
+#include <RF24Network.h>
+#include "RF24Mesh.h"
+#include <RF24Ethernet.h>
+RF24 radio(7, 8);
+RF24Network network(radio);
+RF24Mesh mesh(radio, network);
+RF24EthernetClass RF24Ethernet(radio, network, mesh);
+#else
+
 #include <nrf_to_nrf.h>
 #include <RF24Network.h>
-#include <RF24Mesh.h>
+#include "RF24Mesh.h"
 #include <RF24Ethernet.h>
-//#include <printf.h>
-
-/*** Configure the radio CE & CS pins ***/
 nrf_to_nrf radio;
 RF52Network network(radio);
 RF52Mesh mesh(radio, network);
 RF52EthernetClass RF24Ethernet(radio, network, mesh);
+#endif
 
 EthernetClient client;
 
