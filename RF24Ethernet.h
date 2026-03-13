@@ -29,26 +29,9 @@
  */
 
 #include <Arduino.h>
-#if (!defined F_CPU || F_CPU >= 50000000)
-    #if (defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_MBED) || (defined ARDUINO_ARCH_RP2350 && !defined ARDUINO_ARCH_MBED)
-        #ifndef USE_LWIP
-            #define USE_LWIP 1
-        #endif
-        #ifndef RF24ETHERNET_USE_UDP
-            #define RF24ETHERNET_USE_UDP 1
-        #endif
-    #else
-        #if !defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_RP2350
-            #ifndef USE_LWIP
-                #define USE_LWIP 1
-            #endif
-            #ifndef RF24ETHERNET_USE_UDP
-                #define RF24ETHERNET_USE_UDP 1
-            #endif
-        #endif
-    #endif
-#endif
+#include "RF24BoardConfig.h"
 
+/**************************************/
 #if USE_LWIP < 1
 extern "C" {
     #include "uip-conf.h"
@@ -57,52 +40,9 @@ extern "C" {
     #include "utility/uiptimer.h"
     #include "utility/uip_arp.h"
 }
-#else
-
-    #if defined ARDUINO_ARCH_ESP32 || defined ARDUINO_ARCH_ESP8266
-        // Use internal IP stack
-    #else
-        #define ETHERNET_USING_LWIP_ARDUINO
-    #endif
-
-    #if defined ARDUINO_ARCH_ESP32
-        #if defined CONFIG_LWIP_TCPIP_CORE_LOCKING
-            #define RF24ETHERNET_CORE_REQUIRES_LOCKING
-            #include <WiFi.h>
-            #include "esp_wifi.h"
-            #define ETHERNET_APPLY_LOCK  LOCK_TCPIP_CORE
-            #define ETHERNET_REMOVE_LOCK UNLOCK_TCPIP_CORE
-        #endif
-    #endif
-
-    #if (defined ARDUINO_ARCH_RP2040 || defined ARDUINO_ARCH_RP2350) && !defined ARDUINO_ARCH_MBED
-        //#define RF24ETHERNET_CORE_REQUIRES_LOCKING
-        #include <pico/cyw43_arch.h>
-        #define ETHERNET_APPLY_LOCK  cyw43_arch_lwip_begin
-        #define ETHERNET_REMOVE_LOCK cyw43_arch_lwip_end
-    #endif
-
-    #include "ethernet_comp.h"
-    #include "RF24Client.h"
-    #include "RF24Server.h"
-    #define HTONS htons
-    #if RF24ETHERNET_USE_UDP > 0
-        #include "RF24Udp.h"
-        #include "Dns.h"
-    #endif
-
-    #if !defined ETHERNET_USING_LWIP_ARDUINO
-        #include "lwip\ip.h"
-        #include "lwip\stats.h"
-        #include "lwip\netif.h"
-        #include "lwip\snmp.h"
-        #include "lwip\timeouts.h"
-    #else
-        #include <lwIP_Arduino.h>
-        #include "lwip\include\lwip\ip.h"
-    #endif
-
 #endif
+
+/**************************************/
 
 #include "RF24Ethernet_config.h"
 #if defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_NRF52840) || defined(ARDUINO_ARCH_NRF52833)
@@ -114,6 +54,8 @@ extern "C" {
 #if !defined(RF24_TAP) // Using RF24Mesh
     #include <RF24Mesh.h>
 #endif
+
+/**************************************/
 
 #if USE_LWIP < 1
     #include "ethernet_comp.h"
@@ -162,6 +104,8 @@ extern "C" {
 
 #endif //USE_LWIP < 1
 
+/**************************************/
+
 /**
  * @warning <b>This is used internally. Use IPAddress instead. </b>
  */
@@ -170,9 +114,13 @@ typedef struct
     int a, b, c, d;
 } IP_ADDR;
 
+/**************************************/
+
 class RF24;
 template<class radio_t>
 class ESB_Network;
+
+/**************************************/
 
 class RF24EthernetClass
 { //: public Print {

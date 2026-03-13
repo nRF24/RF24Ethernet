@@ -1,8 +1,9 @@
 
 /*
  RF24Client.h - Arduino implementation of a uIP wrapper class.
- Copyright (c) 2014 tmrh20@gmail.com, github.com/TMRh20
- Copyright (c) 2013 Norbert Truchsess <norbert.truchsess@t-online.de>
+ lwIP - Copyright (c) 2025 tmrh20@gmail.com, github.com/TMRh20
+ uIP - Copyright (c) 2014 tmrh20@gmail.com, github.com/TMRh20
+ uIP - Copyright (c) 2013 Norbert Truchsess <norbert.truchsess@t-online.de>
  All rights reserved.
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
