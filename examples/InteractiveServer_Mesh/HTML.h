@@ -176,7 +176,11 @@ void stats_page(EthernetClient& _client) {
   _client.print(buffer);
   strncpy_P(buffer, PSTR("seconds</td></tr><tr><td>UIP Buffer Size"), 45);
   _client.print(buffer);
+#if USE_LWIP < 1
   sprintf_P(buffer, PSTR("</td><td>%u bytes</td></tr><tr><td>User "), UIP_BUFSIZE);
+#else
+  sprintf_P(buffer, PSTR("</td><td>%u bytes</td></tr><tr><td>User "), Ethernet.MAX_FRAME_SIZE);
+#endif
   _client.print(buffer);
   sprintf_P(buffer, PSTR("Output<br>Buffer Size</td><td>%u bytes"), OUTPUT_BUFFER_SIZE);
   _client.print(buffer);

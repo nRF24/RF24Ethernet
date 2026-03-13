@@ -8,30 +8,39 @@
  * allows a user to control a connected LED by clicking links on the webpage
  * The requested URL is used as input, to determine whether to turn the LED off or on
  *
- * In order to minimize memory use and program space:
- * 1. Open the RF24Network library folder
- * 2. Edit the RF24Network_config.h file
- * 3. Un-comment #define DISABLE_USER_PAYLOADS
- *
- *
  * This example uses RF24Mesh.
- * Set #define UIP_CONF_LLH_LEN 0 in uip_conf.h if used with a TUN(RF24Mesh) or SLIP interface
  *
  */
 
-#include <SPI.h>
+//*********************** USER CONFIG ***********************
+// Comment this out to use the nrf_to_nrf driver for nRF52 radios
+#define USE_NRF24
+//**********************************************************
+
+
+#ifdef USE_NRF24
+
 #include <RF24.h>
 #include <RF24Network.h>
-//#include <printf.h>
+#include "RF24Mesh.h"
 #include <RF24Ethernet.h>
 #include "HTML.h"
-#include "RF24Mesh.h"
-
-/*** Configure the radio CE & CS pins ***/
-RF24 radio(7, 8);
+RF24 radio(12, 14);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
+#else
+
+#include <nrf_to_nrf.h>
+#include <RF24Network.h>
+#include "RF24Mesh.h"
+#include <RF24Ethernet.h>
+#include "HTML.h"
+nrf_to_nrf radio;
+RF52Network network(radio);
+RF52Mesh mesh(radio, network);
+RF52EthernetClass RF24Ethernet(radio, network, mesh);
+#endif
 
 #if defined(ARDUINO_ARCH_ESP8266)
 #define LED_PIN BUILTIN_LED
@@ -154,6 +163,7 @@ void loop() {
 * See the uIP documentation for more info
 */
 static unsigned short generate_tcp_stats() {
+#if USE_LWIP < 1
   struct uip_conn* conn;
 
   // If multiple connections are enabled, get info for each active connection
@@ -180,5 +190,6 @@ static unsigned short generate_tcp_stats() {
       Serial.println((uip_outstanding(conn)) ? '*' : ' ');
     }
   }
+#endif
   return 1;
 }
