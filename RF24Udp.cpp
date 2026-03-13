@@ -439,7 +439,12 @@ IPAddress RF24UDP::remoteIP()
         #else
 
     if (udpPcb != nullptr) {
-        return ip4addr_ntoa(ip_2_ip4(&udpPcb->remote_ip));
+        const ip4_addr_t* addr = ip_2_ip4(&udpPcb->remote_ip);
+        return IPAddress(
+            ip4_addr_get_byte(addr, 0),
+            ip4_addr_get_byte(addr, 1),
+            ip4_addr_get_byte(addr, 2),
+            ip4_addr_get_byte(addr, 3));
     }
     return IPAddress {0, 0, 0, 0};
         #endif
