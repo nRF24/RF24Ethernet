@@ -447,12 +447,7 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Accept cb, ID: "); Serial.println(simpleCounter + 1););
 
     if (tpcb != nullptr) {
-    #if !defined ESP32 && !defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_RP2350
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Client connect from: "); IPAddress remIP; remIP[0] = ip4_addr_get_byte(&tpcb->remote_ip, 0); remIP[1] = ip4_addr_get_byte(&tpcb->remote_ip, 1);
-                                     remIP[2] = ip4_addr_get_byte(&tpcb->remote_ip, 2); remIP[3] = ip4_addr_get_byte(&tpcb->remote_ip, 3); Serial.println(remIP););
-    #else
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Client connect from: "); Serial.println(IPAddress((&tpcb->remote_ip))););
-    #endif
+        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Client connect from: "); Serial.println(ip4addr_ntoa(ip_2_ip4(&tpcb->remote_ip))););
     }
     bool actState = activeState;
 
