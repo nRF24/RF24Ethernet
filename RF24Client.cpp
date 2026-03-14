@@ -453,7 +453,7 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
 
     if (myPcb != nullptr || gState[activeState]->connected == true) {
 
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Accept w/already connected: Delayed_Conns - Accepted_Conns == "); Serial.println(accepts););
+        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Accept w/already connected: Accepted_Conns - Delayed_Conns == "); Serial.println(accepts););
         tcp_backlog_delayed(tpcb);
         accepts++;
         tcp_poll(tpcb, closed_port, 5);
