@@ -70,7 +70,7 @@
     #if !defined ETHERNET_USING_LWIP_ARDUINO
         #include "lwip/ip.h"
         #include "lwip/stats.h"
-        #include "lwip/api.h"
+        #include "lwip/netif.h"
         #include "lwip/snmp.h"
         #include "lwip/timeouts.h"
     #else
