@@ -62,27 +62,14 @@ jobs:
       fail-fast: false
       matrix:
         fqbn:
-          - "arduino:avr:yun"
           - "arduino:avr:diecimila"
           - "arduino:avr:mega"
           - "arduino:avr:megaADK"
-          - "arduino:avr:leonardo"
-          - "arduino:avr:micro"
-          - "arduino:avr:esplora"
           - "arduino:avr:mini"
           - "arduino:avr:ethernet"
           - "arduino:avr:fio"
           - "arduino:avr:bt"
-          # - "arduino:avr:LilyPad"  # board not found
-          - "arduino:avr:LilyPadUSB"
           - "arduino:avr:pro"
-          # - "arduino:avr:atmegang" # not enough memory for examples
-          - "arduino:avr:robotControl"
-          # - "arduino:avr:gemma"   # does not support SPI
-          - "arduino:avr:circuitplay32u4cat"
-          - "arduino:avr:yunmini"
-          - "arduino:avr:chiwawa"
-          - "arduino:avr:one"
           - "arduino:avr:unowifi"
           # - "arduino:mbed:nano33ble" # pending nRF5x ESB integration
           - "arduino:samd:mkr1000"
@@ -99,7 +86,6 @@ jobs:
           - "arduino:samd:mzero_bl"
           - "arduino:samd:tian"
           - "arduino:megaavr:uno2018"
-          # - "arduino:megaavr:nano4809"  # board not found
         # By default, don't generate size deltas data.
         enable-deltas-report: 
           - false

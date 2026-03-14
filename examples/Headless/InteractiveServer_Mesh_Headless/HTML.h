@@ -7,8 +7,6 @@
 #define strncpy_P strncpy
 #endif
 
-#define OUTPUT_BUFFER_SIZE MAX_PAYLOAD_SIZE
-
 bool led_state = 0;
 
 /**
@@ -95,9 +93,12 @@ static const PROGMEM char credits_html[] = "<body>"
  * This allows the HTML code to be modified as desired, with no need to change any other code
  */
 void sendPage(EthernetClient& _client, const char* _pointer, size_t size) {
+  //char buf[size];
   for (uint16_t i = 0; i < size; i++) {
     _client.print((char)pgm_read_byte(_pointer++));
+    //buf[i] = (char)pgm_read_byte(_pointer++);
   }
+  //_client.print(buf);
 }
 
 /***************************************************************/
@@ -176,12 +177,8 @@ void stats_page(EthernetClient& _client) {
   _client.print(buffer);
   strncpy_P(buffer, PSTR("seconds</td></tr><tr><td>UIP Buffer Size"), 45);
   _client.print(buffer);
-#if USE_LWIP < 1
-  sprintf_P(buffer, PSTR("</td><td>%u bytes</td></tr><tr><td>User "), UIP_BUFSIZE);
-#else
-  sprintf_P(buffer, PSTR("</td><td>%u bytes</td></tr><tr><td>User "), Ethernet.MAX_FRAME_SIZE);
-#endif
-  _client.print(buffer);
+  //sprintf_P(buffer, PSTR("</td><td>%u bytes</td></tr><tr><td>User "), UIP_BUFSIZE);
+  //_client.print(buffer);
   sprintf_P(buffer, PSTR("Output<br>Buffer Size</td><td>%u bytes"), OUTPUT_BUFFER_SIZE);
   _client.print(buffer);
   strncpy_P(buffer, PSTR("</td></tr></table><br><br>"), 45);

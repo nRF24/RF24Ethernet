@@ -16,6 +16,12 @@
 - Experiment with/document a model for completely open & open-source communication
 
 ## News
+2026: RF24Ethernet now supports the lwIP stack! Most devices with >=50MHz processors will automatically use the lwIP stack.
+Devices like ESP32 & ESP8266 will utilize their internal IP stack (lwIP) & other devices, users need to install lwIP
+using the Arduino Library Manager.
+
+2026: RF24Ethernet now supports direct TCP/IP communicaton, without the need for a Raspberry Pi Gateway. Two or more devices
+running RF24Ethernet can now connect directly.
 
 See the releases' descriptions on
 [the library's release page](http://github.com/nRF24/RF24Ethernet/releases) for a list of

@@ -5,7 +5,13 @@
 
 ## Easily create home automation scenarios and sensor networks
 
-### Updated 2023:
+### Updated 2026:
+
+RF24Ethernet now supports the lwIP stack!
+
+Faster devices (>50mHz) will automatically use the lwIP stack instead of the uIP stack, providing a better, faster and more reliable way to connect.
+
+To define manually, define USE_LWIP 1 or edit the RF24Ethernet.h file and add define USE_LWIP 1
 
 RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries
 
@@ -18,7 +24,34 @@ See the [nrf_to_nrf Arduino library](https://github.com/TMRh20/nrf_to_nrf).
 
 
 --------------
+IF USING the lwIP STACK:
+--------------
 
+RF24Ethernet.h, RF24Ethernet.cpp, RF24Server.h, RF24Server.cpp, RF24Client.h, RF24Client.cpp, RF24Udp.h, RF24Udp.cpp
+
+Copyright (c) 2025 tmrh20@gmail.com, github.com/TMRh20
+All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Dns.h & Dns.cpp:
+(c) Copyright 2009-2010 MCQN Ltd.
+Released under Apache License, version 2.0
+
+--------------
+
+IF USING THE uIP STACK:
 
 Licenses include, but are not limited to the following.
 -------------
