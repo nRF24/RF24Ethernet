@@ -55,6 +55,7 @@ On the Raspberry Pi, a companion program, [RF24Gateway](http://nRF24.github.io/R
 5. Configure the IP address according to your preferences, (last octet must == RF24Mesh nodeID) with the gateway set to the chosen IP of the RPi or other device.
 6. a:(option 1) Connect into your nodes web-server at `http://ip-of-your-node:1000` from the RPi or configure the client sketch to connect to a server
 running on the Raspberry Pi. Users should also be able to ping the IP of the node from the Raspberry Pi.
+
 b:(option 2) Run the examples from the Headless example directory on 2 or more devices.
 
 @note To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment `#define DISABLE_USER_PAYLOADS`. This
