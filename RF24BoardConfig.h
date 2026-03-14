@@ -68,14 +68,14 @@
     #endif
 
     #if !defined ETHERNET_USING_LWIP_ARDUINO
-        #include "lwip\ip.h"
-        #include "lwip\stats.h"
-        #include "lwip\netif.h"
-        #include "lwip\snmp.h"
-        #include "lwip\timeouts.h"
+        #include "lwip/ip.h"
+        #include "lwip/stats.h"
+        #include "lwip/api.h"
+        #include "lwip/snmp.h"
+        #include "lwip/timeouts.h"
     #else
         #include <lwIP_Arduino.h>
-        #include "lwip\include\lwip\ip.h"
+        #include "lwip/include/lwip/ip.h"
     #endif
 
 #endif

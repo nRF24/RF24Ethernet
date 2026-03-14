@@ -26,7 +26,7 @@ uip_userdata_t RF24Client::all_data[UIP_CONNS];
 
     //
     #if !defined ETHERNET_USING_LWIP_ARDUINO
-        #include "lwip\tcp.h"
+        #include <lwip/tcp.h>
         #include "lwip/tcpip.h"
         #include "lwip/timeouts.h"
     #else
