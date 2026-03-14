@@ -48,6 +48,7 @@ EthernetClient client;
 // Note: The gateway will need to be able to forward traffic for internet hosts, see the documentation
 IPAddress ascii(10, 1, 3, 1);  //http://artscene.textfiles.com/asciiart/texthistory.txt
 IPAddress host(ascii);
+void connect();
 
 void setup() {
 
