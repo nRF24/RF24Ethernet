@@ -15,7 +15,7 @@
 
 //*********************** USER CONFIG ***********************
 // Comment this out to use the nrf_to_nrf driver for nRF52 radios
-//#define USE_NRF24
+#define USE_NRF24
 //**********************************************************
 
 #ifdef USE_NRF24
