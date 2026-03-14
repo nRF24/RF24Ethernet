@@ -42,8 +42,6 @@ jobs:
       example-path: ${{ matrix.example }}
       board-id: ${{ matrix.board }}
       lib-deps: -l 256dpi/MQTT
-      build-flags: >-
-        -DCONFIG_TCPIP_LWIP=1
     strategy:
       fail-fast: false
       matrix:
