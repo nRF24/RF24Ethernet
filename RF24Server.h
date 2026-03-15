@@ -38,7 +38,7 @@ public:
     size_t write(const uint8_t* buf, size_t size);
     using Print::write;
 
-    /*
+    /**
      * Set server side timeouts in mS. If data is not succesfully sent or received in this timeframe, disconnect the client.
      */
     void setTimeout(uint32_t timeout);
