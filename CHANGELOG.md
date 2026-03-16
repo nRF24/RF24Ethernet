@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.0.1] - 2026-03-16
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Fix for lwIP Arduino on Linux by \@TMRh20 in [#58](https://github.com/nRF24/RF24Ethernet/pull/58)
+
+[2.0.1]: https://github.com/nRF24/RF24Ethernet/compare/v2.0.0...v2.0.1
+
+Full commit diff: [`v2.0.0...v2.0.1`][2.0.1]
+
 ## [2.0.0] - 2026-03-16
 
 ### <!-- 1 --> 🚀 Added
@@ -26,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use nushell as task runner by \@2bndy5 in [#54](https://github.com/nRF24/RF24Ethernet/pull/54)
 - Revise CI by \@2bndy5 in [#55](https://github.com/nRF24/RF24Ethernet/pull/55)
 - Update call to reusable PIO workflow by \@2bndy5 in [`a459c94`](https://github.com/nRF24/RF24Ethernet/commit/a459c9477612fedd82b06467bb223ad334601a9d)
+- Bump version to v2.0.0 by \@TMRh20 in [`13a5358`](https://github.com/nRF24/RF24Ethernet/commit/13a53582abcbf0b1d0217d67eecc5a5de778c30b)
 
 [2.0.0]: https://github.com/nRF24/RF24Ethernet/compare/v1.6.17...v2.0.0
 
