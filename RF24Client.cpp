@@ -30,8 +30,8 @@ uip_userdata_t RF24Client::all_data[UIP_CONNS];
         #include "lwip/tcpip.h"
         #include "lwip/timeouts.h"
     #else
-        #include "lwip\include\lwip\tcp.h"
-        #include "lwip\include\lwip\tcpip.h"
+        #include "lwip/include/lwip/tcp.h"
+        #include "lwip/include/lwip/tcpip.h"
     #endif
 
     #include "RF24Ethernet.h"

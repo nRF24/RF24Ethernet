@@ -33,8 +33,8 @@ int32_t RF24UDP::dataOutPos;
             #include "lwip/udp.h"
             #include "lwip/tcpip.h"
         #else
-            #include "lwip\include\lwip\udp.h"
-            #include "lwip\include\lwip\tcpip.h"
+            #include "lwip/include/lwip/udp.h"
+            #include "lwip/include/lwip/tcpip.h"
         #endif
     #endif
 
