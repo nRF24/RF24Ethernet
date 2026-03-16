@@ -538,7 +538,9 @@ err_t RF24Client::on_connected(void* arg, struct tcp_pcb* tpcb, err_t err)
 /***************************************************************************************************/
 
 #if USE_LWIP < 1
-RF24Client::RF24Client() : data(NULL) {}
+RF24Client::RF24Client() : data(NULL)
+{
+}
 #else
 RF24Client::RF24Client() : data(0)
 {
@@ -548,7 +550,9 @@ RF24Client::RF24Client() : data(0)
 /*************************************************************/
 
 #if USE_LWIP < 1
-RF24Client::RF24Client(uip_userdata_t* conn_data) : data(conn_data) {}
+RF24Client::RF24Client(uip_userdata_t* conn_data) : data(conn_data)
+{
+}
 #else
 /** \cond */
 RF24Client::RF24Client(uint32_t data) : data(0)
