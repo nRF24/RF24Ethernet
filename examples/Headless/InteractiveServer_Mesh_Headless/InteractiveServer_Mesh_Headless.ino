@@ -4,33 +4,32 @@
  *
  * RF24Ethernet uses the uIP stack by Adam Dunkels <adam@sics.se>
  *
- * This example demonstrates how to configure a sensor node to act as a webserver and
- * allows a user to control a connected LED by clicking links on the webpage
- * The requested URL is used as input, to determine whether to turn the LED off or on
- *
- * This example uses RF24Mesh.
+ * This example demonstrates how to configure a Headless Master node running an HTTP server
+ * It does NOT require a Gateway node, just two nodes running RF24Ethernet
  *
  */
+
+#define OUTPUT_BUFFER_SIZE MAX_PAYLOAD_SIZE - 14
+
+
 
 //*********************** USER CONFIG ***********************
 // Comment this out to use the nrf_to_nrf driver for nRF52 radios
 #define USE_NRF24
 //**********************************************************
 
-
 #ifdef USE_NRF24
-
 #include <RF24.h>
 #include <RF24Network.h>
 #include "RF24Mesh.h"
 #include <RF24Ethernet.h>
 #include "HTML.h"
+
 RF24 radio(7, 8);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
 #else
-
 #include <nrf_to_nrf.h>
 #include <RF24Network.h>
 #include "RF24Mesh.h"
@@ -49,7 +48,7 @@ RF52EthernetClass RF24Ethernet(radio, network, mesh);
 #endif
 
 // Configure the server to listen on port 1000
-EthernetServer server = EthernetServer(1000);
+EthernetServer server = EthernetServer(80);
 
 /**********************************************************/
 static unsigned short generate_tcp_stats();
@@ -57,17 +56,22 @@ static unsigned short generate_tcp_stats();
 void setup() {
 
   Serial.begin(115200);
+  while (!Serial) {}
   //printf_begin();
   Serial.println("start");
   pinMode(LED_PIN, OUTPUT);
 
-  IPAddress myIP(10, 10, 2, 4);
+  IPAddress myIP(10, 1, 3, 1);
   Ethernet.begin(myIP);
-  mesh.begin();
 
   //Set IP of the RPi (gateway)
-  IPAddress gwIP(10, 10, 2, 2);
+  IPAddress gwIP(10, 1, 3, 2);
   Ethernet.set_gateway(gwIP);
+
+  // Make this a Master node
+  mesh.setNodeID(0);
+  Serial.println(mesh.getNodeID());
+  mesh.begin(65);
 
   server.begin();
   server.setTimeout(30000);
@@ -79,17 +83,7 @@ uint32_t mesh_timer = 0;
 
 void loop() {
 
-  // Optional: If the node needs to move around physically, or using failover nodes etc.,
-  // enable address renewal
-  if (millis() - mesh_timer > 30000) {  //Every 30 seconds, test mesh connectivity
-    mesh_timer = millis();
-    if (!mesh.checkConnection()) {
-      //refresh the network address
-      if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
-        mesh.begin();
-      }
-    }
-  }
+  mesh.DHCP();
 
   size_t size;
 
@@ -163,8 +157,7 @@ void loop() {
 * See the uIP documentation for more info
 */
 static unsigned short generate_tcp_stats() {
-#if USE_LWIP < 1
-  struct uip_conn* conn;
+  /*struct uip_conn* conn;
 
   // If multiple connections are enabled, get info for each active connection
   for (uint8_t i = 0; i < UIP_CONF_MAX_CONNECTIONS; i++) {
@@ -189,7 +182,6 @@ static unsigned short generate_tcp_stats() {
       Serial.print(F("Outstanding "));
       Serial.println((uip_outstanding(conn)) ? '*' : ' ');
     }
-  }
-#endif
+  }*/
   return 1;
 }

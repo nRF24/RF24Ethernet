@@ -25,7 +25,7 @@
 
 #include "RF24Ethernet.h"
 
-#if UIP_CONF_UDP > 0
+#if UIP_CONF_UDP > 0 || RF24ETHERNET_USE_UDP > 0
 
     #include <Udp.h>
 
@@ -33,6 +33,7 @@
     #define UIP_UDP_PHYH_LEN      UIP_LLH_LEN + UIP_IPUDPH_LEN
     #define UIP_UDP_MAXPACKETSIZE UIP_UDP_MAXDATALEN + UIP_UDP_PHYH_LEN
 
+    #if UIP_CONF_UDP > 0
 typedef struct
 {
     uint16_t out_pos;
@@ -44,12 +45,42 @@ typedef struct
     boolean send;
 } uip_udp_userdata_t;
 
+    #elif RF24ETHERNET_USE_UDP
+
+struct UDPState
+{
+    volatile bool dataReceived = false;
+};
+
+static UDPState* udpState;
+
+    #endif
+
 class RF24UDP : public UDP
 {
 private:
+
+    #if UIP_CONF_UDP > 0
     struct uip_udp_conn* _uip_udp_conn;
 
     uip_udp_userdata_t appdata;
+    #elif RF24ETHERNET_USE_UDP
+    static struct udp_pcb* udpPcb;
+
+    static int8_t udpDataIn[MAX_PAYLOAD_SIZE - 14];
+    static int32_t dataInPos;
+    static int8_t udpDataOut[MAX_PAYLOAD_SIZE - 14];
+    static int32_t dataOutPos;
+
+    struct udp_send_ctx
+    {
+        struct udp_pcb* pcb;
+        struct pbuf* p;
+        ip_addr_t ip;
+        u16_t port;
+    };
+
+    #endif
 
 public:
     /** @brief Constructor */
@@ -136,7 +167,13 @@ private:
 
     friend class RF24EthernetClass;
     friend class RF24Client;
+    #ifndef RF24ETHERNET_USE_UDP
     static void _send(uip_udp_userdata_t* data);
+    #else
+    static void _send();
+    static void receiveUdp(void* arg, struct udp_pcb* pcb, struct pbuf* p, const ip_addr_t* addr, u16_t port);
+    static void sendUdp(void* arg);
+    #endif
 };
 
 #endif // UDP Enabled

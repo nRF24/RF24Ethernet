@@ -19,29 +19,52 @@
  */
 #include "RF24Ethernet.h"
 
-#if UIP_CONF_UDP > 0
+#if UIP_CONF_UDP > 0 || RF24ETHERNET_USE_UDP > 0
+
+    #if RF24ETHERNET_USE_UDP
+
+struct udp_pcb* RF24UDP::udpPcb;
+int8_t RF24UDP::udpDataIn[MAX_PAYLOAD_SIZE - 14];
+int8_t RF24UDP::udpDataOut[MAX_PAYLOAD_SIZE - 14];
+int32_t RF24UDP::dataInPos;
+int32_t RF24UDP::dataOutPos;
+
+        #if !defined ETHERNET_USING_LWIP_ARDUINO
+            #include "lwip/udp.h"
+            #include "lwip/tcpip.h"
+        #else
+            #include "lwip\include\lwip\udp.h"
+            #include "lwip\include\lwip\tcpip.h"
+        #endif
+    #endif
 
     #ifdef RF24ETHERNET_DEBUG_UDP
         #include "HardwareSerial.h"
     #endif
 
-    #if UIP_UDP
+    #if UIP_UDP || RF24ETHERNET_USE_UDP
         #define UIP_ARPHDRSIZE 42
         #define UDPBUF         ((struct uip_udpip_hdr*)&uip_buf[UIP_LLH_LEN])
 
-/*******************************************************/
+    /*******************************************************/
 
+        #ifndef RF24ETHERNET_USE_UDP
 // Constructor
 RF24UDP::RF24UDP() : _uip_udp_conn(NULL)
 {
     memset(&appdata, 0, sizeof(appdata));
 }
-
+        #else
+RF24UDP::RF24UDP()
+{
+}
+        #endif
 /*******************************************************/
 
 // initialize, start listening on specified port. Returns 1 if successful, 0 if there are no sockets available to use
 uint8_t RF24UDP::begin(uint16_t port)
 {
+        #ifndef RF24ETHERNET_USE_UDP
     if (!_uip_udp_conn)
     {
         _uip_udp_conn = uip_udp_new(NULL, 0);
@@ -53,6 +76,18 @@ uint8_t RF24UDP::begin(uint16_t port)
         return 1;
     }
     return 0;
+        #else
+
+    if (udpPcb == nullptr) {
+        udpPcb = udp_new();
+    }
+    err_t err = udp_bind(udpPcb, IP_ANY_TYPE, port);
+
+    if (err == ERR_OK) {
+        return 1;
+    }
+    return 0;
+        #endif
 }
 
 /*******************************************************/
@@ -60,6 +95,7 @@ uint8_t RF24UDP::begin(uint16_t port)
 // Finish with the UDP socket
 void RF24UDP::stop()
 {
+        #ifndef RF24ETHERNET_USE_UDP
     if (_uip_udp_conn)
     {
         uip_udp_remove(_uip_udp_conn);
@@ -71,6 +107,12 @@ void RF24UDP::stop()
 
         memset(&appdata, 0, sizeof(appdata));
     }
+        #else
+
+    if (udpPcb != nullptr) {
+        udp_disconnect(udpPcb);
+    }
+        #endif
 }
 
 /*******************************************************/
@@ -81,6 +123,7 @@ void RF24UDP::stop()
 // Returns 1 if successful, 0 if there was a problem with the supplied IP address or port
 int RF24UDP::beginPacket(IPAddress ip, uint16_t port)
 {
+        #ifndef RF24ETHERNET_USE_UDP
     RF24EthernetClass::tick();
     if (ip && port)
     {
@@ -131,6 +174,26 @@ int RF24UDP::beginPacket(IPAddress ip, uint16_t port)
         }
     }
     return 0;
+        #else
+
+    err_t err = ERR_OK;
+    ip4_addr_t myIp;
+            #if defined ARDUINO_ARCH_ESP32 || defined ARDUINO_ARCH_ESP8266 || defined ARDUINO_ARCH_RP2040 || defined ARDUINO_ARCH_RP2350
+    IP4_ADDR(&myIp, ip[0], ip[1], ip[2], ip[3]);
+    ip_addr_t generic_addr;
+    ip_addr_copy_from_ip4(generic_addr, myIp);
+    err = udp_connect(udpPcb, &generic_addr, port);
+            #else
+    IP4_ADDR(&myIp, ip[0], ip[1], ip[2], ip[3]);
+    // Start non-blocking connection
+    err = udp_connect(udpPcb, &myIp, port);
+            #endif
+
+    if (err == ERR_OK) {
+        return 1;
+    }
+    return 0;
+        #endif
 }
 
 /*******************************************************/
@@ -139,6 +202,7 @@ int RF24UDP::beginPacket(IPAddress ip, uint16_t port)
 // Returns 1 if successful, 0 if there was a problem resolving the hostname or port
 int RF24UDP::beginPacket(const char* host, uint16_t port)
 {
+        #ifndef RF24ETHERNET_USE_UDP
     // Look up the host first
     int ret = 0;
     DNSClient dns;
@@ -154,6 +218,24 @@ int RF24UDP::beginPacket(const char* host, uint16_t port)
     {
         return ret;
     }
+        #else
+    // Look up the host first
+    int ret = 0;
+    DNSClient dns;
+    IPAddress remote_addr;
+
+    dns.begin(RF24Ethernet.dnsServerIP());
+    ret = dns.getHostByName(host, remote_addr);
+    if (ret == 1)
+    {
+        return beginPacket(remote_addr, port);
+    }
+    else
+    {
+        return ret;
+    }
+
+        #endif
 }
 
 /*******************************************************/
@@ -162,6 +244,7 @@ int RF24UDP::beginPacket(const char* host, uint16_t port)
 // Returns 1 if the packet was sent successfully, 0 if there was an error
 int RF24UDP::endPacket()
 {
+        #ifndef RF24ETHERNET_USE_UDP
     if (_uip_udp_conn && appdata.packet_out != 0)
     {
         appdata.send = true;
@@ -174,6 +257,14 @@ int RF24UDP::endPacket()
         }
     }
     return 0;
+        #else
+
+    if (dataOutPos > 0) {
+        _send();
+        return 1;
+    }
+    return 0;
+        #endif
 }
 
 /*******************************************************/
@@ -189,6 +280,7 @@ size_t RF24UDP::write(uint8_t c)
 // Write size bytes from buffer into the packet
 size_t RF24UDP::write(const uint8_t* buffer, size_t size)
 {
+        #ifndef RF24ETHERNET_USE_UDP
     if (appdata.packet_out != 0)
     {
         IF_RF24ETHERNET_DEBUG_UDP(Serial.println("RF24UDP Write: "); Serial.println(size); for (int i = 0; i < size; i++) { Serial.print((char)buffer[i]); Serial.print(" "); } Serial.println(""););
@@ -198,6 +290,13 @@ size_t RF24UDP::write(const uint8_t* buffer, size_t size)
         return ret;
     }
     return 0;
+        #else
+
+    memcpy(&udpDataOut[dataOutPos], buffer, size);
+    dataOutPos += size;
+
+    return size;
+        #endif
 }
 
 /*******************************************************/
@@ -206,8 +305,10 @@ size_t RF24UDP::write(const uint8_t* buffer, size_t size)
 // Returns the size of the packet in bytes, or 0 if no packets are available
 int RF24UDP::parsePacket()
 {
-
     RF24EthernetClass::tick();
+
+        #ifndef RF24ETHERNET_USE_UDP
+
     int size = appdata.packet_in_size;
 
     IF_RF24ETHERNET_DEBUG_UDP(if (appdata.packet_in != 0) { Serial.print(F("RF24UDP udp parsePacket freeing previous packet: ")); Serial.println(appdata.packet_in); });
@@ -220,6 +321,10 @@ int RF24UDP::parsePacket()
     IF_RF24ETHERNET_DEBUG_UDP(if (appdata.packet_in != 0) { Serial.print(F("RF24UDP udp parsePacket received packet: ")); Serial.print(appdata.packet_in); } Serial.print(F(", size: ")); Serial.println(size););
 
     return size;
+        #else
+
+    return dataInPos;
+        #endif
 }
 
 /*******************************************************/
@@ -228,7 +333,11 @@ int RF24UDP::parsePacket()
 int RF24UDP::available()
 {
     RF24EthernetClass::tick();
+        #ifndef RF24ETHERNET_USE_UDP
     return appdata.packet_in_size;
+        #else
+    return dataInPos;
+        #endif
 }
 
 /*******************************************************/
@@ -251,8 +360,8 @@ int RF24UDP::read()
 int RF24UDP::read(unsigned char* buffer, size_t len)
 {
 
-    RF24EthernetClass::tick();
-
+        //RF24EthernetClass::tick();
+        #ifndef RF24ETHERNET_USE_UDP
     if (appdata.packet_in != 0)
     {
         memcpy(buffer, RF24Client::all_data[0].myData + appdata.in_pos, len);
@@ -265,6 +374,20 @@ int RF24UDP::read(unsigned char* buffer, size_t len)
         }
         return len;
     }
+        #else
+
+    if (dataInPos >= len) {
+
+        size_t remainder = dataInPos - len;
+        memcpy(&buffer[0], &udpDataIn[0], len);
+        if (remainder > 0) {
+            memmove(udpDataIn, &udpDataIn[len], remainder);
+        }
+        dataInPos = rf24_max(0, remainder);
+        return len;
+    }
+
+        #endif
     return 0;
 }
 
@@ -273,7 +396,7 @@ int RF24UDP::read(unsigned char* buffer, size_t len)
 // Return the next byte from the current packet without moving on to the next byte
 int RF24UDP::peek()
 {
-
+        #ifndef RF24ETHERNET_USE_UDP
     RF24EthernetClass::tick();
 
     if (appdata.packet_in != 0)
@@ -281,6 +404,13 @@ int RF24UDP::peek()
         return RF24Client::all_data[0].myData[appdata.in_pos];
     }
     return -1;
+        #else
+
+    if (dataInPos > 0) {
+        return udpDataIn[0];
+    }
+    return -1;
+        #endif
 }
 
 /*******************************************************/
@@ -288,9 +418,15 @@ int RF24UDP::peek()
 // Finish reading the current packet
 void RF24UDP::flush()
 {
+        #ifndef RF24ETHERNET_USE_UDP
     appdata.packet_in = 0;
     appdata.packet_in_size = 0;
-    RF24EthernetClass::tick();
+        #else
+    uint8_t c = 0;
+    while (read() > 0) {
+    };
+        #endif
+    //RF24EthernetClass::tick();
 }
 
 /*******************************************************/
@@ -298,7 +434,20 @@ void RF24UDP::flush()
 // Return the IP address of the host who sent the current incoming packet
 IPAddress RF24UDP::remoteIP()
 {
+        #ifndef RF24ETHERNET_USE_UDP
     return _uip_udp_conn ? ip_addr_uip(_uip_udp_conn->ripaddr) : IPAddress();
+        #else
+
+    if (udpPcb != nullptr) {
+        const ip4_addr_t* addr = ip_2_ip4(&udpPcb->remote_ip);
+        return IPAddress(
+            ip4_addr_get_byte(addr, 0),
+            ip4_addr_get_byte(addr, 1),
+            ip4_addr_get_byte(addr, 2),
+            ip4_addr_get_byte(addr, 3));
+    }
+    return IPAddress {0, 0, 0, 0};
+        #endif
 }
 
 /*******************************************************/
@@ -306,7 +455,15 @@ IPAddress RF24UDP::remoteIP()
 // Return the port of the host who sent the current incoming packet
 uint16_t RF24UDP::remotePort()
 {
+        #ifndef RF24ETHERNET_USE_UDP
     return _uip_udp_conn ? ntohs(_uip_udp_conn->rport) : 0;
+        #else
+
+    if (udpPcb != nullptr) {
+        return udpPcb->remote_port;
+    }
+    return 0;
+        #endif
 }
 
 /*******************************************************/
@@ -315,6 +472,7 @@ uint16_t RF24UDP::remotePort()
 
 void uipudp_appcall(void)
 {
+        #ifndef RF24ETHERNET_USE_UDP
     if (uip_udp_userdata_t* data = (uip_udp_userdata_t*)(uip_udp_conn->appstate))
     {
         if (uip_newdata())
@@ -341,15 +499,48 @@ void uipudp_appcall(void)
             uip_udp_send(data->out_pos);
         }
     }
+
+        #else
+
+        #endif
 }
 
-/*******************************************************/
-
-void RF24UDP::_send(uip_udp_userdata_t* data)
+        #if RF24ETHERNET_USE_UDP
+void RF24UDP::receiveUdp(void* arg, struct udp_pcb* pcb, struct pbuf* p, const ip_addr_t* addr, u16_t port)
 {
-        #if defined(RF24_TAP)
-    uip_arp_out(); // add arp
+
+    if (p != NULL) {
+        memcpy(&udpDataIn[0], p->payload, p->len);
+        dataInPos += p->len;
+        pbuf_free(p);
+        if (udpState != nullptr) {
+            udpState->dataReceived = true;
+        }
+    }
+}
+
         #endif
+
+void RF24UDP::sendUdp(void* arg)
+{
+
+    struct udp_send_ctx* data = (struct udp_send_ctx*)arg;
+
+    udp_send(data->pcb, data->p);
+}
+
+        /*******************************************************/
+        #ifndef RF24ETHERNET_USE_UDP
+void RF24UDP::_send(uip_udp_userdata_t* data)
+        #else
+void RF24UDP::_send()
+        #endif
+
+{
+        #ifndef RF24ETHERNET_USE_UDP
+            #if defined(RF24_TAP)
+    uip_arp_out(); // add arp
+            #endif
     if (uip_len == UIP_ARPHDRSIZE)
     {
         // RF24EthernetClass::uip_packet = 0;
@@ -369,8 +560,29 @@ void RF24UDP::_send(uip_udp_userdata_t* data)
         RF24NetworkHeader headerOut(00, EXTERNAL_DATA_TYPE);
         RF24Ethernet.network.write(headerOut, uip_buf, data->out_pos + UIP_UDP_PHYH_LEN);
     }
-}
 
+        #else
+    if (udpState == nullptr) {
+        udpState = new UDPState;
+    }
+    udpState->dataReceived = false;
+    udp_recv(udpPcb, receiveUdp, udpState);
+
+    pbuf* p = pbuf_alloc(PBUF_RAW, dataOutPos, PBUF_RAM);
+    if (p) {
+        memcpy(reinterpret_cast<uint8_t*>(p->payload), &udpDataOut[0], dataOutPos);
+        p->len = dataOutPos;
+
+        udp_send(udpPcb, p);
+
+        dataOutPos = 0;
+        Ethernet.update();
+
+        pbuf_free(p);
+    }
+
+        #endif
+}
     /*******************************************************/
 
     #endif // UIP_UDP

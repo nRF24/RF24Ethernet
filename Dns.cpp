@@ -4,7 +4,7 @@
 
 #include "RF24Ethernet.h"
 
-#if UIP_CONF_UDP > 0
+#if UIP_CONF_UDP > 0 || RF24ETHERNET_USE_UDP > 0
 
     #define SOCKET_NONE 255
     // Various flags and header field values for a DNS message
