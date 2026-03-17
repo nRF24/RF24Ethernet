@@ -369,17 +369,18 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                     if (state->backlogWasClosed == false) {
 
                         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Close off delayed PCB function 1, ID: "); Serial.println(state->identifier););
-                        if (tcp_close(tpcb) == ERR_OK) {
-                            state->backlogWasClosed = true;
-                            state->closeTimer = millis();
-                            state->finished = true;
-                        }
 
                         if (state->backlogWasAccepted == false) {
                             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: With backlog accepted"););
                             tcp_backlog_accepted(tpcb);
                             state->backlogWasAccepted = true;
                             accepts--;
+                        }
+
+                        if (tcp_close(tpcb) == ERR_OK) {
+                            state->backlogWasClosed = true;
+                            state->closeTimer = millis();
+                            state->finished = true;
                         }
 
                         return ERR_OK;
@@ -404,16 +405,16 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
             if (millis() - state->connectTimestamp > state->sConnectionTimeout) {
                 if (state->backlogWasClosed == false) {
                     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Close off delayed PCB function 2, ID "); Serial.println(state->identifier););
-                    if (tcp_close(tpcb) == ERR_OK) {
-                        state->backlogWasClosed = true;
-                        state->closeTimer = millis();
-                        state->finished = true;
-                    }
                     if (state->backlogWasAccepted == false) {
                         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: With backlog accepted"););
                         tcp_backlog_accepted(tpcb);
                         state->backlogWasAccepted = true;
                         accepts--;
+                    }
+                    if (tcp_close(tpcb) == ERR_OK) {
+                        state->backlogWasClosed = true;
+                        state->closeTimer = millis();
+                        state->finished = true;
                     }
 
                     return ERR_OK;
