@@ -313,11 +313,6 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
             dataSize[activeState] = 0;
             state->connected = false;
             state->finished = true;
-            if (state->backlogWasAccepted == false) {
-                IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: With backlog accepted"););
-                tcp_backlog_accepted(tpcb);
-                accepts--;
-            }
             return ERR_OK;
 
             // }
