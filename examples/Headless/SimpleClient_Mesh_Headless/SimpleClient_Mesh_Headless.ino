@@ -71,6 +71,7 @@ void setup() {
 uint32_t counter = 0;
 uint32_t reqTimer = 0;
 uint32_t mesh_timer = 0;
+uint32_t clientTimeoutTimer = 0;
 
 void loop() {
 
@@ -94,6 +95,7 @@ void loop() {
     char c = client.read();
     Serial.print(c);
     counter++;
+    clientTimeoutTimer = millis();
   }
 
   // if the server's disconnected, stop the client:
@@ -109,6 +111,15 @@ void loop() {
     while (millis() - reqTimer < 5000 && !client.available()) {
     }
     connect();
+  }
+
+  // We need to implement a disconnection timer, in case we lose connection
+  // and the server stops responding
+  // Note: If using the uIP stack (not lwIP), there is internal timeout functionality
+  if (client.connected()) {
+    if (millis() - clientTimeoutTimer > 60000) {
+      client.stop();
+    }
   }
 
   // We can do other things in the loop, but be aware that the loop will
