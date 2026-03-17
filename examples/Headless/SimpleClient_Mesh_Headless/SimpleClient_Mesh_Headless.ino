@@ -132,6 +132,8 @@ void connect() {
   if (client.connect(host, 80)) {
     Serial.println(F("connected"));
 
+    clientTimeoutTimer = millis();
+
     // Make an HTTP request:
     if (host == ascii) {
       client.println("GET / HTTP/1.1");
