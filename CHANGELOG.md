@@ -6,11 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.0.2] - 2026-03-18
+
+### <!-- 3 --> 🗑️ Removed
+
+- Multiple conn fixes by \@TMRh20 in [#61](https://github.com/nRF24/RF24Ethernet/pull/61)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Examples update - Add connection timeout by \@TMRh20 in [#60](https://github.com/nRF24/RF24Ethernet/pull/60)
+
+[2.0.2]: https://github.com/nRF24/RF24Ethernet/compare/v2.0.1...v2.0.2
+
+Full commit diff: [`v2.0.1...v2.0.2`][2.0.2]
+
 ## [2.0.1] - 2026-03-16
 
 ### <!-- 4 --> 🛠️ Fixed
 
 - Fix for lwIP Arduino on Linux by \@TMRh20 in [#58](https://github.com/nRF24/RF24Ethernet/pull/58)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Bump version to v2.0.1 by \@TMRh20 in [`366f4c6`](https://github.com/nRF24/RF24Ethernet/commit/366f4c6a6349eba3846b2c85d5e37cde18228036)
 
 [2.0.1]: https://github.com/nRF24/RF24Ethernet/compare/v2.0.0...v2.0.1
 
