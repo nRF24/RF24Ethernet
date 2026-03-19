@@ -23,6 +23,27 @@ Note: Recent changes to support NRF5x boards prevent usage of RF24 devices with 
 See the [nrf_to_nrf Arduino library](https://github.com/TMRh20/nrf_to_nrf).
 
 
+### RF24 communication stack vs. OSI Model Mapping
+
+This table illustrates how the RF24 ecosystem aligns with the standard OSI (Open Systems Interconnection) model, highlighting the role of **RF24Ethernet** as the primary bridge to standard internet protocols.
+
+
+| OSI Layer | RF24 Component | Primary Function | Real-World Equivalent |
+| :--- | :--- | :--- | :--- |
+| **7. Application** | User Sketch / RF24Mesh | Data generation & node ID management | HTTP, MQTT, DHCP |
+| **6. Presentation**| **nrf_to_nrf (CCM)** / User Code | **Hardware AES-CCM Encryption/Auth** | TLS, AES-GCM, IPsec |
+| **5. Session** | **RF24Ethernet (lwIP / uIP)** | **Socket state & connection management** | BSD Sockets, NetBIOS |
+| **4. Transport** | **RF24Ethernet (lwIP / uIP)** | **TCP/UDP transport & flow control** | TCP, UDP |
+| **3. Network** | RF24Network | Octal routing & IP-over-RF24 encapsulation | IPv4, IPv6, ICMP |
+| **2. Data Link** | **nrf_to_nrf** / RF24 Core | **MAC (Pipes), Auto-ACK, & Framing** | Ethernet (MAC), 802.11 |
+| **1. Physical** | nRF24L01+ / nRF52 Hardware | 2.4GHz GFSK Radio Frequency | Fiber, Copper, WiFi PHY |
+
+### Key Implementation Details
+
+*   **Secure Lower Layers:** When using **nrf_to_nrf**, the stack utilizes the nRF52 hardware **CCM module** to provide **Authenticated Encryption (AES-CCM)**. This ensures data privacy (Layer 6) and packet integrity (Layer 2) with near-zero CPU overhead.
+*   **The IP Bridge:** **RF24Ethernet** acts as the "Network Interface Card" (NIC) driver, allowing standard IP stacks (**uIP** for memory-constrained AVR or **lwIP** for high-performance ARM/ESP32) to run over the radio mesh.
+*   **Modernization:** **nrf_to_nrf** serves as a modernized, high-efficiency replacement for the legacy RF24 core library, specifically optimized for integrated nRF52 radio hardware.
+ 
 --------------
 IF USING the lwIP STACK:
 --------------
