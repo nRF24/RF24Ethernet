@@ -437,11 +437,11 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
 {
     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Accept cb, ID: "); Serial.println(simpleCounter + 1););
 
-    if(tpcb == nullptr){
+    if (tpcb == nullptr) {
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Accepted conn, but no tpcb from: "); Serial.println(ip4addr_ntoa(ip_2_ip4(&tpcb->remote_ip))););
         return ERR_CLSD;
     }
-    
+
     if (tpcb != nullptr) {
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Client connect from: "); Serial.println(ip4addr_ntoa(ip_2_ip4(&tpcb->remote_ip))););
     }
@@ -823,7 +823,8 @@ void RF24Client::stop()
 
 /***************************************************************************************************/
 #if USE_LWIP > 0
-void RF24Client::_stop(){
+void RF24Client::_stop()
+{
     if (myPcb != nullptr) {
 
         if (myPcb->state == ESTABLISHED || myPcb->state == SYN_SENT || myPcb->state == SYN_RCVD) {
@@ -834,7 +835,7 @@ void RF24Client::_stop(){
             }
     #endif
             err_t err = tcp_close(myPcb);
-            if (err != ERR_OK){
+            if (err != ERR_OK) {
                 tcp_abort(myPcb);
             }
 
