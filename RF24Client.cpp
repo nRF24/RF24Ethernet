@@ -44,6 +44,7 @@ uint32_t RF24Client::clientConnectionTimeout;
 uint32_t RF24Client::serverConnectionTimeout;
 uint32_t RF24Client::simpleCounter;
 bool RF24Client::activeState;
+int32_t RF24Client::accepts;
 
 /***************************************************************************************************/
 
@@ -139,7 +140,7 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
         if (millis() > timer) {
             if (fstate != nullptr) {
                 fstate->finished = true;
-                fstate->result = -1;
+                return ERR_CLSD;
             }
             break;
         }
@@ -147,10 +148,6 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
     }
 
     return ERR_OK;
-    /*if(fstate != nullptr){
-        return fstate->result;
-    }
-    return ERR_CLSD;*/
 }
 
 /***************************************************************************************************/
@@ -294,7 +291,6 @@ err_t RF24Client::clientTimeouts(void* arg, struct tcp_pcb* tpcb)
 }
 
 /***************************************************************************************************/
-int32_t accepts = 0;
 
 err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
 {
@@ -441,6 +437,11 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
 {
     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Accept cb, ID: "); Serial.println(simpleCounter + 1););
 
+    if(tpcb == nullptr){
+        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Accepted conn, but no tpcb from: "); Serial.println(ip4addr_ntoa(ip_2_ip4(&tpcb->remote_ip))););
+        return ERR_CLSD;
+    }
+    
     if (tpcb != nullptr) {
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Client connect from: "); Serial.println(ip4addr_ntoa(ip_2_ip4(&tpcb->remote_ip))););
     }
@@ -815,6 +816,14 @@ void RF24Client::stop()
     RF24Ethernet.update();
 #else
 
+    _stop();
+
+#endif
+}
+
+/***************************************************************************************************/
+#if USE_LWIP > 0
+void RF24Client::_stop(){
     if (myPcb != nullptr) {
 
         if (myPcb->state == ESTABLISHED || myPcb->state == SYN_SENT || myPcb->state == SYN_RCVD) {
@@ -824,7 +833,10 @@ void RF24Client::stop()
                 ETHERNET_APPLY_LOCK();
             }
     #endif
-            tcp_close(myPcb);
+            err_t err = tcp_close(myPcb);
+            if (err != ERR_OK){
+                tcp_abort(myPcb);
+            }
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
             if (Ethernet.useCoreLocking) {
@@ -837,9 +849,8 @@ void RF24Client::stop()
     gState[activeState]->connected = false;
     gState[activeState]->finished = true;
     dataSize[activeState] = 0;
-#endif
 }
-
+#endif
 /*************************************************************/
 
 // the next function allows us to use the client returned by
@@ -947,6 +958,9 @@ test2:
         err_t write_err = blocking_write(myPcb, gState[initialActiveState], buffer, MAX_PAYLOAD_SIZE - 14);
 
         if (write_err != ERR_OK) {
+            gState[initialActiveState]->result = write_err;
+            gState[initialActiveState]->connected = false;
+            _stop();
             return (write_err);
         }
         position += MAX_PAYLOAD_SIZE - 14;
@@ -963,11 +977,14 @@ test2:
     gState[initialActiveState]->waiting_for_ack = true;
     err_t write_err = blocking_write(myPcb, gState[initialActiveState], buffer, size);
 
-    if (write_err == ERR_OK) {
-        return (size);
+    if (write_err != ERR_OK) {
+        gState[initialActiveState]->result = write_err;
+        gState[initialActiveState]->connected = false;
+        _stop();
+        return (write_err);
     }
 
-    return write_err;
+    return size;
 #endif
 }
 
