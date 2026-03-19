@@ -373,10 +373,10 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                         }
 
                         if (tcp_close(tpcb) == ERR_OK) {
-                            state->backlogWasClosed = true;
                             state->closeTimer = millis();
                             state->finished = true;
                         }
+                        state->backlogWasClosed = true;
 
                         return ERR_OK;
                     }
@@ -407,10 +407,10 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                         accepts--;
                     }
                     if (tcp_close(tpcb) == ERR_OK) {
-                        state->backlogWasClosed = true;
                         state->closeTimer = millis();
                         state->finished = true;
                     }
+                    state->backlogWasClosed = true;
 
                     return ERR_OK;
                 }
