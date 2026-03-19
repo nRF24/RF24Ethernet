@@ -40,7 +40,7 @@ This table illustrates how the RF24 ecosystem aligns with the standard OSI (Open
 
 ### Key Implementation Details
 
-*   **Secure Lower Layers:** When using **nrf_to_nrf**, the stack utilizes the nRF52 hardware **CCM module** to provide **Authenticated Encryption (AES-CCM)**. This ensures data privacy (Layer 6) and packet integrity (Layer 2) with near-zero CPU overhead.
+*   **Secure Lower Layers:** When using **nrf_to_nrf**, the stack can utilize the nRF52 hardware **CCM module** to provide **Authenticated Encryption (AES-CCM)**. This ensures data privacy (Layer 6) and packet integrity (Layer 2) with near-zero CPU overhead.
 *   **The IP Bridge:** **RF24Ethernet** acts as the "Network Interface Card" (NIC) driver, allowing standard IP stacks (**uIP** for memory-constrained AVR or **lwIP** for high-performance ARM/ESP32) to run over the radio mesh.
 *   **Modernization:** **nrf_to_nrf** serves as a modernized, high-efficiency replacement for the legacy RF24 core library, specifically optimized for integrated nRF52 radio hardware.
  
