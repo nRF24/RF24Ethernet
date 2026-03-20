@@ -265,6 +265,7 @@ private:
     static err_t on_connected(void* arg, struct tcp_pcb* tpcb, err_t err);
     static err_t blocking_write(struct tcp_pcb* pcb, ConnectState* fstate, const char* data, size_t len);
     static void dnsCallback(const char* name, const ip_addr_t* ipaddr, void* callback_arg);
+    static void _stop();
 
     static uint32_t clientConnectionTimeout;
     static uint32_t serverConnectionTimeout;
@@ -273,6 +274,7 @@ private:
 
     static char* incomingData[2];
     static uint32_t simpleCounter;
+    static int32_t accepts;
 
 #endif
 

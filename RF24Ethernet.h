@@ -231,9 +231,9 @@ public:
     static constexpr uint32_t NetIF_Speed_BPS = 1000000;
     static netif myNetif;
 
-    struct EthQueue
+    struct alignas(4) EthQueue
     {
-        uint8_t data[MAX_RX_QUEUE][MAX_FRAME_SIZE];
+        alignas(4) uint8_t data[MAX_RX_QUEUE][MAX_FRAME_SIZE];
         uint16_t len[MAX_RX_QUEUE];
         uint32_t nRead;
         uint32_t nWrite;
@@ -255,7 +255,7 @@ private:
     static pbuf* readRXQueue(EthQueue* RXQueue);
 
     static void EthRX_Handler(const uint8_t* ethFrame, const uint16_t lenEthFrame);
-    static uint8_t networkBuffer[MAX_PAYLOAD_SIZE];
+    alignas(4) static uint8_t networkBuffer[MAX_PAYLOAD_SIZE];
 #endif
 
 #if defined NRF52_RADIO_LIBRARY
