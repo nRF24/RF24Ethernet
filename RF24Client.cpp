@@ -184,7 +184,11 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
             //state->finished = true; // Break the loop
         }
         if (tpcb != nullptr) {
-            tcp_close(tpcb);
+            if (tcp_close(tpcb) != ERR_OK) {
+                tcp_abort(tpcb);
+                myPcb = nullptr;
+                return ERR_ABRT;
+            }
             myPcb = nullptr;
         }
         return ERR_OK;
@@ -229,7 +233,12 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
             state->finished = true; // Break the loop
         }
         if (tpcb != nullptr) {
-            tcp_close(tpcb);
+            if (tcp_close(tpcb) != ERR_OK) {
+                tcp_abort(tpcb);
+                myPcb = nullptr;
+                return ERR_ABRT;
+            }
+            myPcb = nullptr;
         }
         return err;
     }

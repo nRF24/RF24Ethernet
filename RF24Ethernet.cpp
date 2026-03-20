@@ -21,7 +21,7 @@
 #include "RF24Ethernet.h"
 
 #if USE_LWIP > 0
-RF24EthernetClass::EthQueue RF24EthernetClass::RXQueue __attribute__((aligned(4)));
+RF24EthernetClass::EthQueue RF24EthernetClass::RXQueue;
 netif RF24EthernetClass::myNetif;
 bool RF24EthernetClass::useCoreLocking;
 uint8_t RF24EthernetClass::networkBuffer[MAX_PAYLOAD_SIZE];
