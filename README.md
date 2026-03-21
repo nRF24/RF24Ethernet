@@ -53,16 +53,15 @@ graph TD
 
 This table illustrates how the RF24 ecosystem aligns with the standard OSI (Open Systems Interconnection) model, highlighting the role of **RF24Ethernet** as the primary bridge to standard internet protocols.
 
-
-| OSI Layer | RF24 Component | Primary Function | Real-World Equivalent |
-| :--- | :--- | :--- | :--- |
-| **7. Application** | User Sketch / RF24Mesh | Data generation & node ID management | HTTP, MQTT, DHCP |
-| **6. Presentation**| **nrf_to_nrf (CCM)** / User Code | **Hardware AES-CCM Encryption/Auth** | TLS, AES-GCM, IPsec |
-| **5. Session** | **RF24Ethernet (lwIP / uIP)** | **Socket state & connection management** | BSD Sockets, NetBIOS |
-| **4. Transport** | **RF24Ethernet (lwIP / uIP)** | **TCP/UDP transport & flow control** | TCP, UDP |
-| **3. Network** | RF24Network | Octal routing & IP-over-RF24 encapsulation | IPv4, IPv6, ICMP |
-| **2. Data Link** | **nrf_to_nrf** / RF24 Core | **MAC (Pipes), Auto-ACK, & Framing** | Ethernet (MAC), 802.11 |
-| **1. Physical** | nRF24L01+ / nRF52 Hardware | 2.4GHz GFSK Radio Frequency | Fiber, Copper, WiFi PHY |
+| OSI Layer | RF24 Component | C++ Header | Primary Function | Real-World Equivalent |
+| :--- | :--- | :--- | :--- | :--- |
+| **7. Application** | User Sketch / RF24Mesh | `RF24Mesh.h` | Data generation & node ID management | HTTP, MQTT, DHCP |
+| **6. Presentation**| **nrf_to_nrf (CCM)** | `nrf_to_nrf.h` | **Hardware AES-CCM Encryption/Auth** | TLS, AES-GCM, IPsec |
+| **5. Session** | **RF24Ethernet (lwIP / uIP)** | `RF24Ethernet.h` | **Socket state & connection management** | BSD Sockets, NetBIOS |
+| **4. Transport** | **RF24Ethernet (lwIP / uIP)** | `lwip/tcp.h` or `uip.h` | **TCP/UDP transport & flow control** | TCP, UDP |
+| **3. Network** | RF24Network | `RF24Network.h` | Octal routing & IP-over-RF24 encapsulation | IPv4, IPv6, ICMP |
+| **2. Data Link** | **nrf_to_nrf** / RF24 Core | `RF24.h` | **MAC (Pipes), Auto-ACK, & Framing** | Ethernet (MAC), 802.11 |
+| **1. Physical** | nRF24L01+ / nRF52 | **SPI Hardware** | 2.4GHz GFSK Radio Frequency | Fiber, Copper, WiFi PHY |
 
 ### Key Implementation Details
 
