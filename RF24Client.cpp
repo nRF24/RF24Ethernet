@@ -140,8 +140,9 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
         if (millis() > timer) {
             if (fstate != nullptr) {
                 fstate->finished = true;
+                return ERR_CLSD;
             }
-            return ERR_CLSD;
+            break;
         }
         Ethernet.update();
     }
@@ -671,8 +672,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
             ETHERNET_APPLY_LOCK();
         }
     #endif
-        if (myPcb->state != CLOSED) {
-            //if (myPcb->state == ESTABLISHED || myPcb->state == SYN_SENT || myPcb->state == SYN_RCVD) {
+        if (myPcb->state == ESTABLISHED || myPcb->state == SYN_SENT || myPcb->state == SYN_RCVD) {
             if (tcp_close(myPcb) != ERR_OK) {
                 tcp_abort(myPcb);
             }
