@@ -140,7 +140,6 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
         if (millis() > timer) {
             if (fstate != nullptr) {
                 fstate->finished = true;
-                fstate->waiting_for_ack = false;
             }
             return ERR_CLSD;
         }
@@ -184,7 +183,6 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
         if (state != nullptr) {
             state->connected = false;
             state->finished = true; // Break the loop
-            state->waiting_for_ack = false;
         }
         if (tpcb != nullptr) {
             if (tcp_close(tpcb) != ERR_OK) {
@@ -240,7 +238,6 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
         if (state != nullptr) {
             state->connected = false;
             state->finished = true; // Break the loop
-            state->waiting_for_ack = false;
         }
         if (tpcb != nullptr) {
             if (tcp_close(tpcb) != ERR_OK) {
@@ -337,7 +334,6 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
             dataSize[activeState] = 0;
             state->connected = false;
             state->finished = true;
-            state->waiting_for_ack = false;
             if (state->result != ERR_OK) {
                 tcp_abort(tpcb);
                 tpcb = nullptr;
@@ -379,7 +375,6 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                     state->connectTimestamp = millis();
                     state->connected = true;
                     state->finished = false;
-                    state->waiting_for_ack = false;
                     accepts--;
                     myPcb = tpcb;
                     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: ACCEPT delayed PCB "); Serial.println(state->identifier););
@@ -413,7 +408,6 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                         if (state->result == ERR_OK) {
                             state->closeTimer = millis();
                             state->finished = true;
-                            state->waiting_for_ack = false;
                         }
                         else {
                             tcp_abort(tpcb);
@@ -455,7 +449,6 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                     if (state->result == ERR_OK) {
                         state->closeTimer = millis();
                         state->finished = true;
-                        state->waiting_for_ack = false;
                     }
                     else {
                         tcp_abort(tpcb);
@@ -571,7 +564,6 @@ err_t RF24Client::on_connected(void* arg, struct tcp_pcb* tpcb, err_t err)
         state->cConnectionTimeout = clientConnectionTimeout;
         state->clientTimer = millis();
         state->result = err;
-        state->waiting_for_ack = false;
         state->finished = true;
         if (err == ERR_OK) {
             state->connected = true;
@@ -901,7 +893,6 @@ void RF24Client::_stop()
 
     gState[activeState]->connected = false;
     gState[activeState]->finished = true;
-    gState[activeState]->waiting_for_ack = false;
     dataSize[activeState] = 0;
 }
 #endif
