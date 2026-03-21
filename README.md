@@ -22,7 +22,54 @@ Downloads: http://tmrh20.github.io/
 Note: Recent changes to support NRF5x boards prevent usage of RF24 devices with NRF5x boards. Users must use the internal radio with RF24Ethernet.
 See the [nrf_to_nrf Arduino library](https://github.com/TMRh20/nrf_to_nrf).
 
+### RF24 communication stack general usage
 
+```mermaid
+
+graph TD
+    subgraph "Sensor Nodes (Arduino/ESP32)"
+        S1[Sensor 1<br/>10.1.2.2] --- R1[RF24 or RF52 Radio 1]
+        S2[Sensor 2<br/>10.1.2.3] --- R2[RF24 or RF52 Radio 2]
+        S3[Sensor 3<br/>10.1.2.4] --- R3[RF24 or RF52 Radio 3]
+    end
+
+    subgraph "Wireless Mesh"
+        R1 -.-> M[Mesh Relay / Router]
+        R2 -.-> M
+        R3 -.-> M
+        M -.-> RF24_or_RF52_Radio[Data In/Out]
+    end
+
+    subgraph "Gateway (Raspberry Pi)"
+        RF24_or_RF52_Radio --- RFG[RF24Gateway]
+        RFG --- TUN[TUN/TAP Interface]
+        TUN --- LNX[Linux Routing]
+    end
+
+    LNX === Internet[Local LAN / Internet]
+```
+
+### RF24 communication stack vs. OSI Model Mapping
+
+This table illustrates how the RF24 ecosystem aligns with the standard OSI (Open Systems Interconnection) model, highlighting the role of **RF24Ethernet** as the primary bridge to standard internet protocols.
+
+| OSI Layer | RF24 Component | C++ Header | Primary Function | Real-World Equivalent |
+| :--- | :--- | :--- | :--- | :--- |
+| **7. Application** | User Sketch / RF24Mesh | `RF24Mesh.h` | Data generation & node ID management | HTTP, MQTT, DHCP |
+| **6. Presentation**| **nrf_to_nrf (CCM)** | `nrf_to_nrf.h` | **Hardware AES-CCM Encryption/Auth** | TLS, AES-GCM, IPsec |
+| **5. Session** | **RF24Ethernet (lwIP / uIP)** | `RF24Ethernet.h` | **Socket state & connection management** | BSD Sockets, NetBIOS |
+| **4. Transport** | **RF24Ethernet (lwIP / uIP)** | `lwip/tcp.h` or `uip.h` | **TCP/UDP transport & flow control** | TCP, UDP |
+| **3. Network** | RF24Network | `RF24Network.h` | Octal routing & IP-over-RF24 encapsulation | IPv4, IPv6, ICMP |
+| **2. Data Link** | **nrf_to_nrf** / RF24 Core | `RF24.h` or `nrf_to_nrf.h` | **MAC (Pipes), Auto-ACK, & Framing** | Ethernet (MAC), 802.11 |
+| **1. Physical** | nRF24L01+ / nRF52 | **SPI Hardware** | 2.4GHz GFSK Radio Frequency | Fiber, Copper, WiFi PHY |
+
+### Key Implementation Details
+
+*   **Secure Lower Layers:** When using **nrf_to_nrf**, the stack can utilize the nRF52 hardware **CCM module** to provide **Authenticated Encryption (AES-CCM)**. This ensures data privacy (Layer 6) and packet integrity (Layer 2) with near-zero CPU overhead.
+*   **The IP Bridge:** **RF24Ethernet** acts as the "Network Interface Card" (NIC) driver, allowing standard IP stacks (**uIP** for memory-constrained AVR or **lwIP** for high-performance ARM/ESP32) to run over the radio mesh.
+*   **Modernization:** **nrf_to_nrf** serves as a modernized, high-efficiency replacement for the legacy RF24 core library, specifically optimized for integrated nRF52 radio hardware.
+
+## Licenses
 --------------
 IF USING the lwIP STACK:
 --------------
