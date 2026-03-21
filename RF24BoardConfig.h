@@ -29,12 +29,6 @@
 
 /*******************************************************************/
 
-#if defined ARDUINO_ARCH_ESP8266
-    #define RF24ETHERNET_CORE_REQUIRES_LOCKING
-    #define ETHERNET_APPLY_LOCK()  ets_intr_lock()
-    #define ETHERNET_REMOVE_LOCK() ets_intr_unlock()
-#endif
-
 // Set up defines if using lwIP
 #if USE_LWIP > 0
 
@@ -62,6 +56,12 @@
         #include <pico/cyw43_arch.h>
         #define ETHERNET_APPLY_LOCK  cyw43_arch_lwip_begin
         #define ETHERNET_REMOVE_LOCK cyw43_arch_lwip_end
+    #endif
+
+    #if defined ARDUINO_ARCH_ESP8266
+        #define RF24ETHERNET_CORE_REQUIRES_LOCKING
+        #define ETHERNET_APPLY_LOCK()  ets_intr_lock()
+        #define ETHERNET_REMOVE_LOCK() ets_intr_unlock()
     #endif
 
     #include "ethernet_comp.h"

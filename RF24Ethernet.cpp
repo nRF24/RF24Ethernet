@@ -64,7 +64,7 @@ pbuf* RF24EthernetClass::readRXQueue(EthQueue* RXQueue)
         return nullptr;
     }
 
-    pbuf* p = pbuf_alloc(PBUF_RAW, frameLen, PBUF_POOL);
+    pbuf* p = pbuf_alloc(PBUF_IP, frameLen, PBUF_RAM);
 
     if (p) {
         if (pbuf_take(p, &RXQueue->data[RXQueue->nRead], frameLen) == ERR_OK) {

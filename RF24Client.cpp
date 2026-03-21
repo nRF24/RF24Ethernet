@@ -80,9 +80,13 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
         return ERR_CLSD;
     }
 
-    if (len > tcp_sndbuf(fpcb)) {
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send Buffer full"););
-        return ERR_BUF;
+    uint32_t timeout = millis() + serverConnectionTimeout;
+    while (len > tcp_sndbuf(fpcb)) {
+        Ethernet.update();
+        if (millis() > timeout) {
+            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send Buffer full"););
+            return ERR_BUF;
+        }
     }
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
