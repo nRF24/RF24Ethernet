@@ -60,7 +60,7 @@ This table illustrates how the RF24 ecosystem aligns with the standard OSI (Open
 | **5. Session** | **RF24Ethernet (lwIP / uIP)** | `RF24Ethernet.h` | **Socket state & connection management** | BSD Sockets, NetBIOS |
 | **4. Transport** | **RF24Ethernet (lwIP / uIP)** | `lwip/tcp.h` or `uip.h` | **TCP/UDP transport & flow control** | TCP, UDP |
 | **3. Network** | RF24Network | `RF24Network.h` | Octal routing & IP-over-RF24 encapsulation | IPv4, IPv6, ICMP |
-| **2. Data Link** | **nrf_to_nrf** / RF24 Core | `RF24.h` | **MAC (Pipes), Auto-ACK, & Framing** | Ethernet (MAC), 802.11 |
+| **2. Data Link** | **nrf_to_nrf** / RF24 Core | `RF24.h` or `nrf_to_nrf.h` | **MAC (Pipes), Auto-ACK, & Framing** | Ethernet (MAC), 802.11 |
 | **1. Physical** | nRF24L01+ / nRF52 | **SPI Hardware** | 2.4GHz GFSK Radio Frequency | Fiber, Copper, WiFi PHY |
 
 ### Key Implementation Details
