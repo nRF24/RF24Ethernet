@@ -22,6 +22,32 @@ Downloads: http://tmrh20.github.io/
 Note: Recent changes to support NRF5x boards prevent usage of RF24 devices with NRF5x boards. Users must use the internal radio with RF24Ethernet.
 See the [nrf_to_nrf Arduino library](https://github.com/TMRh20/nrf_to_nrf).
 
+### RF24 communication stack general usage
+
+```mermaid
+
+graph TD
+    subgraph "Sensor Nodes (Arduino/ESP32)"
+        S1[Sensor 1<br/>10.1.2.2] --- R1[RF24 or RF52 Radio 1]
+        S2[Sensor 2<br/>10.1.2.3] --- R2[RF24 or RF52 Radio 2]
+        S3[Sensor 3<br/>10.1.2.4] --- R3[RF24 or RF52 Radio 3]
+    end
+
+    subgraph "Wireless Mesh"
+        R1 -.-> M[Mesh Relay / Router]
+        R2 -.-> M
+        R3 -.-> M
+        M -.-> RF24_or_RF52_Radio[Data In/Out]
+    end
+
+    subgraph "Gateway (Raspberry Pi)"
+        RF24_or_RF52_Radio --- RFG[RF24Gateway]
+        RFG --- TUN[TUN/TAP Interface]
+        TUN --- LNX[Linux Routing]
+    end
+
+    LNX === Internet[Local LAN / Internet]
+```
 
 ### RF24 communication stack vs. OSI Model Mapping
 
