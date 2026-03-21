@@ -227,16 +227,16 @@ public:
     static bool useCoreLocking;
     static constexpr unsigned MAX_FRAME_SIZE = MAX_PAYLOAD_SIZE; // packet size excluding FCS
     static constexpr unsigned MIN_FRAME_SIZE = 60;
-    static constexpr unsigned MAX_RX_QUEUE = 5;
+    static constexpr unsigned MAX_RX_QUEUE = 2;
     static constexpr uint32_t NetIF_Speed_BPS = 1000000;
     static netif myNetif;
 
     struct alignas(4) EthQueue
     {
-        alignas(4) uint8_t data[MAX_RX_QUEUE][MAX_FRAME_SIZE];
-        uint16_t len[MAX_RX_QUEUE];
         uint32_t nRead;
         uint32_t nWrite;
+        uint8_t data[MAX_RX_QUEUE][MAX_FRAME_SIZE] __attribute__((aligned(4)));
+        uint16_t len[MAX_RX_QUEUE];
     };
     static EthQueue RXQueue;
 
@@ -256,6 +256,7 @@ private:
 
     static void EthRX_Handler(const uint8_t* ethFrame, const uint16_t lenEthFrame);
     alignas(4) static uint8_t networkBuffer[MAX_PAYLOAD_SIZE];
+
 #endif
 
 #if defined NRF52_RADIO_LIBRARY

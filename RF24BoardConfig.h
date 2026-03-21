@@ -29,6 +29,12 @@
 
 /*******************************************************************/
 
+#if defined ARDUINO_ARCH_ESP8266
+    #define RF24ETHERNET_CORE_REQUIRES_LOCKING
+    #define ETHERNET_APPLY_LOCK()  ets_intr_lock()
+    #define ETHERNET_REMOVE_LOCK() ets_intr_unlock()
+#endif
+
 // Set up defines if using lwIP
 #if USE_LWIP > 0
 

@@ -54,26 +54,27 @@ void RF24EthernetClass::writeRXQueue(EthQueue* RXQueue, const uint8_t* ethFrame,
 
 pbuf* RF24EthernetClass::readRXQueue(EthQueue* RXQueue)
 {
-    if (RXQueue->nWrite != RXQueue->nRead)
-    {
-        const int ehtFrmLen = RXQueue->len[RXQueue->nRead];
-        pbuf* p = pbuf_alloc(PBUF_RAW, MAX_FRAME_SIZE, PBUF_RAM);
-        if (p) {
-            memcpy(reinterpret_cast<uint8_t*>(p->payload),
-                   &RXQueue->data[RXQueue->nRead][0],
-                   ehtFrmLen);
-            RXQueue->nRead++;
-            RXQueue->nRead %= MAX_RX_QUEUE;
-            return p;
-        }
-        else {
-            return nullptr;
-        }
-    }
-    else
-    {
+    if (RXQueue->nWrite == RXQueue->nRead)
+        return nullptr;
+
+    uint16_t frameLen = RXQueue->len[RXQueue->nRead];
+
+    if (frameLen > MAX_FRAME_SIZE) {
+        RXQueue->nRead = (RXQueue->nRead + 1) % MAX_RX_QUEUE;
         return nullptr;
     }
+
+    pbuf* p = pbuf_alloc(PBUF_RAW, frameLen, PBUF_POOL);
+
+    if (p) {
+        if (pbuf_take(p, &RXQueue->data[RXQueue->nRead], frameLen) == ERR_OK) {
+            RXQueue->nRead = (RXQueue->nRead + 1) % MAX_RX_QUEUE;
+            return p;
+        }
+        pbuf_free(p);
+    }
+
+    return nullptr;
 }
 
 /*************************************************************/
@@ -89,7 +90,7 @@ err_t netif_output(struct netif* netif, struct pbuf* p)
 {
     void* context = netif->state;
     uint16_t total_len = 0;
-    char buf[Ethernet.MAX_FRAME_SIZE]; /* max packet size including VLAN excluding FCS */
+    alignas(4) char buf[Ethernet.MAX_FRAME_SIZE]; /* max packet size including VLAN excluding FCS */
 
     if (p->tot_len > sizeof(buf))
     {
@@ -676,8 +677,10 @@ void RF24EthernetClass::tick()
         if (myNetif.input(p, &myNetif) != ERR_OK)
         {
             LWIP_DEBUGF(NETIF_DEBUG, ("IP input error\r\n"));
-            pbuf_free(p);
-            p = NULL;
+            if (p != nullptr) {
+                pbuf_free(p);
+                p = NULL;
+            }
         }
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
