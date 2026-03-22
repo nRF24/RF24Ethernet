@@ -8,43 +8,11 @@ See <http://tmrh20.github.io> for documentation and downloads
 
 See [this video walk-through](https://www.youtube.com/watch?v=eYiWUTjNSuc) of the software setup with Raspberry Pi and Arduino.
 
-## Raspberry Pi
+## Linux Gateway (Raspberry Pi, etc)
 
-On the Raspberry Pi, a companion program, [RF24Gateway](http://nRF24.github.io/RF24Gateway/) must be installed along with the RF24 and RF24Network libraries
+Gateway setup is documented here:
 
-1. Enter the following to download an install script that will build and install the needed RF24* libraries:
-
-   ```shell
-   wget https://raw.githubusercontent.com/nRF24/.github/main/installer/install.sh
-   chmod +x install.sh
-   ./install.sh
-   ```
-
-2. Next, build and run the [RF24Gateway_ncurses example](https://nrf24.github.io/RF24Gateway/RF24Gateway_ncurses_8cpp-example.html)
-
-   ```shell
-   cd rf24libs/RF24Gateway/examples/build
-   make
-   cd ncurses
-   ./RF24Gateway_ncurses
-   ```
-
-3. The application will require the user to specify an IP address and Subnet Mask: 10.10.2.2 and 255.255.255.0 are the defaults with RF24Ethernet examples, but this only works when running as root. Run the following commands to configure the interface and IP, where `pi` is your username:
-
-   ```shell
-   sudo ip tuntap add dev tun_nrf24 mode tun user pi multi_queue
-   sudo ifconfig tun_nrf24 10.10.2.2/24
-   ```
-
-4. Raspberry Pi defaults to the master node (00) using RF24Mesh. Secondary Raspberry pi nodes need to specify their RF24Network address or RF24Mesh nodeID.
-5. To maximize throughput between Raspberry Pi or other Linux devices, run the following commands. To make these changes permanent, edit `/etc/sysctl.conf`
-
-   ```shell
-   sudo sysctl net.ipv4.tcp_wmem="1500 1500 1500"
-   sudo sysctl net.ipv4.tcp_rmem="1500 1500 1500"
-   ```
-
-@warning These commands can severely impact other network functionality. Run `sudo sysctl net.ipv4.tcp_wmem` and `sudo sysctl net.ipv4.tcp_rmem` to get the default settings so they can be restored.
+- [Linux Gateway (RF24Gateway + TUN/TAP)](gateway-linux.md)
 
 ## Arduino
 
