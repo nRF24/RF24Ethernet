@@ -212,7 +212,7 @@ protected:
         volatile uint32_t clientTimer = millis();
         volatile uint32_t closeTimer = millis();
         volatile uint32_t identifier = 0;
-    };
+    } __attribute__((packed));
 
     /** Connection states */
     static ConnectState* gState[2];

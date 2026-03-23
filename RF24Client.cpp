@@ -183,7 +183,7 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
     if (p == nullptr) {
         if (state != nullptr) {
             state->connected = false;
-            //state->finished = true; // Break the loop
+            state->finished = true; // Break the loop
         }
         if (tpcb != nullptr) {
             if (tcp_close(tpcb) != ERR_OK) {
@@ -667,21 +667,23 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
 #else
 
     if (myPcb != nullptr) {
-        if (myPcb->state == ESTABLISHED || myPcb->state == SYN_SENT || myPcb->state == SYN_RCVD) {
-
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            if (Ethernet.useCoreLocking) {
-                ETHERNET_APPLY_LOCK();
-            }
+        if (Ethernet.useCoreLocking) {
+            ETHERNET_APPLY_LOCK();
+        }
     #endif
-            tcp_abort(myPcb);
-            myPcb = NULL;
+        if (myPcb->state == ESTABLISHED || myPcb->state == SYN_SENT || myPcb->state == SYN_RCVD) {
+            if (tcp_close(myPcb) != ERR_OK) {
+                tcp_abort(myPcb);
+            }
+            //myPcb = NULL;
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
             if (Ethernet.useCoreLocking) {
                 ETHERNET_REMOVE_LOCK();
             }
     #endif
             Ethernet.update();
+            return ERR_CLSD;
         }
         else {
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
@@ -727,17 +729,11 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     //tcp_poll(myPcb, clientTimeouts, 30);
 
     err_t err = ERR_OK;
-    ip4_addr_t myIp;
-    #if defined ARDUINO_ARCH_ESP32 || defined ARDUINO_ARCH_ESP8266 || defined ARDUINO_ARCH_RP2040 || defined ARDUINO_ARCH_RP2350
-    IP4_ADDR(&myIp, ip[0], ip[1], ip[2], ip[3]);
-    ip_addr_t generic_addr;
-    ip_addr_copy_from_ip4(generic_addr, myIp);
-    err = tcp_connect(myPcb, &generic_addr, port, on_connected);
-    #else
-    IP4_ADDR(&myIp, ip[0], ip[1], ip[2], ip[3]);
-    // Start non-blocking connection
+
+    ip_addr_t myIp;
+    IP_ADDR4(&myIp, ip[0], ip[1], ip[2], ip[3]);
+
     err = tcp_connect(myPcb, &myIp, port, on_connected);
-    #endif
 
     if (err != ERR_OK || gState[activeState]->result != ERR_OK) {
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
@@ -745,6 +741,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
             ETHERNET_REMOVE_LOCK();
         }
     #endif
+
         stop();
         return ERR_CLSD;
     }
@@ -754,6 +751,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
         ETHERNET_REMOVE_LOCK();
     }
     #endif
+
     uint32_t timeout = millis() + 5000;
     // Simulate blocking by looping until the callback sets 'finished'
     while (!gState[activeState]->finished && millis() < timeout) {
@@ -873,7 +871,7 @@ void RF24Client::_stop()
 {
     if (myPcb != nullptr) {
 
-        if (myPcb->state == ESTABLISHED || myPcb->state == SYN_SENT || myPcb->state == SYN_RCVD) {
+        if (myPcb->state != CLOSED) {
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
             if (Ethernet.useCoreLocking) {
