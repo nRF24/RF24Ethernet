@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.0.3] - 2026-03-23
+
+### <!-- 3 --> 🗑️ Removed
+
+- Latest conn fixes by \@TMRh20 in [#62](https://github.com/nRF24/RF24Ethernet/pull/62)
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Fixes for ESP8266 w/WiFi & MQTT etc by \@TMRh20 in [#64](https://github.com/nRF24/RF24Ethernet/pull/64)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Update readme with a couple charts by \@TMRh20 in [#63](https://github.com/nRF24/RF24Ethernet/pull/63)
+
+[2.0.3]: https://github.com/nRF24/RF24Ethernet/compare/v2.0.2...v2.0.3
+
+Full commit diff: [`v2.0.2...v2.0.3`][2.0.3]
+
 ## [2.0.2] - 2026-03-18
 
 ### <!-- 3 --> 🗑️ Removed
@@ -15,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### <!-- 9 --> 🗨️ Changed
 
 - Examples update - Add connection timeout by \@TMRh20 in [#60](https://github.com/nRF24/RF24Ethernet/pull/60)
+- Bump version to v2.0.2 by \@TMRh20 in [`da83778`](https://github.com/nRF24/RF24Ethernet/commit/da8377867b68c465b9ca4910058c3a0d54d8359b)
 
 [2.0.2]: https://github.com/nRF24/RF24Ethernet/compare/v2.0.1...v2.0.2
 
