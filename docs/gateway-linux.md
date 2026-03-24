@@ -2,7 +2,7 @@
 
 This project is typically used with a **Linux gateway** (often a Raspberry Pi) to bridge the RF24 mesh/network to a normal IP network using a **TUN/TAP** interface.
 
-If you only want node-to-node demos, start with the `Getting_Started_*_Mesh` examples first. If you want to reach services on your LAN (or run services on RF24 nodes and access them from LAN clients), set up the gateway.
+If you only want node-to-node demos, start with the `Headless` examples first. If you want to reach services on your LAN (or run services on RF24 nodes and access them from LAN clients), set up the gateway.
 
 ---
 

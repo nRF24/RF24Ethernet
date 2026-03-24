@@ -16,20 +16,32 @@ Gateway setup is documented here:
 
 ## Arduino
 
-1. For Arduino devices, use the Arduino Library Manager to install the RF24Ethernet library and all related dependencies
-2. For some devices with >=50MHz processors, the lwIP IP stack needs to be installed from the Library Manager as well.
-3. Open the included Getting_Started_SimpleServer or Getting_Started_SimpleClient example
-4. Configure your chosen CE and CS pins for the radio connection.
-5. Configure the IP address according to your preferences, (last octet must == RF24Mesh nodeID) with the gateway set to the chosen IP of the RPi or other device.
-6. Pick 1 from these 2 options:
+1. Install **RF24Ethernet** from the Arduino Library Manager. This should automatically install **RF24**, **RF24Network** and **RF24Mesh**.
+2. For most devices with processors **≥ 50MHz**, the **Arduino lwIP** library needs to be installed from the Arduino Library Manager for proper performance and stability.  
+   **ESP32/ESP8266-based boards already use lwIP for WiFi**, so the separate **lwIP Arduino library is not required** on those platforms & similar.
+3. **Required:** Configure your radio **CE/CSN pin assignments** to match your wiring/board/shield.  
+   **Optional:** Adjust other RF24/RF24Network/RF24Mesh settings as needed (channel, data rate, nodeID, etc.).
 
-   1. Connect into your nodes web-server at `http://ip-of-your-node:1000` from the RPi or configure the client sketch to connect to a server
-running on the Raspberry Pi. Users should also be able to ping the IP of the node from the Raspberry Pi.
+#### 4a. Running with a Gateway
 
-   2. Run the examples from the Headless example directory on 2 or more devices.
+4. Load one of the included examples:
+   - `RF24Ethernet/examples/Getting_Started_SimpleClient/Getting_Started_SimpleClient.ino`
+   - `RF24Ethernet/examples/Getting_Started_SimpleServer/Getting_Started_SimpleServer.ino`
+5. Configure the node’s IP address and set the **last octet** to match its **nodeID**. For example, nodeID `3` should be assigned `10.10.2.3`.  
+   - Set the **gateway** to the chosen IP of the RPi running RF24Gateway (for example `10.10.2.2`).
+6. Upload the example sketch to your Arduino and verify connectivity:
+   - With `SimpleServer`, browse to `http://10.10.2.3:1000` (adjust IP/nodeID as needed).
+   - With `SimpleClient`, configure the server IP as needed and observe Serial output.
 
-@note To minimize memory usage on Arduino, edit RF24Network_config.h with a text editor, and uncomment `#define DISABLE_USER_PAYLOADS`. This
-will disable standard RF24Network messages, and only allow external data, such as TCP/IP information. Remember to comment for normal operation!
+#### 4b. Running headless (no Gateway / no RPi)
+
+4. If you are **not** running a gateway (for example, no RPi running RF24Gateway), use the headless examples found under `/examples/Headless/`:
+   - `RF24Ethernet/examples/Headless/InteractiveServer_Mesh_Headless/InteractiveServer_Mesh_Headless.ino`
+   - `RF24Ethernet/examples/Headless/SimpleClient_Mesh_Headless/SimpleClient_Mesh_Headless.ino`
+5. Upload the sketches and follow the prompts/output in the Serial Monitor to interact with the nodes (no gateway required).
+
+**Memory-constrained Arduinos:**  
+Uncomment `#define DISABLE_USER_PAYLOADS` in `RF24Network_config.h` to save memory (recommended for RF24Ethernet, but not for typical RF24Network “user payload” use).
 
 ## Non-Raspberry Pi (Linux etc) Devices
 
@@ -37,39 +49,6 @@ Arduino can also function as a gateway for any Linux machine or PC/MAC that supp
 
 See the SLIP_Gateway and SLIP_InteractiveServer
 examples for usage without the need for a Raspberry Pi.
-
-## Accessing External Systems: Forwarding and Routing
-
-In order to give your network or nodes access to your network or the internet beyond the RPi, it needs to be configured to route traffic
-between the networks.
-
-1. Run
-
-   ```shell
-   sudo sysctl -w net.ipv4.ip_forward=1
-   ```
-
-   to allow the RPi to forward requests between the network interfaces
-2. Run
-
-   ```shell
-   sudo iptables -t nat -A POSTROUTING -j MASQUERADE
-   ```
-
-   to allow the RPi to perform NAT between the network interfaces
-
-> [!note]
-> This configuration is generally for initial testing only. Users may also need to add a static route to their local machine, or configure port forwarding on the RPi.
->
-> See the following links for more information on configuring and using IPTables:
->
-> - <http://www.karlrupp.net/en/computer/nat_tutorial>
-> - <http://serverfault.com/questions/326493/basic-iptables-nat-port-forwarding>
-
-<!--  -->
-
-> [!warning]
-> **Note:** Users are responsible to manage further routing rules along with their IP traffic in order to prevent unauthorized access.
 
 ## Advanced (uIP) Configuration and Info
 
