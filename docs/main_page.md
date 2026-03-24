@@ -40,7 +40,7 @@ digraph RF24EthernetOverview {
   // Thick connectors like the original image, but softened for dark theme
   edge [
     dir=none,
-    color="#E6EDF3",
+    color="#808080",
     penwidth=10
   ];
 
@@ -54,7 +54,7 @@ digraph RF24EthernetOverview {
 
   // --- Top row (3 main blocks) ---
   devices_top [
-    label="RF24 Devices/Sensor\nNetwork\n\nArduino, AVR, Raspberry\nPi, ARM/Linux, etc with\nnrf24l01 radio\nmodules",
+    label="RF24 or RF52 Devices/Sensor\nNetwork\n\nArduino, AVR, Raspberry\nPi, ARM/Linux, etc with\nnrf24l01 or nrf52x radio\nmodules",
     width=3.4, height=1.5,
     fillcolor="#1C2A44",      // deep blue-gray base
     color="#4493F8",          // note highlight border
