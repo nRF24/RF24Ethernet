@@ -9,8 +9,6 @@ build:
   os: "ubuntu-22.04"
   apt_packages:
     - graphviz
-    - graphviz-dev
-    - libgraphviz-dev
     - libclang1-12
     - libclang-cpp12
   tools:

@@ -39,6 +39,7 @@ jobs:
     uses: nRF24/.github/.github/workflows/build_docs.yaml@main
     with:
       doxygen-version: '1.15.0'
+      install-graphviz: true
 
   deploy:
     needs: [build]
