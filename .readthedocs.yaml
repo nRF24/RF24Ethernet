@@ -14,17 +14,10 @@ build:
   tools:
     python: "3"
   commands:
-    - python3 -V
     - echo "PATH=$PATH"
-    - which dot || true
-    - dot -V || true
+    - ls -l /usr/bin/dot || true
+    - command -v dot || true
     - dpkg -l | grep -i graphviz || true
-
-    # If dot isn't present, install it explicitly
-    - sudo apt-get update
-    - sudo apt-get install -y graphviz
-    - which dot
-    - dot -V
 
     # Install doxygen from source distributions (conda forge does not keep up-to-date doxygen releases)
     - >
