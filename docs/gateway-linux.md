@@ -67,7 +67,7 @@ RF24Gateway can create the interface automatically when running as `root`. If ru
 sudo ip tuntap add dev tun_nrf24 mode tun user pi multi_queue
 
 # Assign the gateway-side IP for the RF24 subnet
-sudo ip addr add 10.1.2.1/24 dev tun_nrf24
+sudo ip addr add 10.10.2.2/24 dev tun_nrf24
 
 # Bring it up
 sudo ip link set tun_nrf24 up
@@ -78,7 +78,7 @@ Verify:
 ```bash
 ip addr show tun_nrf24
 ip link show tun_nrf24
-ip route | grep 10.1.2.0/24
+ip route | grep 10.10.2.0/24
 ```
 
 ---
@@ -109,14 +109,14 @@ ip route
 
 You should see something like:
 
-- `10.1.2.0/24 dev tun_nrf24  proto kernel  scope link  src 10.1.2.1`
+- `10.10.2.0/24 dev tun_nrf24  proto kernel  scope link  src 10.10.2.2`
 
 If your LAN clients need to reach RF24 nodes, you have two common options:
 
 ### Option A: Add a static route on your router (preferred)
 Add a route on your LAN router:
 
-- Destination: `10.1.2.0/24`
+- Destination: `10.10.2.0/24`
 - Next hop: `<gateway-lan-ip>` (the Raspberry Pi’s IP on your LAN)
 
 This avoids NAT and keeps the network transparent.
@@ -127,7 +127,7 @@ This is easier when you cannot change the router.
 Example (replace `wlan0` with your LAN-facing interface):
 
 ```bash
-sudo iptables -t nat -A POSTROUTING -s 10.1.2.0/24 -o wlan0 -j MASQUERADE
+sudo iptables -t nat -A POSTROUTING -s 10.10.2.0/24 -o wlan0 -j MASQUERADE
 ```
 
 If you want this to persist, use your distro’s preferred firewall persistence mechanism (e.g., `iptables-persistent`, `nftables`, or a systemd unit).
@@ -153,14 +153,14 @@ sudo sysctl net.ipv4.tcp_rmem="1500 1500 1500"
 Ping a node IP:
 
 ```bash
-ping 10.1.2.2
+ping 10.10.2.3
 ```
 
 ### From a LAN machine (if routing is configured)
 Ping the same node:
 
 ```bash
-ping 10.1.2.2
+ping 10.10.2.3
 ```
 
 ### Watch traffic on the tunnel
