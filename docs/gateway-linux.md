@@ -144,7 +144,8 @@ sudo sysctl net.ipv4.tcp_wmem="1500 1500 1500"
 sudo sysctl net.ipv4.tcp_rmem="1500 1500 1500"
 ```
 
-> Warning: These commands can severely impact other network functionality. Run `sudo sysctl net.ipv4.tcp_wmem` and `sudo sysctl net.ipv4.tcp_rmem` first to record defaults so they can be restored.
+> [!warning]
+> These commands can severely impact other network functionality. Run `sudo sysctl net.ipv4.tcp_wmem` and `sudo sysctl net.ipv4.tcp_rmem` first to record defaults so they can be restored.
 
 ---
 
