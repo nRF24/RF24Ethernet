@@ -22,8 +22,9 @@ If you only want node-to-node demos, start with the `Headless` examples first. I
 - A compatible RF24 radio connected to the Linux machine (SPI wiring + stable power)
 - This repo’s Arduino sketches running on nodes (RF24 + RF24Network + RF24Mesh + RF24Ethernet)
 
-> Note: The gateway software is provided by [nRF24/RF24Gateway](https://github.com/nRF24/RF24Gateway).
-> Docs: https://nrf24.github.io/RF24Gateway/
+> [!note]
+> The gateway software is provided by [nRF24/RF24Gateway](https://github.com/nRF24/RF24Gateway).
+> Docs: <https://nrf24.github.io/RF24Gateway/>
 
 ---
 
