@@ -13,26 +13,23 @@ build:
     - libclang-cpp12
   tools:
     python: "3"
-  commands:
-    - echo "PATH=$PATH"
-    - ls -l /usr/bin/dot || true
-    - command -v dot || true
-    - dpkg -l | grep -i graphviz || true
-
-    # Install doxygen from source distributions (conda forge does not keep up-to-date doxygen releases)
-    - >
-      DOXYGEN_VERSION="1.15.0" &&
-      RELEASE_TITLE=$(echo ${DOXYGEN_VERSION} | tr '.' '_') &&
-      mkdir .doxygen && cd .doxygen &&
-      curl -L "https://github.com/doxygen/doxygen/releases/download/Release_${RELEASE_TITLE}/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz" --output doxygen.tar.gz &&
-      gunzip doxygen.tar.gz &&
-      tar xf doxygen.tar &&
-      mv doxygen-$DOXYGEN_VERSION/bin/doxygen ./
-    # get lib version & overwrite Doxyfile values
-    - python3 .github/doxygen.py
-    # run doxygen
-    - cd docs && ../.doxygen/doxygen
-    # copy output to RTD output path for HTML files
-    - ls -R docs/html/
-    - mkdir -p ${READTHEDOCS_OUTPUT}
-    - mv docs/html/ "${READTHEDOCS_OUTPUT}"
+  jobs:
+    build:
+      html:
+        # Install doxygen from source distributions (conda forge does not keep up-to-date doxygen releases)
+        - >
+          DOXYGEN_VERSION="1.15.0" &&
+          RELEASE_TITLE=$(echo ${DOXYGEN_VERSION} | tr '.' '_') &&
+          mkdir .doxygen && cd .doxygen &&
+          curl -L "https://github.com/doxygen/doxygen/releases/download/Release_${RELEASE_TITLE}/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz" --output doxygen.tar.gz &&
+          gunzip doxygen.tar.gz &&
+          tar xf doxygen.tar &&
+          mv doxygen-$DOXYGEN_VERSION/bin/doxygen ./
+        # get lib version & overwrite Doxyfile values
+        - python3 .github/doxygen.py
+        # run doxygen
+        - cd docs && ../.doxygen/doxygen
+        # copy output to RTD output path for HTML files
+        - ls -R docs/html/
+        - mkdir -p ${READTHEDOCS_OUTPUT}
+        - mv docs/html/ "${READTHEDOCS_OUTPUT}"
