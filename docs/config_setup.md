@@ -17,8 +17,8 @@ Gateway setup is documented here:
 ## Arduino
 
 1. Install **RF24Ethernet** from the Arduino Library Manager. This should automatically install **RF24**, **RF24Network** and **RF24Mesh**.
-2. For most devices with processors **≥ 50MHz**, the **Arduino lwIP** library needs to be installed from the Arduino Library Manager for proper performance and stability.  
-   **ESP32/ESP8266-based boards already use lwIP for WiFi**, so the separate **lwIP Arduino library is not required** on those platforms & similar.
+2. When **USE_LWIP** is enabled (see `RF24BoardConfig.h`), RF24Ethernet uses the lwIP stack (this is selected automatically when `F_CPU` is undefined or ≥ 50&nbsp;MHz). In that case, install the **Arduino lwIP** library from the Arduino Library Manager **only** on platforms that do **not** already provide lwIP internally (for example, most Ethernet‑shield based boards using `ETHERNET_USING_LWIP_ARDUINO`).  
+   Platforms with a built‑in lwIP stack such as **ESP32/ESP8266-based boards** already use lwIP for WiFi, so the separate **lwIP Arduino** library is **not required** on those platforms and similar SoCs.
 3. **Required:** Configure your radio **CE/CSN pin assignments** to match your wiring/board/shield.  
    **Optional:** Adjust other RF24/RF24Network/RF24Mesh settings as needed (channel, data rate, nodeID, etc.).
 
