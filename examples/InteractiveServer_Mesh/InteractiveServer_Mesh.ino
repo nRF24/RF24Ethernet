@@ -132,9 +132,9 @@ void loop() {
     client.flush();
 
     switch (pageReq) {
-      case 2:  stats_page(client);   break;
-      case 3:  credits_page(client); break;
-      default: main_page(client);    break;
+      case 2: stats_page(client); break;
+      case 3: credits_page(client); break;
+      default: main_page(client); break;
     }
 
     client.stop();
