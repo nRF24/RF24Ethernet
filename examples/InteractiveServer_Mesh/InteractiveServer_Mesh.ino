@@ -108,7 +108,7 @@ void loop() {
           if(client.available() >= 2){
             client.readBytes(requestBuffer, 2);
           }
-          break; 
+          break;
         }
       }
     }
