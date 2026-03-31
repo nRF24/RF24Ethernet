@@ -108,9 +108,11 @@ void loop() {
     if (strncmp(requestBuffer, "ON", 2) == 0) {
       led_state = 1;
       pageReq = 1;
+      digitalWrite(LED_PIN, led_state);
     } else if (strncmp(requestBuffer, "OF", 2) == 0) {
       led_state = 0;
       pageReq = 1;
+      digitalWrite(LED_PIN, led_state);
     } else if (strncmp(requestBuffer, "ST", 2) == 0) {
       pageReq = 2;
     } else if (strncmp(requestBuffer, "CR", 2) == 0) {
