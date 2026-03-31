@@ -95,7 +95,6 @@ void loop() {
     uint8_t pageReq = 0;
     char requestBuffer[20];
     memset(requestBuffer, 0, sizeof(requestBuffer));
-    
     uint16_t bytesRead = 0;
     uint32_t timeout = millis();
 
