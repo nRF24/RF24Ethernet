@@ -126,7 +126,7 @@ void loop() {
     } else if (strncmp(requestBuffer, "CR", 2) == 0) {
       pageReq = 3;
     } else {
-      pageReq = 4; // Default to main
+      pageReq = 4;  // Default to main
     }
 
     client.flush();
