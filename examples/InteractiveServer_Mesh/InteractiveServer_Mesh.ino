@@ -104,8 +104,8 @@ void loop() {
     while (client.connected() && (millis() - timeout < 100)) {
       if (client.available()) {
         char c = client.read();
-        if (c == '/') { 
-          if(client.available() >= 2){
+        if (c == '/') {
+          if (client.available() >= 2) {
             client.readBytes(requestBuffer, 2);
           }
           break;
