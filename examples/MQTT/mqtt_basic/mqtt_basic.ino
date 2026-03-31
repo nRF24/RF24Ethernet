@@ -124,11 +124,8 @@ void loop() {
   // Every second, report to the MQTT server the Node ID of this node
   if (client.connected() && millis() - pub_timer > 3000) {
     pub_timer = millis();
-    char str[4];
-    itoa(ip[3], str, 10);
-    char str1[] = "Node      \r\n";
-    memcpy(&str1[5], &str, strlen(str));
-
-    client.publish("outTopic", str1);
+    char msg[32];
+    snprintf(msg, sizeof(msg), "Node %u\r\n", (uint8_t)ip[3]);
+    client.publish("outTopic", msg);
   }
 }
