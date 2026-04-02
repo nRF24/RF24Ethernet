@@ -45,7 +45,7 @@ RF24EthernetClass RF24Ethernet(radio, network, mesh);
 IPAddress ip(10, 10, 2, 4);
 IPAddress gateway(10, 10, 2, 2);  //Specify the gateway in case different from the server
 IPAddress server(10, 10, 2, 2);   //The ip of the MQTT server
-char clientID[] = { "arduinoClient   " };
+char clientID[20];
 
 void messageReceived(MQTTClient* client, char topic[], char payload[], int length) {
   Serial.println("incoming: ");
@@ -91,9 +91,7 @@ void setup() {
   }
 
   //Convert the last octet of the IP address to an identifier used
-  char str[4];
-  itoa(ip[3], str, 10);
-  memcpy(&clientID[13], &str, strlen(str));
+  snprintf(clientID, sizeof(clientID), "arduinoClient%u", (uint8_t)ip[3]);
   Serial.println(clientID);
 
   client.begin(server, ethClient);
@@ -124,11 +122,8 @@ void loop() {
   // Every second, report to the MQTT server the Node ID of this node
   if (client.connected() && millis() - pub_timer > 3000) {
     pub_timer = millis();
-    char str[4];
-    itoa(ip[3], str, 10);
-    char str1[] = "Node      \r\n";
-    memcpy(&str1[5], &str, strlen(str));
-
-    client.publish("outTopic", str1);
+    char msg[32];
+    snprintf(msg, sizeof(msg), "Node %u\r\n", (uint8_t)ip[3]);
+    client.publish("outTopic", msg);
   }
 }
