@@ -265,7 +265,6 @@ private:
 
 #endif
 
-
 #if USE_LWIP < 1
     IPAddress _dnsServerAddress;
 #else
