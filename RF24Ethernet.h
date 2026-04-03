@@ -45,7 +45,7 @@ extern "C" {
 /**************************************/
 
 #include "RF24Ethernet_config.h"
-#if defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_NRF52840) || defined(ARDUINO_ARCH_NRF52833)
+#if defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_NRF52840) || defined(ARDUINO_ARCH_NRF52833) || defined ARDUINO_NRF54L15
     #include <nrf_to_nrf.h>
 #endif
 #include <RF24.h>
@@ -210,6 +210,12 @@ public:
 
     uint32_t networkCorruption;
 
+#if defined NRF52_RADIO_LIBRARY
+    nrf_to_nrf& radio;
+#else
+    RF24& radio;
+#endif
+
 #if !defined NRF52_RADIO_LIBRARY
     RF24Network& network;
     #if !defined(RF24_TAP) // Using RF24Mesh
@@ -259,11 +265,6 @@ private:
 
 #endif
 
-#if defined NRF52_RADIO_LIBRARY
-    nrf_to_nrf& radio;
-#else
-    RF24& radio;
-#endif
 
 #if USE_LWIP < 1
     IPAddress _dnsServerAddress;
