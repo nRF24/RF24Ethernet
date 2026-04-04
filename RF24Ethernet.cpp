@@ -534,7 +534,7 @@ void RF24EthernetClass::EthRX_Handler(const uint8_t* ethFrame, const uint16_t le
 void RF24EthernetClass::tick()
 {
 
-#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_NRF52) || defined ARDUINO_ARCH_RP2350
+#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_NRF52) || defined ARDUINO_ARCH_RP2350 || defined ARDUINO_NRF54L15
     yield();
 #elif defined(ARDUINO_ARCH_ESP32)
     const TickType_t xDelay = pdMS_TO_TICKS(1);
