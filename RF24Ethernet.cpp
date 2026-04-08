@@ -644,8 +644,8 @@ void RF24EthernetClass::tick()
     }
 
     if (result == EXTERNAL_DATA_TYPE) {
-        if (RF24Ethernet.network.frag_ptr->message_size > 28) {
-            uint16_t len = RF24Ethernet.network.frag_ptr->message_size;
+        uint16_t len = RF24Ethernet.network.frag_ptr->message_size;
+        if (len > 28) {
             memcpy(networkBuffer, RF24Ethernet.network.frag_ptr->message_buffer, len);
             Ethernet.EthRX_Handler(networkBuffer, len);
             IF_ETH_DEBUG_L1(Serial.println("Net: In"););
