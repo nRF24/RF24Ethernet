@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.1.0] - 2026-04-08
+
+### <!-- 3 --> 🗑️ Removed
+
+- Test doc changes: Add new section for the Gateway by \@TMRh20 in [#65](https://github.com/nRF24/RF24Ethernet/pull/65)
+- Fixes for data handling by \@TMRh20 in [#71](https://github.com/nRF24/RF24Ethernet/pull/71)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Update EthernetMermaidDiagram.svg by \@TMRh20 in [#68](https://github.com/nRF24/RF24Ethernet/pull/68)
+- Cleanup for the server & MQTT examples by \@TMRh20 in [#69](https://github.com/nRF24/RF24Ethernet/pull/69)
+- NRF54l15 support by \@TMRh20 in [#70](https://github.com/nRF24/RF24Ethernet/pull/70)
+
+[2.1.0]: https://github.com/nRF24/RF24Ethernet/compare/v2.0.3...v2.1.0
+
+Full commit diff: [`v2.0.3...v2.1.0`][2.1.0]
+
 ## [2.0.3] - 2026-03-23
 
 ### <!-- 3 --> 🗑️ Removed
@@ -19,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### <!-- 9 --> 🗨️ Changed
 
 - Update readme with a couple charts by \@TMRh20 in [#63](https://github.com/nRF24/RF24Ethernet/pull/63)
+- Bump version to v2.0.3 by \@TMRh20 in [`4623c0e`](https://github.com/nRF24/RF24Ethernet/commit/4623c0ebd2ccaa76c1364c1dbb4759507576f68c)
 
 [2.0.3]: https://github.com/nRF24/RF24Ethernet/compare/v2.0.2...v2.0.3
 
