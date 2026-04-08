@@ -246,7 +246,6 @@ public:
     };
     static EthQueue RXQueue;
 
-    typedef uint32_t err_t;
     static bool isUnicast(const uint8_t frame);
     /** Used internally to initialize incoming data queue */
     static void initRXQueue(EthQueue* RXQueue);

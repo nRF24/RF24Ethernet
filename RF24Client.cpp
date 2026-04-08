@@ -207,15 +207,20 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
         return ERR_OK;
     }
 
-    const uint8_t* data = static_cast<const uint8_t*>(p->payload);
-
+    bool id = state->stateActiveID;
     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Copy data to "); Serial.println(state->stateActiveID););
-    if (dataSize[state->stateActiveID] + p->len < INCOMING_DATA_SIZE) {
-        memcpy(&incomingData[state->stateActiveID][dataSize[state->stateActiveID]], data, p->len);
-        dataSize[state->stateActiveID] += p->len;
-    }
-    else {
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: srecv - Out of incoming buffer space"););
+
+    struct pbuf* q = p;
+    while (q != nullptr) {
+        const uint8_t* data = static_cast<const uint8_t*>(q->payload);
+        if (dataSize[id] + q->len < INCOMING_DATA_SIZE) {
+            memcpy(&incomingData[id][dataSize[id]], data, q->len);
+            dataSize[id] += q->len;
+        }
+        else {
+            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: srecv - Out of incoming buffer space"););
+        }
+        q = q->next;
     }
 
     if (tpcb != nullptr) {
@@ -265,13 +270,19 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
     if (state != nullptr) {
         state->clientTimer = millis();
     }
-    const uint8_t* data = static_cast<const uint8_t*>(p->payload);
-    if (dataSize[activeState] + p->len < INCOMING_DATA_SIZE) {
-        memcpy(&incomingData[activeState][dataSize[activeState]], data, p->len);
-        dataSize[activeState] += p->len;
-    }
-    else {
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: recv - Out of incoming buffer space"););
+
+    bool id = state->stateActiveID;
+    struct pbuf* q = p;
+    while (q != nullptr) {
+        const uint8_t* data = static_cast<const uint8_t*>(q->payload);
+        if (dataSize[id] + q->len < INCOMING_DATA_SIZE) {
+            memcpy(&incomingData[id][dataSize[id]], data, q->len);
+            dataSize[id] += q->len;
+        }
+        else {
+            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: recv - Out of incoming buffer space"););
+        }
+        q = q->next;
     }
 
     if (tpcb != nullptr) {
@@ -500,6 +511,7 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
         tcp_poll(tpcb, closed_port, 5);
         actState = !activeState;
         gState[actState]->connected = false;
+        gState[actState]->backlogWasAccepted = false;
     }
     else {
         myPcb = tpcb;
@@ -507,6 +519,7 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
         activeState = !activeState;
         actState = activeState;
         gState[actState]->connected = true;
+        gState[actState]->backlogWasAccepted = true;
     }
 
     dataSize[actState] = 0;
@@ -517,7 +530,6 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
     gState[actState]->finished = false;
     gState[actState]->sConnectionTimeout = serverConnectionTimeout;
     gState[actState]->waiting_for_ack = false;
-    gState[actState]->backlogWasAccepted = false;
     gState[actState]->backlogWasClosed = false;
     gState[actState]->connectTimestamp = millis();
     gState[actState]->serverTimer = millis();
@@ -1411,8 +1423,6 @@ void RF24Client::flush()
     #endif
     }
 #else
-    while (available()) {
-        read();
-    }
+    dataSize[activeState] = 0;
 #endif
 }
