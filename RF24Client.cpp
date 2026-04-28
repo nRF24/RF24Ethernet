@@ -224,7 +224,7 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
     }
 
     if (tpcb != nullptr) {
-        tcp_recved(tpcb, p->len);
+        tcp_recved(tpcb, p->tot_len);
     }
     if (p) {
         pbuf_free(p);
@@ -286,7 +286,7 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
     }
 
     if (tpcb != nullptr) {
-        tcp_recved(tpcb, p->len);
+        tcp_recved(tpcb, p->tot_len);
     }
     if (p) {
         pbuf_free(p);
