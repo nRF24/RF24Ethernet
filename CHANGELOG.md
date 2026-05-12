@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.1.1] - 2026-05-12
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Fix slow memory leak by \@TMRh20 in [#74](https://github.com/nRF24/RF24Ethernet/pull/74)
+
+[2.1.1]: https://github.com/nRF24/RF24Ethernet/compare/v2.1.0...v2.1.1
+
+Full commit diff: [`v2.1.0...v2.1.1`][2.1.1]
+
 ## [2.1.0] - 2026-04-08
 
 ### <!-- 3 --> 🗑️ Removed
@@ -18,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update EthernetMermaidDiagram.svg by \@TMRh20 in [#68](https://github.com/nRF24/RF24Ethernet/pull/68)
 - Cleanup for the server & MQTT examples by \@TMRh20 in [#69](https://github.com/nRF24/RF24Ethernet/pull/69)
 - NRF54l15 support by \@TMRh20 in [#70](https://github.com/nRF24/RF24Ethernet/pull/70)
+- Bump version to v2.1.0 by \@TMRh20 in [`6630e84`](https://github.com/nRF24/RF24Ethernet/commit/6630e843d05d60984bf6fa6f0101276c6a6a6a53)
 
 [2.1.0]: https://github.com/nRF24/RF24Ethernet/compare/v2.0.3...v2.1.0
 
