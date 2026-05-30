@@ -940,38 +940,59 @@ size_t RF24Client::_write(uint8_t* data, const uint8_t* buf, size_t size)
 #if USE_LWIP < 1
     size_t total_written = 0;
     size_t payloadSize = rf24_min(size, UIP_TCP_MSS);
+    uint32_t timeout = millis() + 5000;
 
 test2:
 
     Ethernet.update();
-    if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)) && u->state & (UIP_CLIENT_CONNECTED))
-    {
 
+    if (millis() > timeout)
+    {
+        if (u) {
+            u->hold = false;
+        }
+        return 0;
+    }
+
+    if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)) && (u->state & UIP_CLIENT_CONNECTED))
+    {
         if (u->out_pos + payloadSize > UIP_TCP_MSS || u->hold)
         {
             goto test2;
         }
 
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println(); Serial.print(millis()); Serial.print(F(" UIPClient.write: writePacket(")); Serial.print(u->packets_out); Serial.print(F(") pos: ")); Serial.print(u->out_pos); Serial.print(F(", buf[")); Serial.print(size - total_written); Serial.print(F("]: '")); Serial.write((uint8_t*)buf + total_written, payloadSize); Serial.println(F("'")););
+        IF_RF24ETHERNET_DEBUG_CLIENT(
+            Serial.println();
+            Serial.print(millis());
+            Serial.print(F(" UIPClient.write: writePacket("));
+            Serial.print(u->packets_out);
+            Serial.print(F(") pos: "));
+            Serial.print(u->out_pos);
+            Serial.print(F(", buf["));
+            Serial.print(size - total_written);
+            Serial.print(F("]: '"));
+            Serial.write((uint8_t*)buf + total_written, payloadSize);
+            Serial.println(F("'")););
 
         memcpy(u->myData + u->out_pos, buf + total_written, payloadSize);
         u->packets_out = 1;
         u->out_pos += payloadSize;
-
         total_written += payloadSize;
 
         if (total_written < size)
         {
             size_t remain = size - total_written;
             payloadSize = rf24_min(remain, UIP_TCP_MSS);
-
-            // RF24EthernetClass::update();
             goto test2;
         }
+
         u->hold = false;
         return u->out_pos;
     }
-    u->hold = false;
+
+    if (u) {
+        u->hold = false;
+    }
     return 0;
 #else
 
@@ -1074,10 +1095,22 @@ void serialip_appcall(void)
                 u->state &= ~UIP_CLIENT_RESTART;
                 u->windowOpened = false;
                 u->restartTime = millis();
-                memcpy(&u->myData[u->in_pos + u->dataCnt], uip_appdata, uip_datalen());
-                u->dataCnt += uip_datalen();
 
-                u->packets_in = 1;
+                uint16_t writePos = u->in_pos + u->dataCnt;
+                uint16_t incomingLen = uip_datalen();
+
+                if (writePos <= OUTPUT_BUFFER_SIZE && incomingLen <= (OUTPUT_BUFFER_SIZE - writePos))
+                {
+                    memcpy(&u->myData[writePos], uip_appdata, incomingLen);
+                    u->dataCnt += incomingLen;
+                    u->packets_in = 1;
+                }
+                else
+                {
+                    IF_RF24ETHERNET_DEBUG_CLIENT(
+                        Serial.println(F("UIPClient RX overflow, closing connection")););
+                    u->state |= UIP_CLIENT_CLOSE;
+                }
             }
             goto finish;
         }
@@ -1290,7 +1323,11 @@ int RF24Client::read(uint8_t* buf, size_t size)
         {
             return -1;
         }
-
+        if (data->in_pos > OUTPUT_BUFFER_SIZE || data->dataCnt > OUTPUT_BUFFER_SIZE || (data->in_pos + data->dataCnt) > OUTPUT_BUFFER_SIZE)
+        {
+            data->state = 0;
+            return -1;
+        }
         size = rf24_min(data->dataCnt, size);
         memcpy(buf, &data->myData[data->in_pos], size);
         data->dataCnt -= size;
