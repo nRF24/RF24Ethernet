@@ -1325,7 +1325,9 @@ int RF24Client::read(uint8_t* buf, size_t size)
         }
         if (data->in_pos > OUTPUT_BUFFER_SIZE || data->dataCnt > OUTPUT_BUFFER_SIZE || (data->in_pos + data->dataCnt) > OUTPUT_BUFFER_SIZE)
         {
-            data->state = 0;
+            data->state |= UIP_CLIENT_CLOSE;
+            data->in_pos = 0;
+            data->dataCnt = 0;
             return -1;
         }
         size = rf24_min(data->dataCnt, size);
