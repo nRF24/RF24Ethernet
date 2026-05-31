@@ -976,7 +976,7 @@ test2:
 #else
 
     bool initialActiveState = activeState;
-    size_t chunk = MAX_PAYLOAD_SIZE - 14;
+    size_t chunk = MAX_PAYLOAD_SIZE - 14; // 14 = Ethernet/link-layer header bytes reserved per frame
     size_t position = 0;
 
     while (size > chunk) {
