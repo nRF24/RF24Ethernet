@@ -679,32 +679,8 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
 #else
 
     if (myPcb != nullptr) {
-    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-        if (Ethernet.useCoreLocking) {
-            ETHERNET_APPLY_LOCK();
-        }
-    #endif
-        if (myPcb->state == ESTABLISHED || myPcb->state == SYN_SENT || myPcb->state == SYN_RCVD) {
-            if (tcp_close(myPcb) != ERR_OK) {
-                tcp_abort(myPcb);
-            }
-            //myPcb = NULL;
-    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            if (Ethernet.useCoreLocking) {
-                ETHERNET_REMOVE_LOCK();
-            }
-    #endif
-            Ethernet.update();
-            return ERR_CLSD;
-        }
-        else {
-    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            if (Ethernet.useCoreLocking) {
-                ETHERNET_REMOVE_LOCK();
-            }
-    #endif
-            myPcb = NULL;
-        }
+        _stop();
+        return ERR_CLSD;
     }
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
@@ -718,7 +694,6 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     }
 
     if (!myPcb) {
-
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
         if (Ethernet.useCoreLocking) {
             ETHERNET_REMOVE_LOCK();
@@ -728,7 +703,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     }
 
     dataSize[activeState] = 0;
-    memset(incomingData[activeState], 0, sizeof(incomingData[activeState]));
+    memset(incomingData[activeState], 0, INCOMING_DATA_SIZE);
 
     gState[activeState]->finished = false;
     gState[activeState]->connected = false;
@@ -881,26 +856,31 @@ void RF24Client::stop()
 #if USE_LWIP > 0
 void RF24Client::_stop()
 {
-    if (myPcb != nullptr) {
+    tcp_pcb* pcb = myPcb;
+    myPcb = nullptr;
 
-        if (myPcb->state != CLOSED) {
-
+    if (pcb != nullptr) {
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            if (Ethernet.useCoreLocking) {
-                ETHERNET_APPLY_LOCK();
-            }
-    #endif
-            err_t err = tcp_close(myPcb);
-            if (err != ERR_OK) {
-                tcp_abort(myPcb);
-            }
-
-    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            if (Ethernet.useCoreLocking) {
-                ETHERNET_REMOVE_LOCK();
-            }
-    #endif
+        if (Ethernet.useCoreLocking) {
+            ETHERNET_APPLY_LOCK();
         }
+    #endif
+        if (pcb->state != CLOSED) {
+            tcp_arg(pcb, NULL);
+            tcp_recv(pcb, NULL);
+            tcp_sent(pcb, NULL);
+            tcp_err(pcb, NULL);
+
+            err_t err = tcp_close(pcb);
+            if (err != ERR_OK) {
+                tcp_abort(pcb);
+            }
+        }
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+        if (Ethernet.useCoreLocking) {
+            ETHERNET_REMOVE_LOCK();
+        }
+    #endif
     }
 
     gState[activeState]->connected = false;
@@ -992,56 +972,42 @@ test2:
         return u->out_pos;
     }
     u->hold = false;
-    return -1;
+    return 0;
 #else
 
-    if (myPcb == nullptr) {
-        return ERR_CLSD;
-    }
-
     bool initialActiveState = activeState;
+    size_t chunk = MAX_PAYLOAD_SIZE - 14; // 14 = Ethernet/link-layer header bytes reserved per frame
+    size_t position = 0;
 
-    char buffer[size];
-    uint32_t position = 0;
-    uint32_t timeout1 = millis() + 3000;
-
-    while (size > MAX_PAYLOAD_SIZE - 14 && millis() < timeout1) {
-        memcpy(buffer, &buf[position], MAX_PAYLOAD_SIZE - 14);
-
-        if (myPcb == nullptr) {
-            return ERR_CLSD;
-        }
+    while (size > chunk) {
+        if (myPcb == nullptr)
+            return 0;
         gState[initialActiveState]->waiting_for_ack = true;
-        err_t write_err = blocking_write(myPcb, gState[initialActiveState], buffer, MAX_PAYLOAD_SIZE - 14);
-
+        err_t write_err = blocking_write(myPcb, gState[initialActiveState], reinterpret_cast<const char*>(&buf[position]), chunk);
         if (write_err != ERR_OK) {
             gState[initialActiveState]->result = write_err;
             gState[initialActiveState]->connected = false;
             _stop();
-            return (write_err);
+            return 0;
         }
-        position += MAX_PAYLOAD_SIZE - 14;
-        size -= MAX_PAYLOAD_SIZE - 14;
+        position += chunk;
+        size -= chunk;
         Ethernet.update();
     }
 
-    memcpy(buffer, &buf[position], size);
-
-    if (myPcb == nullptr) {
-        return ERR_CLSD;
-    }
-
+    if (myPcb == nullptr)
+        return 0;
     gState[initialActiveState]->waiting_for_ack = true;
-    err_t write_err = blocking_write(myPcb, gState[initialActiveState], buffer, size);
+    err_t write_err = blocking_write(myPcb, gState[initialActiveState], reinterpret_cast<const char*>(&buf[position]), size);
 
     if (write_err != ERR_OK) {
         gState[initialActiveState]->result = write_err;
         gState[initialActiveState]->connected = false;
         _stop();
-        return (write_err);
+        return 0;
     }
 
-    return size;
+    return position + size;
 #endif
 }
 
