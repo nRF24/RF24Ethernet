@@ -988,7 +988,7 @@ test2:
             gState[initialActiveState]->result = write_err;
             gState[initialActiveState]->connected = false;
             _stop();
-            return write_err;
+            return 0;
         }
         position += chunk;
         size -= chunk;
