@@ -860,12 +860,12 @@ void RF24Client::_stop()
     myPcb = nullptr;
 
     if (pcb != nullptr) {
-        if (pcb->state != CLOSED) {
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            if (Ethernet.useCoreLocking) {
-                ETHERNET_APPLY_LOCK();
-            }
+        if (Ethernet.useCoreLocking) {
+            ETHERNET_APPLY_LOCK();
+        }
     #endif
+        if (pcb->state != CLOSED) {
             tcp_arg(pcb, NULL);
             tcp_recv(pcb, NULL);
             tcp_sent(pcb, NULL);
@@ -875,12 +875,12 @@ void RF24Client::_stop()
             if (err != ERR_OK) {
                 tcp_abort(pcb);
             }
-    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            if (Ethernet.useCoreLocking) {
-                ETHERNET_REMOVE_LOCK();
-            }
-    #endif
         }
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+        if (Ethernet.useCoreLocking) {
+            ETHERNET_REMOVE_LOCK();
+        }
+    #endif
     }
 
     gState[activeState]->connected = false;
