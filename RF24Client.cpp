@@ -679,28 +679,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
 #else
 
     if (myPcb != nullptr) {
-    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-        if (Ethernet.useCoreLocking) {
-            ETHERNET_APPLY_LOCK();
-        }
-    #endif
-
-        tcp_pcb* pcb = myPcb;
-        myPcb = nullptr;
-
-        tcp_arg(pcb, NULL);
-        tcp_recv(pcb, NULL);
-        tcp_sent(pcb, NULL);
-        tcp_err(pcb, NULL);
-
-        tcp_abort(pcb);
-
-    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-        if (Ethernet.useCoreLocking) {
-            ETHERNET_REMOVE_LOCK();
-        }
-    #endif
-
+        _stop();
         return ERR_CLSD;
     }
 
