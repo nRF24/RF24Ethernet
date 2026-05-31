@@ -940,13 +940,13 @@ size_t RF24Client::_write(uint8_t* data, const uint8_t* buf, size_t size)
 #if USE_LWIP < 1
     size_t total_written = 0;
     size_t payloadSize = rf24_min(size, UIP_TCP_MSS);
-    uint32_t timeout = millis() + 5000;
+    uint32_t start = millis();
 
 test2:
 
     Ethernet.update();
 
-    if (millis() > timeout)
+    if (millis() - start > 5000)
     {
         if (u) {
             u->hold = false;
