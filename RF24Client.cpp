@@ -972,7 +972,7 @@ test2:
         return u->out_pos;
     }
     u->hold = false;
-    return -1;
+    return 0;
 #else
 
     bool initialActiveState = activeState;
@@ -981,7 +981,7 @@ test2:
 
     while (size > chunk) {
         if (myPcb == nullptr)
-            return ERR_CLSD;
+            return 0;
         gState[initialActiveState]->waiting_for_ack = true;
         err_t write_err = blocking_write(myPcb, gState[initialActiveState], reinterpret_cast<const char*>(&buf[position]), chunk);
         if (write_err != ERR_OK) {
@@ -996,7 +996,7 @@ test2:
     }
 
     if (myPcb == nullptr)
-        return ERR_CLSD;
+        return 0;
     gState[initialActiveState]->waiting_for_ack = true;
     err_t write_err = blocking_write(myPcb, gState[initialActiveState], reinterpret_cast<const char*>(&buf[position]), size);
 
@@ -1004,7 +1004,7 @@ test2:
         gState[initialActiveState]->result = write_err;
         gState[initialActiveState]->connected = false;
         _stop();
-        return (write_err);
+        return 0;
     }
 
     return position + size;
