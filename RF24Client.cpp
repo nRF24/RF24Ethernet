@@ -951,7 +951,7 @@ test2:
         if (u) {
             u->hold = false;
         }
-        return 0;
+        return total_written;
     }
 
     if (u && !(u->state & (UIP_CLIENT_CLOSE | UIP_CLIENT_REMOTECLOSED)) && (u->state & UIP_CLIENT_CONNECTED))
