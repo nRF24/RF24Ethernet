@@ -347,6 +347,7 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
             state->connected = false;
             state->finished = true;
             if (state->result != ERR_OK) {
+                tcp_arg(tpcb, nullptr);
                 tcp_abort(tpcb);
                 tpcb = nullptr;
                 return ERR_ABRT;
@@ -357,13 +358,15 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
         }
         if (state->backlogWasClosed == true) {
             if (millis() - state->closeTimer > 5000) {
+                tcp_arg(tpcb, nullptr);
                 tcp_abort(tpcb);
                 tpcb = nullptr;
                 return ERR_ABRT;
             }
         }
+        return state->result;
     }
-    return state->result;
+    return ERR_CLSD;
 }
 
 /***************************************************************************************************/
