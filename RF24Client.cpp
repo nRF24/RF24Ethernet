@@ -80,10 +80,10 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
         return ERR_CLSD;
     }
 
-    uint32_t timeout = millis() + serverConnectionTimeout;
+    const uint32_t timeoutStart = millis();
     while (len > tcp_sndbuf(fpcb)) {
         Ethernet.update();
-        if (millis() > timeout) {
+        if (millis() - timeoutStart > serverConnectionTimeout) {
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send Buffer full"););
             return ERR_BUF;
         }
@@ -135,9 +135,9 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
     }
     #endif
 
-    volatile uint32_t timer = millis() + 5000;
+    const uint32_t timerStart = millis();
     while (fstate != nullptr && fstate->waiting_for_ack && !fstate->finished) {
-        if (millis() > timer) {
+        if (millis() - timerStart > 5000) {
             if (fstate != nullptr) {
                 fstate->finished = true;
                 return ERR_CLSD;
@@ -742,9 +742,9 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     }
     #endif
 
-    uint32_t timeout = millis() + 5000;
+    const uint32_t timeoutStart = millis();
     // Simulate blocking by looping until the callback sets 'finished'
-    while (!gState[activeState]->finished && millis() < timeout) {
+    while (!gState[activeState]->finished && millis() - timeoutStart < 5000) {
         Ethernet.update();
     }
 

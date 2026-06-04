@@ -60,17 +60,17 @@ MQTTClient client;
 
 void connect() {
   Serial.print("connecting...");
-  uint32_t clTimeout = millis() + 5001;
+  const uint32_t clTimeoutStart = millis();
   while (!client.connect(clientID)) {
     Serial.print(".");
-    if (millis() > clTimeout) {
+    if (millis() - clTimeoutStart > 5001) {
       mesh.renewAddress();
       Serial.println();
       return;
     }
-    uint32_t timer = millis() + 1000;
+    const uint32_t timerStart = millis();
     //Instead of delay, keep the RF24 stack updating
-    while (millis() < timer) {
+    while (millis() - timerStart < 1000) {
       Ethernet.update();
     }
   }
