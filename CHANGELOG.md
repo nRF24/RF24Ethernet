@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.1.3] - 2026-06-04
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Fix crash on RF24Ethernet/lwIP servers by \@Copilot in [#78](https://github.com/nRF24/RF24Ethernet/pull/78)
+
+[2.1.3]: https://github.com/nRF24/RF24Ethernet/compare/v2.1.2...v2.1.3
+
+Full commit diff: [`v2.1.2...v2.1.3`][2.1.3]
+
+## New Contributors
+
+- \@Copilot made their first contribution in [#78](https://github.com/nRF24/RF24Ethernet/pull/78)
+
 ## [2.1.2] - 2026-05-31
 
 ### <!-- 3 --> 🗑️ Removed
@@ -16,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Inform AI agents about dev workflows by \@2bndy5 in [#75](https://github.com/nRF24/RF24Ethernet/pull/75)
 - UIP fixes by \@TMRh20 in [#77](https://github.com/nRF24/RF24Ethernet/pull/77)
+- Bump version to v2.1.2 by \@TMRh20 in [`107243e`](https://github.com/nRF24/RF24Ethernet/commit/107243e98d6d7fe778adee67d292d7dc980f3898)
 
 [2.1.2]: https://github.com/nRF24/RF24Ethernet/compare/v2.1.1...v2.1.2
 
