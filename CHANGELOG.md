@@ -6,11 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.1.4] - 2026-06-06
+
+### <!-- 9 --> 🗨️ Changed
+
+- Make `millis()` timeouts rollover-safe in client write/connect paths and MQTT reconnect examples by \@Copilot in [#79](https://github.com/nRF24/RF24Ethernet/pull/79)
+
+[2.1.4]: https://github.com/nRF24/RF24Ethernet/compare/v2.1.3...v2.1.4
+
+Full commit diff: [`v2.1.3...v2.1.4`][2.1.4]
+
 ## [2.1.3] - 2026-06-04
 
 ### <!-- 4 --> 🛠️ Fixed
 
 - Fix crash on RF24Ethernet/lwIP servers by \@Copilot in [#78](https://github.com/nRF24/RF24Ethernet/pull/78)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Bump version to v2.1.3 by \@TMRh20 in [`b128b4e`](https://github.com/nRF24/RF24Ethernet/commit/b128b4ec94cc14f9d14f5b9ef201b90680307d3e)
 
 [2.1.3]: https://github.com/nRF24/RF24Ethernet/compare/v2.1.2...v2.1.3
 
