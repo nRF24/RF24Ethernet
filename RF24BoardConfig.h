@@ -5,7 +5,7 @@
 /*******************************************************************/
 
 // Initial detection for devices w/CPU >=50MHz
-#if (!defined F_CPU || F_CPU >= 50000000)
+#if (!defined F_CPU || F_CPU >= 45000000)
     // Attempt to use internal stack with non-mbed core for RP2040 or RP2350
     #if (defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_MBED) || (defined ARDUINO_ARCH_RP2350 && !defined ARDUINO_ARCH_MBED)
         #ifndef USE_LWIP
