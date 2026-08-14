@@ -7,7 +7,7 @@
         "type": "git",
         "url": "https://github.com/nRF24/RF24Ethernet.git"
     },
-    "version": "2.1.4",
+    "version": "2.2.0",
     "dependencies": [
         {
             "name": "RF24",

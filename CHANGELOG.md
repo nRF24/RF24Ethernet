@@ -6,11 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.2.0] - 2026-08-14
+
+### <!-- 1 --> 🚀 Added
+
+- Support Uno R4 w/lwIP by \@TMRh20 in [#80](https://github.com/nRF24/RF24Ethernet/pull/80)
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Fix hangs when using server by \@TMRh20 in [#81](https://github.com/nRF24/RF24Ethernet/pull/81)
+
+[2.2.0]: https://github.com/nRF24/RF24Ethernet/compare/v2.1.4...v2.2.0
+
+Full commit diff: [`v2.1.4...v2.2.0`][2.2.0]
+
 ## [2.1.4] - 2026-06-06
 
 ### <!-- 9 --> 🗨️ Changed
 
 - Make `millis()` timeouts rollover-safe in client write/connect paths and MQTT reconnect examples by \@Copilot in [#79](https://github.com/nRF24/RF24Ethernet/pull/79)
+- Bump version to v2.1.4 by \@TMRh20 in [`0c46191`](https://github.com/nRF24/RF24Ethernet/commit/0c4619136d35879ea04f72c4f52f189c38ef2dc0)
 
 [2.1.4]: https://github.com/nRF24/RF24Ethernet/compare/v2.1.3...v2.1.4
 
