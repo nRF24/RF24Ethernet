@@ -350,8 +350,10 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
                 tcp_arg(tpcb, nullptr);
                 tcp_abort(tpcb);
                 tpcb = nullptr;
+                myPcb = nullptr;
                 return ERR_ABRT;
             }
+            myPcb = nullptr;
             return state->result;
 
             // }
@@ -361,6 +363,7 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
                 tcp_arg(tpcb, nullptr);
                 tcp_abort(tpcb);
                 tpcb = nullptr;
+                myPcb = nullptr;
                 return ERR_ABRT;
             }
         }
