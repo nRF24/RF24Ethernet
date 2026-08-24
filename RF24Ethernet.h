@@ -59,7 +59,14 @@ extern "C" {
 
 #if USE_LWIP < 1
     #include "ethernet_comp.h"
-    #include "IPAddress.h"
+
+    #if __has_include(<IPAddress.h>)
+        #include <IPAddress.h>
+    #elif __has_include("IPAddress.h")
+        #include "IPAddress.h"
+    #else
+        #include <Arduino.h>
+    #endif
     #include "RF24Client.h"
     #include "RF24Server.h"
 
