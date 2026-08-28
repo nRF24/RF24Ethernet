@@ -20,8 +20,15 @@
 #ifndef RF24CLIENT_H
 #define RF24CLIENT_H
 
-#include "Print.h"
-#include "Client.h"
+#if __has_include(<Print.h>)
+    #include <Print.h>
+    #include <Client.h>
+#elif __has_include("Print.h")
+    #include "Print.h"
+    #include "Client.h"
+#else
+    #include <Arduino.h>
+#endif
 
 //#define UIP_SOCKET_DATALEN UIP_TCP_MSS
 //#define UIP_SOCKET_NUMPACKETS UIP_RECEIVE_WINDOW/UIP_TCP_MSS+1

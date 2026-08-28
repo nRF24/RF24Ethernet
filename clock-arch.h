@@ -21,7 +21,20 @@
 #ifndef clock_h_
 #define clock_h_
 
-typedef unsigned long clock_time_t;
-#define CLOCK_CONF_SECOND 1000
+#include <stdint.h>
+typedef uint32_t clock_time_t;
+
+#ifndef CLOCK_CONF_SECOND
+    #define CLOCK_CONF_SECOND 1000UL
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+clock_time_t clock_time(void);
+unsigned long clock_seconds(void);
+#ifdef __cplusplus
+}
+#endif
 
 #endif
