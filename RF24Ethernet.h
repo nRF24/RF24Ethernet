@@ -239,7 +239,7 @@ public:
 
     static bool useCoreLocking;
     static constexpr unsigned MAX_FRAME_SIZE = MAX_PAYLOAD_SIZE; // packet size excluding FCS
-    static constexpr unsigned MIN_FRAME_SIZE = 60;
+    static constexpr unsigned MIN_FRAME_SIZE = 28;
     static constexpr unsigned MAX_RX_QUEUE = 2;
     static constexpr uint32_t NetIF_Speed_BPS = 1000000;
     static netif myNetif;
