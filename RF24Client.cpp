@@ -59,7 +59,7 @@ err_t RF24Client::sent_callback(void* arg, struct tcp_pcb* tpcb, u16_t len)
         IF_ETH_DEBUG_L1(Serial.println("Client: Sent cb"););
 
         state->waiting_for_ack = false; // Data is successfully out
-        state->finished = true;
+        state->result = ERR_OK;
     }
 
     return ERR_OK;
@@ -100,11 +100,9 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
         err = tcp_write(fpcb, data, len, TCP_WRITE_FLAG_COPY);
     }
 
-    //Ethernet.update();
     if (err != ERR_OK) {
         if (fstate != nullptr) {
             fstate->waiting_for_ack = false;
-            fstate->finished = true;
         }
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Client: BLK Write fail 2: "); Serial.println((int)err););
 
@@ -159,7 +157,6 @@ void RF24Client::error_callback(void* arg, err_t err)
     if (state != nullptr) {
         state->result = err;
         state->connected = false;
-        state->finished = true; // Break the blocking loop
         state->waiting_for_ack = false;
         dataSize[state->stateActiveID] = 0;
         if (state->stateActiveID == activeState) {
@@ -183,7 +180,7 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
     if (p == nullptr) {
         if (state != nullptr) {
             state->connected = false;
-            state->finished = true; // Break the loop
+            state->waiting_for_ack = false;
         }
         if (tpcb != nullptr) {
             if (tcp_close(tpcb) != ERR_OK) {
@@ -243,7 +240,7 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
     if (p == nullptr) {
         if (state != nullptr) {
             state->connected = false;
-            state->finished = true; // Break the loop
+            state->waiting_for_ack = false;
         }
         if (tpcb != nullptr) {
             if (tcp_close(tpcb) != ERR_OK) {
@@ -316,7 +313,6 @@ err_t RF24Client::clientTimeouts(void* arg, struct tcp_pcb* tpcb)
                 err_t err = tcp_close(tpcb);
                 state->result = err;
                 state->connected = false;
-                state->finished = true; // Break the blocking loop
                 state->waiting_for_ack = false;
             }
         }
@@ -345,11 +341,12 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
             state->backlogWasClosed = true;
             dataSize[activeState] = 0;
             state->connected = false;
-            state->finished = true;
+            state->waiting_for_ack = false;
             if (state->result != ERR_OK) {
                 tcp_arg(tpcb, nullptr);
                 tcp_abort(tpcb);
                 tpcb = nullptr;
+                tcp_arg(myPcb, nullptr);
                 myPcb = nullptr;
                 return ERR_ABRT;
             }
@@ -363,6 +360,7 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
                 tcp_arg(tpcb, nullptr);
                 tcp_abort(tpcb);
                 tpcb = nullptr;
+                tcp_arg(myPcb, nullptr);
                 myPcb = nullptr;
                 return ERR_ABRT;
             }
@@ -392,7 +390,7 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                     state->backlogWasAccepted = true;
                     state->connectTimestamp = millis();
                     state->connected = true;
-                    state->finished = false;
+                    state->waiting_for_ack = false;
                     accepts--;
                     myPcb = tpcb;
                     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: ACCEPT delayed PCB "); Serial.println(state->identifier););
@@ -425,7 +423,7 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                         state->backlogWasClosed = true;
                         if (state->result == ERR_OK) {
                             state->closeTimer = millis();
-                            state->finished = true;
+                            state->waiting_for_ack == false;
                         }
                         else {
                             tcp_abort(tpcb);
@@ -466,7 +464,7 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
                     state->backlogWasClosed = true;
                     if (state->result == ERR_OK) {
                         state->closeTimer = millis();
-                        state->finished = true;
+                        state->waiting_for_ack == false;
                     }
                     else {
                         tcp_abort(tpcb);
@@ -533,7 +531,6 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
     simpleCounter += 1;
     gState[actState]->stateActiveID = actState;
     gState[actState]->identifier = simpleCounter;
-    gState[actState]->finished = false;
     gState[actState]->sConnectionTimeout = serverConnectionTimeout;
     gState[actState]->waiting_for_ack = false;
     gState[actState]->backlogWasClosed = false;
@@ -583,7 +580,6 @@ err_t RF24Client::on_connected(void* arg, struct tcp_pcb* tpcb, err_t err)
         state->cConnectionTimeout = clientConnectionTimeout;
         state->clientTimer = millis();
         state->result = err;
-        state->finished = true;
         if (err == ERR_OK) {
             state->connected = true;
         }
@@ -711,7 +707,6 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     dataSize[activeState] = 0;
     memset(incomingData[activeState], 0, INCOMING_DATA_SIZE);
 
-    gState[activeState]->finished = false;
     gState[activeState]->connected = false;
     gState[activeState]->result = 0;
     gState[activeState]->waiting_for_ack = false;
@@ -746,8 +741,8 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
     #endif
 
     const uint32_t timeoutStart = millis();
-    // Simulate blocking by looping until the callback sets 'finished'
-    while (!gState[activeState]->finished && millis() - timeoutStart < 5000) {
+    // Simulate blocking by looping until the callback sets 'connected'
+    while (!gState[activeState]->connected && millis() - timeoutStart < 5000) {
         Ethernet.update();
     }
 
@@ -890,7 +885,7 @@ void RF24Client::_stop()
     }
 
     gState[activeState]->connected = false;
-    gState[activeState]->finished = true;
+    gState[activeState]->waiting_for_ack = false;
     dataSize[activeState] = 0;
 }
 #endif
@@ -1006,6 +1001,7 @@ test2:
     size_t chunk = MAX_PAYLOAD_SIZE - 14; // 14 = Ethernet/link-layer header bytes reserved per frame
     size_t position = 0;
 
+    gState[initialActiveState]->finished = false;
     while (size > chunk) {
         if (myPcb == nullptr)
             return 0;
@@ -1024,6 +1020,8 @@ test2:
 
     if (myPcb == nullptr)
         return 0;
+
+    gState[initialActiveState]->finished = true;
     gState[initialActiveState]->waiting_for_ack = true;
     err_t write_err = blocking_write(myPcb, gState[initialActiveState], reinterpret_cast<const char*>(&buf[position]), size);
 
