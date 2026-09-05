@@ -132,7 +132,7 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
 
     const uint32_t timerStart = millis();
     while (fstate != nullptr && fstate->waiting_for_ack && !fstate->finished) {
-        if(!fstate->connected){
+        if (!fstate->connected) {
             return ERR_CLSD;
         }
         if (millis() - timerStart > 5000) {
@@ -206,10 +206,10 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Copy data to "); Serial.println(state->stateActiveID););
 
     struct pbuf* q = p;
-    
+
     uint32_t timeout = millis();
     while (q != nullptr) {
-        if(millis() - timeout > 3000){
+        if (millis() - timeout > 3000) {
             break;
         }
         const uint8_t* data = static_cast<const uint8_t*>(q->payload);
@@ -274,7 +274,7 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
     struct pbuf* q = p;
     uint32_t timeout = millis();
     while (q != nullptr) {
-        if(millis() - timeout > 3000){
+        if (millis() - timeout > 3000) {
             break;
         }
         const uint8_t* data = static_cast<const uint8_t*>(q->payload);
@@ -942,7 +942,7 @@ test2:
 
     uint32_t timeout = millis();
     while (size > chunk) {
-        if(millis() - timeout > 3000){
+        if (millis() - timeout > 3000) {
             break;
         }
         if (myPcb == nullptr)
