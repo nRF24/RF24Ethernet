@@ -774,7 +774,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
         _socket = sock; // <-- save it here
         _lastError = 0;
         IF_RF24ETHERNET_DEBUG_CLIENT(printk("CONNECT OK fd=%d\n", _socket));
-        _peerClosed = false;
+        RF24Server::connectionActive = true;
         return 1;
     }
     if (errno != EINPROGRESS) {
@@ -820,7 +820,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
                 _socket = sock; // <-- save it here
                 _lastError = 0;
                 IF_RF24ETHERNET_DEBUG_CLIENT(printk("CONNECT OK fd=%d\n", _socket));
-                _peerClosed = false;
+                RF24Server::connectionActive = true;
                 return 1;
             }
 
@@ -1576,7 +1576,7 @@ int RF24Client::read(uint8_t* buf, size_t size)
     if (n == 0) {
         // Peer performed orderly shutdown.
         // Do NOT close fd here; let caller decide via connected()/stop().
-        _peerClosed = true;
+        RF24Server::connectionActive = false;
         _lastError = 0;
         return 0;
     }
