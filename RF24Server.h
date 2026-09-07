@@ -54,12 +54,14 @@ public:
     static int serverSocket;
 
 private:
-#if USE_LWIP == 1
+#if USE_LWIP < 1
+    uint16_t _port;
+#elif USE_LWIP == 1
     static struct tcp_pcb* sPcb;
     static struct tcp_pcb* bindPcb;
     static uint16_t _port;
     static EthernetClient::ConnectState* serverState;
-#else
+#elif USE_LWIP == 2
     static uint16_t _port;
     static bool serverListening;
 
