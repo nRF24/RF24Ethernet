@@ -33,7 +33,7 @@
 IPAddress RF24EthernetClass::_dnsServerAddress;
 
 extern "C" {
-    #include "rf24_netif.h"
+    #include "drivers/net/rf24_netif.h"
 }
 
 extern "C" int rf24_cpp_tx_frame(const uint8_t* data, size_t len)
