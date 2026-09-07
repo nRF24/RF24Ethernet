@@ -37,6 +37,11 @@ int32_t RF24UDP::dataOutPos;
             #include "lwip/include/lwip/tcpip.h"
         #endif
     #endif
+    #if RF24ETHERNET_USE_UDP && USE_LWIP == 2
+        #include <zephyr/kernel.h>
+        #include <zephyr/net/socket.h>
+        #include <fcntl.h>
+    #endif
 
     #ifdef RF24ETHERNET_DEBUG_UDP
         #include "HardwareSerial.h"
@@ -54,9 +59,17 @@ RF24UDP::RF24UDP() : _uip_udp_conn(NULL)
 {
     memset(&appdata, 0, sizeof(appdata));
 }
-        #else
+        #elif defined RF24ETHERNET_USE_UDP && USE_LWIP == 1
 RF24UDP::RF24UDP()
 {
+}
+        #elif defined RF24ETHERNET_USE_UDP && USE_LWIP == 2
+RF24UDP::RF24UDP()
+{
+    udpSocketOut = -1;
+    udpSocketIn = -1;
+    dataInPos = 0;
+    dataOutPos = 0;
 }
         #endif
 /*******************************************************/
@@ -89,7 +102,34 @@ uint8_t RF24UDP::begin(uint16_t port)
     return 0;
         #elif USE_LWIP == 2
 
-    return 0;
+    if (udpSocketIn > -1) {
+        zsock_close(udpSocketIn);
+        udpSocketIn = -1;
+    }
+
+    udpSocketIn = zsock_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (udpSocketIn < 0) {
+        return 0;
+    }
+
+    dataInPos = 0;
+    memset(&udpBindAddr, 0, sizeof(udpBindAddr));
+    udpBindAddr.sin_family = AF_INET;
+    udpBindAddr.sin_port = htons(port);
+    udpBindAddr.sin_addr.s_addr = INADDR_ANY;
+
+    int optval = 1;
+    zsock_setsockopt(udpSocketIn, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+
+    if (zsock_bind(udpSocketIn, (struct sockaddr*)&udpBindAddr, sizeof(udpBindAddr)) < 0) {
+        zsock_close(udpSocketIn);
+        udpSocketIn = -1;
+        return 0;
+    }
+    int flags = zsock_fcntl(udpSocketIn, F_GETFL, 0);
+    zsock_fcntl(udpSocketIn, F_SETFL, flags | O_NONBLOCK);
+
+    return 1;
 
         #endif
 }
@@ -117,7 +157,16 @@ void RF24UDP::stop()
         udp_disconnect(udpPcb);
     }
         #elif USE_LWIP == 2
+    if (udpSocketIn > -1) {
+        zsock_close(udpSocketIn);
+    }
+    dataInPos = 0;
 
+    if (udpSocketOut > -1) {
+        zsock_close(udpSocketOut);
+        udpSocketOut = -1;
+    }
+    dataOutPos = 0;
         #endif
 }
 
@@ -200,7 +249,31 @@ int RF24UDP::beginPacket(IPAddress ip, uint16_t port)
     }
     return 0;
         #elif USE_LWIP == 2
-    return 0;
+
+    if (udpSocketOut >= 0) {
+        zsock_close(udpSocketOut);
+        udpSocketOut = -1;
+    }
+
+    udpSocketOut = zsock_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (udpSocketOut < 0) {
+        return 0;
+    }
+
+    memset(&udpDestination, 0, sizeof(udpDestination));
+    udpDestination.sin_family = AF_INET;
+    udpDestination.sin_port = htons(port);
+    udpDestination.sin_addr.s_addr = (uint32_t)ip;
+
+    if (zsock_inet_pton(AF_INET, ip.toString().c_str(), &udpDestination.sin_addr) != 1) {
+        zsock_close(udpSocketOut);
+        udpSocketOut = -1;
+        return 0;
+    }
+
+    int flags = zsock_fcntl(udpSocketOut, F_GETFL, 0);
+    zsock_fcntl(udpSocketOut, F_SETFL, flags | O_NONBLOCK);
+    return 1;
         #endif
 }
 
@@ -226,7 +299,7 @@ int RF24UDP::beginPacket(const char* host, uint16_t port)
     {
         return ret;
     }
-        #elif USE_LWIP == 1
+        #else
     // Look up the host first
     int ret = 0;
     DNSClient dns;
@@ -243,9 +316,6 @@ int RF24UDP::beginPacket(const char* host, uint16_t port)
         return ret;
     }
 
-        #elif USE_LWIP == 2
-
-    return 0;
         #endif
 }
 
@@ -277,7 +347,13 @@ int RF24UDP::endPacket()
     return 0;
         #elif USE_LWIP == 2
 
-    return 0;
+    ssize_t ret = zsock_sendto(udpSocketOut, udpDataOut, dataOutPos, 0, (struct sockaddr*)&udpDestination, sizeof(udpDestination));
+    if (ret >= 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
         #endif
 }
 
@@ -304,14 +380,13 @@ size_t RF24UDP::write(const uint8_t* buffer, size_t size)
         return ret;
     }
     return 0;
-        #elif USE_LWIP == 1
+        #else
 
     memcpy(&udpDataOut[dataOutPos], buffer, size);
     dataOutPos += size;
 
     return size;
-        #elif USE_LWIP == 2
-    return 0;
+
         #endif
 }
 
@@ -341,7 +416,7 @@ int RF24UDP::parsePacket()
 
     return dataInPos;
         #elif USE_LWIP == 2
-    return 0;
+    return available();
         #endif
 }
 
@@ -356,7 +431,35 @@ int RF24UDP::available()
         #elif USE_LWIP == 1
     return dataInPos;
         #elif USE_LWIP == 2
-    return 0;
+
+    if (udpSocketOut >= 0) {
+        socklen_t client_addr_len = sizeof(udpClientAddr);
+        ssize_t received = zsock_recvfrom(udpSocketOut, udpDataIn, sizeof(udpDataIn) - 1, 0, (struct sockaddr*)&udpClientAddr, &client_addr_len);
+        if (received >= 0) {
+            dataInPos += received;
+            uint32_t rawIP = udpClientAddr.sin_addr.s_addr;
+            IPAddress remIP(rawIP);
+            udpRemoteIP = remIP;
+            udpRemotePort = ntohs(udpClientAddr.sin_port);
+            return dataInPos;
+        }
+    }
+
+    if (udpSocketIn >= 0) {
+        socklen_t client_addr_len = sizeof(udpClientAddr);
+        ssize_t received = zsock_recvfrom(udpSocketIn, udpDataIn, sizeof(udpDataIn) - 1, 0, (struct sockaddr*)&udpClientAddr, &client_addr_len);
+        if (received >= 0) {
+            dataInPos += received;
+            uint32_t rawIP = udpClientAddr.sin_addr.s_addr;
+            IPAddress remIP(rawIP);
+            udpRemoteIP = remIP;
+            udpRemotePort = ntohs(udpClientAddr.sin_port);
+            return dataInPos;
+        }
+    }
+
+    return dataInPos;
+
         #endif
 }
 
@@ -394,7 +497,7 @@ int RF24UDP::read(unsigned char* buffer, size_t len)
         }
         return len;
     }
-        #elif USE_LWIP == 1
+        #elif USE_LWIP == 1 || USE_LWIP == 2
 
     if (dataInPos >= len) {
 
@@ -406,8 +509,6 @@ int RF24UDP::read(unsigned char* buffer, size_t len)
         dataInPos = rf24_max(0, remainder);
         return len;
     }
-
-        #elif USE_LWIP == 2
 
         #endif
     return 0;
@@ -426,14 +527,13 @@ int RF24UDP::peek()
         return RF24Client::all_data[0].myData[appdata.in_pos];
     }
     return -1;
-        #elif USE_LWIP == 1
+        #elif USE_LWIP == 1 || USE_LWIP == 1
 
     if (dataInPos > 0) {
         return udpDataIn[0];
     }
     return -1;
-        #elif USE_LWIP == 2
-    return -1;
+
         #endif
 }
 
@@ -472,7 +572,8 @@ IPAddress RF24UDP::remoteIP()
     }
     return IPAddress {0, 0, 0, 0};
         #elif USE_LWIP == 2
-    return IPAddress {0, 0, 0, 0};
+
+    return udpRemoteIP;
         #endif
 }
 
@@ -490,7 +591,8 @@ uint16_t RF24UDP::remotePort()
     }
     return 0;
         #elif USE_LWIP == 2
-    return 0;
+
+    return udpRemotePort;
         #endif
 }
 
@@ -548,6 +650,7 @@ void RF24UDP::receiveUdp(void* arg, struct udp_pcb* pcb, struct pbuf* p, const i
 }
 
         #endif
+
         #if RF24ETHERNET_USE_UDP && USE_LWIP == 1
 void RF24UDP::sendUdp(void* arg)
 {

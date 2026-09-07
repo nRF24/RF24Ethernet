@@ -903,7 +903,7 @@ int RF24Client::connect(const char* host, uint16_t port)
     Serial.println(F("* DNS fail*"));
 #endif
 
-    return ret;
+    return 0;
 }
 
 /*************************************************************/

@@ -447,7 +447,7 @@ void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway
 
     ethLocalIP = ip;
     //printk("%s\n",localIP().toString().c_str());
-
+    _dnsServerAddress = dns;
     isInitialized = true;
 
 #endif

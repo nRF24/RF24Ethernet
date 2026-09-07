@@ -81,7 +81,16 @@ private:
     };
 
     #elif USE_LWIP == 2
+    int udpSocketOut;
+    int udpSocketIn;
+    struct sockaddr_in udpDestination;
+    struct sockaddr_in udpBindAddr;
+    struct sockaddr_in udpClientAddr;
 
+    uint8_t udpDataIn[MAX_PAYLOAD_SIZE - 14];
+    int32_t dataInPos;
+    uint8_t udpDataOut[MAX_PAYLOAD_SIZE - 14];
+    int32_t dataOutPos;
     #endif
 
 public:
@@ -178,6 +187,8 @@ private:
     #elif USE_LWIP == 2
     static void _send();
     static void sendUdp(void* arg);
+    IPAddress udpRemoteIP;
+    int udpRemotePort;
     #endif
 };
 
