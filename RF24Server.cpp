@@ -29,7 +29,7 @@ extern "C" {
 RF24Server::RF24Server(uint16_t port) : _port(htons(port))
 {
 }
-#else
+#elif USE_LWIP == 1
 uint16_t RF24Server::_port;
 struct tcp_pcb* RF24Server::sPcb;
 EthernetClient::ConnectState* RF24Server::serverState;
@@ -39,6 +39,28 @@ RF24Server::RF24Server(uint16_t port)
     _port = port;
     // Allocate data for a second server/client
     RF24Client::incomingData[1] = (char*)malloc(INCOMING_DATA_SIZE);
+}
+
+#elif USE_LWIP == 2
+
+    #include <zephyr/kernel.h>
+    #include <zephyr/net/socket.h>
+    #include <zephyr/logging/log.h>
+    #include <zephyr/posix/fcntl.h>
+    #include <errno.h>
+
+LOG_MODULE_REGISTER(tcp_nonblock_listener, LOG_LEVEL_INF);
+    #define BACKLOG 1
+
+uint16_t RF24Server::_port;
+bool RF24Server::serverListening;
+bool RF24Server::connectionActive;
+int RF24Server::serverSocket = -1;
+RF24Client RF24Server::serverClient;
+
+RF24Server::RF24Server(uint16_t port)
+{
+    _port = port;
 }
 
 #endif
@@ -56,9 +78,45 @@ RF24Client RF24Server::available()
             return RF24Client(data);
         }
     }
-#else
+#elif USE_LWIP == 1
     uint32_t data = 1;
     return RF24Client(data);
+#elif USE_LWIP == 2
+
+    uint32_t data = 1;
+
+    if (!Ethernet.isInitialized || !serverListening || connectionActive || RF24Client::g_rf24client_instance->_socket > 0) {
+        return RF24Client(data);
+    }
+
+    struct sockaddr_in client_addr;
+    socklen_t client_addr_len = sizeof(client_addr);
+
+    // Check once without blocking
+    int client_sock = zsock_accept(serverSocket, (struct sockaddr*)&client_addr, &client_addr_len);
+
+    if (client_sock < 0) {
+        // Check if the "error" is just the expected non-blocking silence
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            // Absolutely normal. No one is connecting right now.
+            return RF24Client(data);
+        }
+
+        // This is a REAL error (e.g., socket closed, invalid descriptor, stack crash)
+        printk("CRITICAL Accept error: %d\n", errno);
+
+        return RF24Client(data);
+    }
+
+    // Success! A client has successfully connected.
+    printk("Connection accepted (FD: %d)\n", client_sock);
+    connectionActive = true;
+
+    serverClient._socket = client_sock;
+    RF24Client::g_rf24client_instance = &serverClient;
+
+    return serverClient;
+
 #endif
     return RF24Client();
 }
@@ -69,7 +127,7 @@ void RF24Server::begin()
 {
 #if USE_LWIP < 1
     uip_listen(_port);
-#else
+#elif USE_LWIP == 1
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
     if (Ethernet.useCoreLocking) {
@@ -121,6 +179,46 @@ void RF24Server::begin()
         ETHERNET_REMOVE_LOCK();
     }
     #endif
+
+#elif USE_LWIP == 2
+
+    struct sockaddr_in bind_addr;
+
+    serverSocket = zsock_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (serverSocket < 0) {
+        printk("Socket creation failed: %d", errno);
+        return;
+    }
+
+    // Bind to port
+    memset(&bind_addr, 0, sizeof(bind_addr));
+    bind_addr.sin_family = AF_INET;
+    bind_addr.sin_port = htons(_port);
+    bind_addr.sin_addr.s_addr = INADDR_ANY;
+
+    if (zsock_bind(serverSocket, (struct sockaddr*)&bind_addr, sizeof(bind_addr)) < 0) {
+        printk("Bind failed: %d", errno);
+        zsock_close(serverSocket);
+        return;
+    }
+
+    // Start listening FIRST while the socket is still in default blocking state
+    if (zsock_listen(serverSocket, BACKLOG) < 0) {
+        printk("Listen failed: %d", errno);
+        zsock_close(serverSocket);
+        return;
+    }
+
+    // CRITICAL MOVE: Set to non-blocking mode ONLY AFTER listening is active
+    int flags = zsock_fcntl(serverSocket, F_GETFL, 0);
+    if (flags < 0 || zsock_fcntl(serverSocket, F_SETFL, flags | O_NONBLOCK) < 0) {
+        printk("Failed to set non-blocking flag: %d", errno);
+        zsock_close(serverSocket);
+        return;
+    }
+
+    serverListening = true;
+    printk("Server initialized successfully!");
 
 #endif
     RF24Ethernet.tick();

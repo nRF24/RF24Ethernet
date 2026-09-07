@@ -80,7 +80,7 @@ typedef struct __attribute__((__packed__))
     #endif
     uint8_t myData[OUTPUT_BUFFER_SIZE];
 } uip_userdata_t;
-#else
+#elif USE_LWIP == 1
     #include "RF24Network_config.h"
     #define INCOMING_DATA_SIZE MAX_PAYLOAD_SIZE * 2
 
@@ -195,7 +195,7 @@ public:
 protected:
 #if USE_LWIP < 1
     static uip_userdata_t all_data[UIP_CONNS];
-#else
+#elif USE_LWIP == 1
 
     /**
      * Connection state structure, used internally to monitor the state of connections
@@ -256,7 +256,7 @@ private:
     friend void serialip_appcall(void);
     friend void uip_log(char* msg);
 
-#else
+#elif USE_LWIP == 1
     RF24Client(uint32_t data);
     RF24Client(uint8_t data);
     uint8_t* data;
@@ -282,6 +282,19 @@ private:
     static char* incomingData[2];
     static uint32_t simpleCounter;
     static int32_t accepts;
+
+#elif USE_LWIP == 2
+    RF24Client(uint32_t data);
+    RF24Client(uint8_t data);
+    uint8_t* data;
+
+    static size_t _write(uint8_t* data, const uint8_t* buf, size_t size);
+    static int _available(uint8_t* data);
+    static uint32_t serverConnectionTimeout;
+    static int _socket;
+    int _lastError;
+    static RF24Client* g_rf24client_instance;
+    static uint8_t peekBuffer[64];
 
 #endif
 

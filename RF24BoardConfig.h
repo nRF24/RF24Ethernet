@@ -30,7 +30,7 @@
 /*******************************************************************/
 
 // Set up defines if using lwIP
-#if USE_LWIP > 0
+#if USE_LWIP == 1
 
     // Add any boards here that use lwIP internally
     #if defined ARDUINO_ARCH_ESP32 || defined ARDUINO_ARCH_ESP8266

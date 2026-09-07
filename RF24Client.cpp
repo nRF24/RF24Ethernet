@@ -16,12 +16,38 @@
   */
 #include "RF24Ethernet.h"
 
+#if USE_LWIP == 2
+    #include <zephyr/kernel.h>
+    #include <zephyr/net/socket.h>
+    #include <errno.h>
+    #include <stdio.h>
+    #include <string.h>
+    #include <fcntl.h>
+    #include <zephyr/net/net_if.h>
+    #include <zephyr/posix/sys/ioctl.h>
+    #ifdef __cplusplus
+extern "C" {
+    #endif
+
+struct net_if* rf24_netif_get_iface(void);
+
+    #ifdef __cplusplus
+}
+
+    #endif
+
+RF24Client* RF24Client::g_rf24client_instance = nullptr;
+int RF24Client::_socket;
+uint32_t RF24Client::serverConnectionTimeout;
+uint8_t RF24Client::peekBuffer[64];
+
+#endif
 #if USE_LWIP < 1
 
     #define UIP_TCP_PHYH_LEN UIP_LLH_LEN + UIP_IPTCPH_LEN
 uip_userdata_t RF24Client::all_data[UIP_CONNS];
 
-#else
+#elif USE_LWIP == 1
 // #define LWIP_ERR_T uint32_t
 
     //
@@ -532,7 +558,7 @@ err_t RF24Client::on_connected(void* arg, struct tcp_pcb* tpcb, err_t err)
     return err;
 }
 /** \endcond */
-#endif // USE_LWIP > 1
+#endif // USE_LWIP == 1
 
 /***************************************************************************************************/
 
@@ -540,11 +566,15 @@ err_t RF24Client::on_connected(void* arg, struct tcp_pcb* tpcb, err_t err)
 RF24Client::RF24Client() : data(NULL)
 {
 }
-#else
+#elif USE_LWIP == 1
 RF24Client::RF24Client() : data(0)
 {
 }
-
+#elif USE_LWIP == 2
+RF24Client::RF24Client() : data(0), _lastError(0)
+{
+    g_rf24client_instance = this;
+}
 #endif
 /*************************************************************/
 
@@ -565,11 +595,29 @@ uint8_t RF24Client::connected()
 {
 #if USE_LWIP < 1
     return (data && (data->packets_in != 0 || (data->state & UIP_CLIENT_CONNECTED))) ? 1 : 0;
-#else
+#elif USE_LWIP == 1
     if (gState[activeState] != nullptr) {
         return gState[activeState]->connected;
     }
     return 0;
+#elif USE_LWIP == 2
+
+    if (_socket < 0)
+        return 0;
+
+    struct zsock_pollfd pfd {};
+    pfd.fd = _socket;
+    pfd.events = ZSOCK_POLLIN | ZSOCK_POLLOUT; // Also check if writable
+    int rc = zsock_poll(&pfd, 1, 0);
+    if (rc < 0)
+        return 1;
+
+    // Just check the poll flags, don't peek
+    if (pfd.revents & (ZSOCK_POLLHUP | ZSOCK_POLLERR | ZSOCK_POLLNVAL)) {
+        return 0; // Closed
+    }
+
+    return 1;
 #endif
 }
 
@@ -619,7 +667,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
         // }while(millis()-timer < 175);
 
     #endif // Active open enabled
-#else
+#elif USE_LWIP == 1
 
     if (myPcb != nullptr) {
         _stop();
@@ -691,13 +739,115 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
 
     return gState[activeState]->connected;
 
+#elif USE_LWIP == 2
+
+    if (port == 0)
+        return -EINVAL;
+
+    int sock = zsock_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock < 0)
+        return -errno;
+
+    // --- CRITICAL FIX 1: Set the socket to non-blocking BEFORE connecting ---
+    int flags = zsock_fcntl(sock, F_GETFL, 0);
+    if (flags < 0) {
+        int e = errno;
+        zsock_close(sock);
+        return -e;
+    }
+    zsock_fcntl(sock, F_SETFL, flags | O_NONBLOCK);
+
+    struct sockaddr_in addr = {};
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+
+    char ipstr[16];
+    snprintf(ipstr, sizeof(ipstr), "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
+    if (net_addr_pton(AF_INET, ipstr, &addr.sin_addr) < 0) {
+        zsock_close(sock);
+        return -EINVAL;
+    }
+
+    int rc = zsock_connect(sock, (const struct sockaddr*)&addr, sizeof(addr));
+    if (rc == 0) {
+
+        _socket = sock; // <-- save it here
+        _lastError = 0;
+        IF_RF24ETHERNET_DEBUG_CLIENT(printk("CONNECT OK fd=%d\n", _socket));
+        _peerClosed = false;
+        return 1;
+    }
+    if (errno != EINPROGRESS) {
+        int e = errno;
+        zsock_close(sock);
+        return -e;
+    }
+
+    // --- CRITICAL FIX 2: Use Zephyr's native uptime timer instead of Arduino's millis() ---
+    int64_t start_time = k_uptime_get();
+
+    // Loop for up to 5000 milliseconds (5 seconds)
+    while (k_uptime_get() - start_time < 5000) {
+        // 1) Service RF24 every iteration
+        RF24Ethernet.update();
+
+        // 2) Non-blocking check of connect completion
+        struct zsock_pollfd pfd = {
+            .fd = sock,
+            .events = ZSOCK_POLLOUT,
+            .revents = 0,
+        };
+
+        rc = zsock_poll(&pfd, 1, 0); // zero timeout
+        if (rc < 0) {
+            int e = errno;
+            zsock_close(sock);
+            return -e;
+        }
+
+        if (rc > 0 && (pfd.revents & (ZSOCK_POLLOUT | ZSOCK_POLLERR | ZSOCK_POLLHUP))) {
+            int soerr = 0;
+            socklen_t slen = sizeof(soerr);
+            if (zsock_getsockopt(sock, SOL_SOCKET, SO_ERROR, &soerr, &slen) < 0) {
+                int e = errno;
+                zsock_close(sock);
+                return -e;
+            }
+
+            if (soerr == 0) {
+                // Remove O_NONBLOCK flag to cleanly destroy blocking context
+                zsock_fcntl(sock, F_SETFL, flags & ~O_NONBLOCK);
+                _socket = sock; // <-- save it here
+                _lastError = 0;
+                IF_RF24ETHERNET_DEBUG_CLIENT(printk("CONNECT OK fd=%d\n", _socket));
+                _peerClosed = false;
+                return 1;
+            }
+
+            zsock_fcntl(sock, F_SETFL, flags & ~O_NONBLOCK);
+            zsock_close(sock);
+            return -soerr;
+        }
+
+        // --- CRITICAL FIX 3: Use Zephyr's native kernel sleep to yield CPU time ---
+        // This yields execution to Zephyr's network workqueues, timers, and scheduler threads
+        k_msleep(2);
+    }
+
+    // Timed out cleanup
+    zsock_fcntl(sock, F_SETFL, flags & ~O_NONBLOCK);
+    zsock_close(sock);
+    return -ETIMEDOUT;
+
+    return 0;
+
 #endif
     return 0;
 }
 
 /*************************************************************/
 
-#if USE_LWIP > 1
+#if USE_LWIP == 1
 void dnsCallback(const char* name, const ip_addr_t* ipaddr, void* callback_arg)
 {
 }
@@ -785,15 +935,22 @@ void RF24Client::stop()
 
     data = NULL;
     RF24Ethernet.update();
-#else
+#elif USE_LWIP == 1
 
     _stop();
+
+#elif USE_LWIP == 2
+    if (_socket >= 0) {
+        zsock_close(_socket);
+        _socket = -1;
+    }
+    RF24Server::connectionActive = false;
 
 #endif
 }
 
 /***************************************************************************************************/
-#if USE_LWIP > 0
+#if USE_LWIP == 1
 void RF24Client::_stop()
 {
     tcp_pcb* pcb = myPcb;
@@ -835,8 +992,11 @@ bool RF24Client::operator==(const RF24Client& rhs)
 {
 #if USE_LWIP < 1
     return data && rhs.data && (data == rhs.data);
-#else
+#elif USE_LWIP == 1
     return dataSize[activeState] > 0 ? true : false;
+#elif USE_LWIP == 2
+    return available();
+
 #endif
 }
 
@@ -847,8 +1007,11 @@ RF24Client::operator bool()
     Ethernet.update();
 #if USE_LWIP < 1
     return data && (!(data->state & UIP_CLIENT_REMOTECLOSED) || data->packets_in != 0);
-#else
+#elif USE_LWIP == 1
     return dataSize[activeState] > 0 ? true : false;
+#elif USE_LWIP == 2
+
+    return available();
 #endif
 }
 
@@ -933,7 +1096,7 @@ test2:
         u->hold = false;
     }
     return 0;
-#else
+#elif USE_LWIP == 1
 
     bool initialActiveState = activeState;
     size_t chunk = MAX_PAYLOAD_SIZE - 14; // 14 = Ethernet/link-layer header bytes reserved per frame
@@ -976,6 +1139,40 @@ test2:
     }
 
     return position + size;
+#elif USE_LWIP == 2
+
+    RF24Client* self = RF24Client::g_rf24client_instance;
+    if (!self || !buf || size == 0)
+        return 0;
+
+    if (self->_socket < 0) {
+        self->_lastError = ENOTCONN;
+        return 0;
+    }
+
+    size_t total = 0;
+    while (total < size) {
+
+        ssize_t n = zsock_send(self->_socket, buf + total, size - total, 0);
+
+        if (n > 0) {
+            total += (size_t)n;
+            continue;
+        }
+        if (n == 0)
+            break;
+
+        int err = errno;
+        self->_lastError = err;
+        if (err == EINTR)
+            continue;
+        if (err == EAGAIN || err == EWOULDBLOCK)
+            break;
+        break;
+    }
+    Ethernet.update();
+    return total;
+
 #endif
 }
 
@@ -1253,8 +1450,37 @@ int RF24Client::_available(uint8_t* data)
     {
         return u->dataCnt;
     }
-#else
+#elif USE_LWIP == 1
     return dataSize[activeState];
+#elif USE_LWIP == 2
+
+    RF24Client* self = RF24Client::g_rf24client_instance;
+    if (!self || self->_socket < 0)
+        return 0;
+
+    // First: is there readable/hup state?
+    struct zsock_pollfd pfd {};
+    pfd.fd = self->_socket;
+    pfd.events = ZSOCK_POLLIN;
+    int pr = zsock_poll(&pfd, 1, 0);
+    if (pr <= 0)
+        return 0;
+
+    // If peer closed, report 0 available
+    //if (pfd.revents & (ZSOCK_POLLHUP | ZSOCK_POLLNVAL)) return 0;
+    //if (!(pfd.revents & ZSOCK_POLLIN)) return 0;
+
+    // Peek queued bytes without consuming
+    int n = zsock_recv(self->_socket, peekBuffer, sizeof(peekBuffer),
+                       ZSOCK_MSG_PEEK | ZSOCK_MSG_DONTWAIT);
+
+    if (n > 0)
+        return n; // bytes currently queued (up to 1024)
+    if (n == 0)
+        return 0; // closed cleanly
+    if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
+        return 0;
+    return 0;
 #endif
     return 0;
 }
@@ -1313,7 +1539,7 @@ int RF24Client::read(uint8_t* buf, size_t size)
     }
 
     return -1;
-#else
+#elif USE_LWIP == 1
 
     if (available()) {
 
@@ -1331,6 +1557,44 @@ int RF24Client::read(uint8_t* buf, size_t size)
             return size;
         }
     }
+    return -1;
+#elif USE_LWIP == 2
+
+    if (!buf || size == 0)
+        return 0;
+    if (_socket < 0) {
+        _lastError = ENOTCONN;
+        return -1;
+    }
+
+    int n = zsock_recv(_socket, buf, size, ZSOCK_MSG_DONTWAIT);
+
+    if (n > 0) {
+        return n; // got bytes
+    }
+
+    if (n == 0) {
+        // Peer performed orderly shutdown.
+        // Do NOT close fd here; let caller decide via connected()/stop().
+        _peerClosed = true;
+        _lastError = 0;
+        return 0;
+    }
+
+    // n < 0
+    int err = errno;
+    _lastError = err;
+
+    if (err == EAGAIN || err == EWOULDBLOCK || err == EINTR) {
+        // no data yet, try again later
+        return 0;
+    }
+
+    // real error; optionally keep socket open unless clearly unusable
+    if (err == EBADF || err == ENOTSOCK) {
+        _socket = -1; // already invalid
+    }
+
     return -1;
 #endif
 }
@@ -1353,8 +1617,10 @@ int RF24Client::peek()
     {
 #if USE_LWIP < 1
         return data->myData[data->in_pos];
-#else
+#elif USE_LWIP == 1
         return incomingData[activeState][0];
+#elif USE_LWIP == 2
+        return 0;
 #endif
     }
     return -1;
@@ -1374,7 +1640,9 @@ void RF24Client::flush()
         data = 0;
     #endif
     }
-#else
+#elif USE_LWIP == 1
     dataSize[activeState] = 0;
+#elif USE_LWIP == 2
+
 #endif
 }
