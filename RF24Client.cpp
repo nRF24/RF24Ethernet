@@ -1461,7 +1461,9 @@ int RF24Client::_available(uint8_t* data)
         return 0;
 
     // First: is there readable/hup state?
-    struct zsock_pollfd pfd {};
+    struct zsock_pollfd pfd
+    {
+    };
     pfd.fd = self->_socket;
     pfd.events = ZSOCK_POLLIN;
     int pr = zsock_poll(&pfd, 1, 0);
