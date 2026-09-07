@@ -605,7 +605,9 @@ uint8_t RF24Client::connected()
     if (_socket < 0)
         return 0;
 
-    struct zsock_pollfd pfd {};
+    struct zsock_pollfd pfd
+    {
+    };
     pfd.fd = _socket;
     pfd.events = ZSOCK_POLLIN | ZSOCK_POLLOUT; // Also check if writable
     int rc = zsock_poll(&pfd, 1, 0);
