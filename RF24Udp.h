@@ -64,7 +64,7 @@ private:
     struct uip_udp_conn* _uip_udp_conn;
 
     uip_udp_userdata_t appdata;
-    #elif RF24ETHERNET_USE_UDP
+    #elif RF24ETHERNET_USE_UDP && USE_LWIP == 1
     static struct udp_pcb* udpPcb;
 
     static int8_t udpDataIn[MAX_PAYLOAD_SIZE - 14];
@@ -80,6 +80,17 @@ private:
         u16_t port;
     };
 
+    #elif USE_LWIP == 2
+    int udpSocketOut;
+    int udpSocketIn;
+    struct sockaddr_in udpDestination;
+    struct sockaddr_in udpBindAddr;
+    struct sockaddr_in udpClientAddr;
+
+    uint8_t udpDataIn[MAX_PAYLOAD_SIZE - 14];
+    int32_t dataInPos;
+    uint8_t udpDataOut[MAX_PAYLOAD_SIZE - 14];
+    int32_t dataOutPos;
     #endif
 
 public:
@@ -167,12 +178,17 @@ private:
 
     friend class RF24EthernetClass;
     friend class RF24Client;
-    #ifndef RF24ETHERNET_USE_UDP
+    #if RF24ETHERNET_USE_UDP != 1
     static void _send(uip_udp_userdata_t* data);
-    #else
+    #elif USE_LWIP == 1
     static void _send();
     static void receiveUdp(void* arg, struct udp_pcb* pcb, struct pbuf* p, const ip_addr_t* addr, u16_t port);
     static void sendUdp(void* arg);
+    #elif USE_LWIP == 2
+    static void _send();
+    static void sendUdp(void* arg);
+    IPAddress udpRemoteIP;
+    int udpRemotePort;
     #endif
 };
 

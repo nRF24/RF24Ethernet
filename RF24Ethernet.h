@@ -42,6 +42,26 @@ extern "C" {
 }
 #endif
 
+#if USE_LWIP == 2
+    #include <zephyr/kernel.h>
+    #include <zephyr/net/net_if.h>
+    #include <zephyr/net/ethernet.h>
+    #include <zephyr/net/net_ip.h>
+    #include <zephyr/net/net_core.h>
+    #include <zephyr/net/net_pkt.h>
+    #include <zephyr/kernel.h>
+    #include <zephyr/irq.h>
+    #include <zephyr/sys/byteorder.h>
+
+    #ifndef HTONS
+        #define HTONS(x) sys_cpu_to_be16(x)
+    #endif
+
+    #ifndef htons
+        #define htons(x) sys_cpu_to_be16(x)
+    #endif
+#endif
+
 /**************************************/
 
 #include "RF24Ethernet_config.h"
@@ -57,59 +77,56 @@ extern "C" {
 
 /**************************************/
 
-#if USE_LWIP < 1
-    #include "ethernet_comp.h"
+#include "ethernet_comp.h"
 
-    #if __has_include(<IPAddress.h>)
-        #include <IPAddress.h>
-    #elif __has_include("IPAddress.h")
-        #include "IPAddress.h"
-    #else
-        #include <Arduino.h>
-    #endif
-    #include "RF24Client.h"
-    #include "RF24Server.h"
+#if __has_include(<IPAddress.h>)
+    #include <IPAddress.h>
+#elif __has_include("IPAddress.h")
+    #include "IPAddress.h"
+#else
+    #include <Arduino.h>
+#endif
+#include "RF24Client.h"
+#include "RF24Server.h"
 
-    #if UIP_CONF_UDP > 0 || USE_LWIP > 0
-        #include "RF24Udp.h"
-        #include "Dns.h"
-    #endif
+#if UIP_CONF_UDP > 0 || USE_LWIP > 0
+    #include "RF24Udp.h"
+    #include "Dns.h"
+#endif
 
-    #define UIPETHERNET_FREEPACKET 1
-    #define UIPETHERNET_SENDPACKET 2
+#define UIPETHERNET_FREEPACKET 1
+#define UIPETHERNET_SENDPACKET 2
 
-    //#define TUN  // Use only the tcp protocol, no ethernet headers or arps
-    #define TAP // Include ethernet headers
+//#define TUN  // Use only the tcp protocol, no ethernet headers or arps
+#define TAP // Include ethernet headers
 
-    #if defined(TAP)
-        #define BUF ((struct uip_eth_hdr*)&uip_buf[0])
-    #endif
-    //#define BUF ((struct uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
+#if defined(TAP)
+    #define BUF ((struct uip_eth_hdr*)&uip_buf[0])
+#endif
+//#define BUF ((struct uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
 
-    #define uip_seteth_addr(eaddr)          \
-        do {                                \
-            uip_ethaddr.addr[0] = eaddr[0]; \
-            uip_ethaddr.addr[1] = eaddr[1]; \
-            uip_ethaddr.addr[2] = eaddr[2]; \
-            uip_ethaddr.addr[3] = eaddr[3]; \
-            uip_ethaddr.addr[4] = eaddr[4]; \
-            uip_ethaddr.addr[5] = eaddr[5]; \
-        } while (0)
-    #define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
+#define uip_seteth_addr(eaddr)          \
+    do {                                \
+        uip_ethaddr.addr[0] = eaddr[0]; \
+        uip_ethaddr.addr[1] = eaddr[1]; \
+        uip_ethaddr.addr[2] = eaddr[2]; \
+        uip_ethaddr.addr[3] = eaddr[3]; \
+        uip_ethaddr.addr[4] = eaddr[4]; \
+        uip_ethaddr.addr[5] = eaddr[5]; \
+    } while (0)
+#define uip_ip_addr(addr, ip) memcpy(addr, &ip[0], 4)
 
-    #define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) // TODO this is not IPV6 capable
+#define ip_addr_uip(a) IPAddress(a[0] & 0xFF, a[0] >> 8, a[1] & 0xFF, a[1] >> 8) // TODO this is not IPV6 capable
 
-    #define uip_seteth_addr(eaddr)          \
-        do {                                \
-            uip_ethaddr.addr[0] = eaddr[0]; \
-            uip_ethaddr.addr[1] = eaddr[1]; \
-            uip_ethaddr.addr[2] = eaddr[2]; \
-            uip_ethaddr.addr[3] = eaddr[3]; \
-            uip_ethaddr.addr[4] = eaddr[4]; \
-            uip_ethaddr.addr[5] = eaddr[5]; \
-        } while (0)
-
-#endif //USE_LWIP < 1
+#define uip_seteth_addr(eaddr)          \
+    do {                                \
+        uip_ethaddr.addr[0] = eaddr[0]; \
+        uip_ethaddr.addr[1] = eaddr[1]; \
+        uip_ethaddr.addr[2] = eaddr[2]; \
+        uip_ethaddr.addr[3] = eaddr[3]; \
+        uip_ethaddr.addr[4] = eaddr[4]; \
+        uip_ethaddr.addr[5] = eaddr[5]; \
+    } while (0)
 
 /**************************************/
 
@@ -235,7 +252,7 @@ public:
     #endif
 #endif
 
-#if USE_LWIP > 0
+#if USE_LWIP == 1
 
     static bool useCoreLocking;
     static constexpr unsigned MAX_FRAME_SIZE = MAX_PAYLOAD_SIZE; // packet size excluding FCS
@@ -292,6 +309,14 @@ private:
     #if defined RF24_TAP
     struct timer arp_timer;
     #endif
+#endif
+
+#if USE_LWIP == 2
+
+    bool isInitialized;
+    int sendFrame(const uint8_t* data, size_t len);
+    uint8_t outputBuffer[MAX_PAYLOAD_SIZE];
+    IPAddress ethLocalIP;
 #endif
 
     friend class RF24Server;

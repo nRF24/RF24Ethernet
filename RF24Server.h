@@ -18,7 +18,14 @@
 #ifndef RF24SERVER_H
 #define RF24SERVER_H
 
-#include "Server.h"
+#if __has_include(<Server.h>)
+    #include <Server.h>
+#elif __has_include("Server.h")
+    #include "Server.h"
+#else
+    #include <Arduino.h>
+#endif
+
 #include "RF24Client.h"
 #include "ethernet_comp.h"
 
@@ -43,14 +50,22 @@ public:
      */
     void setTimeout(uint32_t timeout);
 
+    static bool connectionActive;
+    static int serverSocket;
+
 private:
-#if USE_LWIP > 0
+#if USE_LWIP < 1
+    uint16_t _port;
+#elif USE_LWIP == 1
     static struct tcp_pcb* sPcb;
     static struct tcp_pcb* bindPcb;
     static uint16_t _port;
     static EthernetClient::ConnectState* serverState;
-#else
-    uint16_t _port;
+#elif USE_LWIP == 2
+    static uint16_t _port;
+    static bool serverListening;
+
+    static RF24Client serverClient;
 #endif
 };
 

@@ -20,7 +20,30 @@
 
 #include "RF24Ethernet.h"
 
-#if USE_LWIP > 0
+#if USE_LWIP == 2
+
+    #include <zephyr/kernel.h>
+    #include <zephyr/logging/log.h>
+    #include <zephyr/net/net_pkt.h>
+    #include <zephyr/net/net_if.h>
+    #include <zephyr/net/net_core.h>
+    #include <zephyr/net/ethernet.h>
+    #include <zephyr/net/net_ip.h>
+
+IPAddress RF24EthernetClass::_dnsServerAddress;
+
+extern "C" {
+    #include "drivers/net/rf24_netif.h"
+}
+
+extern "C" int rf24_cpp_tx_frame(const uint8_t* data, size_t len)
+{
+    return RF24Ethernet.sendFrame(data, len); // global instance
+}
+
+#endif
+
+#if USE_LWIP == 1
 RF24EthernetClass::EthQueue RF24EthernetClass::RXQueue;
 netif RF24EthernetClass::myNetif;
 bool RF24EthernetClass::useCoreLocking;
@@ -150,6 +173,7 @@ err_t netif_output(struct netif* netif, struct pbuf* p)
     RF24NetworkHeader headerOut(nodeAddress, EXTERNAL_DATA_TYPE);
 
     if (total_len && total_len <= MAX_PAYLOAD_SIZE) {
+
         if (!RF24Ethernet.network.write(headerOut, buf, total_len)) {
             return ERR_OK;
         }
@@ -193,18 +217,24 @@ err_t netif_init(struct netif* myNetif)
     #if defined(RF24_TAP)
 RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network) : radio(_radio), network(_network) // fn_uip_cb(NULL)
 {
-        #if USE_LWIP > 0
+        #if USE_LWIP == 1
     RF24Client::gState[0] = new RF24Client::ConnectState;
     RF24Client::gState[1] = new RF24Client::ConnectState;
+        #endif
+        #if USE_LWIP == 2
+    isInitialized = false;
         #endif
 }
 
     #else // Using RF24Mesh
 RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
 {
-        #if USE_LWIP > 0
+        #if USE_LWIP == 1
     RF24Client::gState[0] = new RF24Client::ConnectState;
     RF24Client::gState[1] = new RF24Client::ConnectState;
+        #endif
+        #if USE_LWIP == 2
+    isInitialized = false;
         #endif
 }
     #endif
@@ -213,18 +243,24 @@ RF24EthernetClass::RF24EthernetClass(RF24& _radio, RF24Network& _network, RF24Me
     #if defined(RF24_TAP)
 RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network) : radio(_radio), network(_network) // fn_uip_cb(NULL)
 {
-        #if USE_LWIP > 0
+        #if USE_LWIP == 1
     RF24Client::gState[0] = new RF24Client::ConnectState;
     RF24Client::gState[1] = new RF24Client::ConnectState;
+        #endif
+        #if USE_LWIP == 2
+    isInitialized = false;
         #endif
 }
 
     #else // Using RF24Mesh
 RF24EthernetClass::RF24EthernetClass(nrf_to_nrf& _radio, RF52Network& _network, RF52Mesh& _mesh) : radio(_radio), network(_network), mesh(_mesh) // fn_uip_cb(NULL)
 {
-        #if USE_LWIP > 0
+        #if USE_LWIP == 1
     RF24Client::gState[0] = new RF24Client::ConnectState;
     RF24Client::gState[1] = new RF24Client::ConnectState;
+        #endif
+        #if USE_LWIP == 2
+    isInitialized = false;
         #endif
 }
     #endif
@@ -338,7 +374,7 @@ void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway
     #if defined(RF24_TAP)
     uip_arp_init();
     #endif
-#else
+#elif USE_LWIP == 1
 
     RF24Client::activeState = 0;
     // Allocate data for a single client
@@ -380,6 +416,40 @@ void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway
     }
     #endif
 
+#elif USE_LWIP == 2
+
+    struct net_if* iface = rf24_netif_get_iface();
+    if (!iface) {
+        IF_RF24ETHERNET_DEBUG_CLIENT(printk("NET: rf24 iface null\n"));
+        return;
+    }
+
+    struct in_addr my_ip, netmask, gw;
+
+    my_ip.s_addr = (uint32_t)ip;
+    netmask.s_addr = (uint32_t)subnet;
+    gw.s_addr = (uint32_t)gateway;
+
+    //net_addr_pton(AF_INET, (uint32_t)ip, &my_ip);
+    //net_addr_pton(AF_INET, (uint32_t)subnet, &netmask);
+    //net_addr_pton(AF_INET, (uint32_t)gateway, &gw);
+
+    net_if_ipv4_addr_add(iface, &my_ip, NET_ADDR_MANUAL, 0);
+    net_if_ipv4_set_netmask_by_addr(iface, &my_ip, &netmask);
+    net_if_ipv4_set_gw(iface, &gw);
+
+    int ret = net_if_up(iface);
+    if (ret < 0 && ret != -EALREADY) {
+        IF_RF24ETHERNET_DEBUG_CLIENT(printk("NET: net_if_up failed (%d)\n", ret));
+        return;
+    }
+    IF_RF24ETHERNET_DEBUG_CLIENT(printk("NET: iface up\n"));
+
+    ethLocalIP = ip;
+    //printk("%s\n",localIP().toString().c_str());
+    _dnsServerAddress = dns;
+    isInitialized = true;
+
 #endif
 }
 
@@ -391,7 +461,7 @@ void RF24EthernetClass::set_gateway(IPAddress gwIP)
     uip_ipaddr_t ipaddr;
     uip_ip_addr(ipaddr, gwIP);
     uip_setdraddr(ipaddr);
-#else
+#elif USE_LWIP == 1
     ip4_addr_t new_gw;
     IP4_ADDR(&new_gw, gwIP[0], gwIP[1], gwIP[2], gwIP[3]);
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
@@ -405,6 +475,17 @@ void RF24EthernetClass::set_gateway(IPAddress gwIP)
         ETHERNET_REMOVE_LOCK();
     }
     #endif
+#elif USE_LWIP == 2
+
+    struct net_if* iface = rf24_netif_get_iface();
+    if (iface == NULL) {
+        IF_RF24ETHERNET_DEBUG_CLIENT(printk("NET: Set GW: no default iface\n"));
+        return;
+    }
+    struct in_addr gate;
+    gate.s_addr = gwIP;
+    net_if_ipv4_set_gw(iface, &gate);
+
 #endif
 }
 
@@ -414,7 +495,7 @@ void RF24EthernetClass::listen(uint16_t port)
 {
 #if USE_LWIP < 1
     uip_listen(HTONS(port));
-#else
+#elif USE_LWIP == 1
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
     if (useCoreLocking) {
@@ -444,6 +525,8 @@ void RF24EthernetClass::listen(uint16_t port)
         ETHERNET_REMOVE_LOCK();
     }
     #endif
+#else
+
 #endif
 }
 
@@ -455,14 +538,18 @@ IPAddress RF24EthernetClass::localIP()
     uip_ipaddr_t a;
     uip_gethostaddr(a);
     return ip_addr_uip(a);
-#else
+#elif USE_LWIP == 1
     if (netif_is_up(&myNetif)) {
         // Get the IP address structure
         const ip4_addr_t* ip_addr = netif_ip4_addr(&myNetif);
         return (IPAddress(ip_addr->addr));
     }
-    return IPAddress {0, 0, 0, 0};
+#elif USE_LWIP == 2
+
+    return ethLocalIP;
+
 #endif
+    return IPAddress {0, 0, 0, 0};
 }
 
 /*******************************************************/
@@ -473,13 +560,26 @@ IPAddress RF24EthernetClass::subnetMask()
     uip_ipaddr_t a;
     uip_getnetmask(a);
     return ip_addr_uip(a);
-#else
+#elif USE_LWIP == 1
     if (netif_is_up(&myNetif)) {
         // Get the IP address structure
         const ip4_addr_t* ip_addr = netif_ip4_netmask(&myNetif);
         return (IPAddress(ip_addr->addr));
     }
     return IPAddress {0, 0, 0, 0};
+#elif USE_LWIP == 2
+
+    struct net_if* iface = rf24_netif_get_iface();
+    if (iface == NULL) {
+        IF_RF24ETHERNET_DEBUG_CLIENT(printk("NET: Set GW: no default iface\n"));
+        return IPAddress {0, 0, 0, 0};
+    }
+
+    struct in_addr my_ip;
+    my_ip.s_addr = localIP();
+    struct in_addr mask = net_if_ipv4_get_netmask_by_addr(iface, &my_ip);
+    return mask.s_addr;
+
 #endif
 }
 
@@ -491,13 +591,22 @@ IPAddress RF24EthernetClass::gatewayIP()
     uip_ipaddr_t a;
     uip_getdraddr(a);
     return ip_addr_uip(a);
-#else
+#elif USE_LWIP == 1
     if (netif_is_up(&myNetif)) {
         // Get the IP address structure
         const ip4_addr_t* ip_addr = netif_ip4_gw(&myNetif);
         return (IPAddress(ip_addr->addr));
     }
     return IPAddress {0, 0, 0, 0};
+#elif USE_LWIP == 2
+    struct net_if* iface = rf24_netif_get_iface();
+    if (iface == NULL) {
+        IF_RF24ETHERNET_DEBUG_CLIENT(printk("NET: Set GW: no default iface\n"));
+        return IPAddress {0, 0, 0, 0};
+    }
+
+    return net_if_ipv4_get_gw(iface).s_addr;
+
 #endif
 }
 
@@ -509,7 +618,7 @@ IPAddress RF24EthernetClass::dnsServerIP()
 }
 
 /*******************************************************/
-#if USE_LWIP > 0
+#if USE_LWIP == 1
 //Should be call inside PHY RX Ethernet IRQ
 void RF24EthernetClass::EthRX_Handler(const uint8_t* ethFrame, const uint16_t lenEthFrame)
 {
@@ -534,11 +643,13 @@ void RF24EthernetClass::EthRX_Handler(const uint8_t* ethFrame, const uint16_t le
 void RF24EthernetClass::tick()
 {
 
-#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_NRF52) || defined ARDUINO_ARCH_RP2350 || defined ARDUINO_NRF54L15
-    yield();
-#elif defined(ARDUINO_ARCH_ESP32)
+#if defined __ZEPHYR__
+    k_msleep(1);
+#elif defined ARDUINO_ARCH_ESP32
     const TickType_t xDelay = pdMS_TO_TICKS(1);
     vTaskDelay(xDelay);
+#elif defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_NRF52) || defined ARDUINO_ARCH_RP2350 || defined ARDUINO_NRF54L15
+    yield();
 #endif
 
 #if USE_LWIP < 1
@@ -635,7 +746,7 @@ void RF24EthernetClass::tick()
 }
     #endif // RF24_TAP
 
-#else // Using LWIP
+#elif USE_LWIP == 1 // Using LWIP
 
     uint8_t result = RF24Ethernet.mesh.update();
 
@@ -688,6 +799,23 @@ void RF24EthernetClass::tick()
             ETHERNET_REMOVE_LOCK();
         }
     #endif
+    }
+
+#elif USE_LWIP == 2
+
+    uint8_t result = RF24Ethernet.mesh.update();
+
+    if (Ethernet.mesh.mesh_address == 0) {
+        Ethernet.mesh.DHCP();
+    }
+
+    if (result == EXTERNAL_DATA_TYPE) {
+        const uint16_t len = RF24Ethernet.network.frag_ptr->message_size;
+        if (len == 0 || len > MAX_PAYLOAD_SIZE) {
+            return;
+        }
+        uint8_t* buf = RF24Ethernet.network.frag_ptr->message_buffer;
+        rf24_netif_deliver_frame(RF24Ethernet.network.frag_ptr->message_buffer, RF24Ethernet.network.frag_ptr->message_size);
     }
 
 #endif
@@ -750,7 +878,49 @@ void RF24EthernetClass::network_send()
 }
 
 /*******************************************************/
-/*
-void uipudp_appcall() {
+#if USE_LWIP == 2
+int RF24EthernetClass::sendFrame(const uint8_t* data, size_t len)
+{
+    IF_RF24ETHERNET_DEBUG_CLIENT(printk("Net out\n"));
 
-}*/
+    if (!data || !len || !isInitialized) {
+        return -EINVAL;
+    }
+
+    IPAddress gwIP = Ethernet.gatewayIP();
+
+    int16_t nodeAddress = 0;
+    const uint8_t* buf = data;
+    //If not the master node
+    if (Ethernet.mesh.mesh_address != 0) {
+        if (gwIP[3] != buf[19]) { // If not sending to the gateway
+            IPAddress local_ip = Ethernet.localIP();
+            if (local_ip[0] == buf[16] && local_ip[1] == buf[17]) { // If we are local within the nRF24 network
+                //Request an address lookup from the Master node
+                nodeAddress = Ethernet.mesh.getAddress((char)buf[19]); // Do an address lookup
+                if (nodeAddress < 0) {
+                    nodeAddress = 0; // If the result is negative, send to master
+                }
+            } // If this address is outside the nRF24 network, it will be send to master (00)
+        }
+    }
+    else {
+        IPAddress local_ip = Ethernet.localIP();
+
+        if (local_ip[0] == buf[16] && local_ip[1] == buf[17]) { // If within the nRF24 radio network, do a lookup, else send to self (00)
+            nodeAddress = Ethernet.mesh.getAddress((char)buf[19]);
+            if (nodeAddress < 0) {
+                return 0;
+            }
+        }
+    }
+
+    memcpy(outputBuffer, data, len);
+    RF24NetworkHeader headerOut(nodeAddress, EXTERNAL_DATA_TYPE);
+    bool ok = RF24Ethernet.network.write(headerOut, outputBuffer, len);
+    IF_RF24ETHERNET_DEBUG_CLIENT(printk("Net out ok:%d len=%zu\n", ok, len));
+
+    return 0; //ok ? 0 : -EIO;
+}
+#endif
+/*******************************************************/
