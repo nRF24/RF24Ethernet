@@ -304,6 +304,7 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
     if (err != ERR_OK || state == nullptr) {
         if (p)
             pbuf_free(p);
+
         return err;
     }
 
@@ -992,7 +993,6 @@ void RF24Client::_stop()
     }
 
     gState[activeState]->connected = false;
-    dataSize[activeState] = 0;
     gState[activeState]->dataSentSize = 0;
 }
 #endif
