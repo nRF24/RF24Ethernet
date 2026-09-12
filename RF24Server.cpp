@@ -159,7 +159,6 @@ void RF24Server::begin()
     RF24Client::gState[1]->stateActiveID = 1;
 
     if (serverState != nullptr) {
-        serverState->finished = false;
         serverState->connected = false;
         serverState->result = 0;
         serverState->waiting_for_ack = false;
