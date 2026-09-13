@@ -449,6 +449,7 @@ void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway
     //printk("%s\n",localIP().toString().c_str());
     _dnsServerAddress = dns;
     isInitialized = true;
+    RF24Client::serverConnectionTimeout = 30000;
 
 #endif
 }
