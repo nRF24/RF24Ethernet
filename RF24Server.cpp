@@ -57,7 +57,7 @@ bool RF24Server::serverListening;
 bool RF24Server::connectionActive;
 int RF24Server::serverSocket = -1;
 RF24Client RF24Server::serverClient;
-
+uint32_t RF24Server::timeoutTimer;
 RF24Server::RF24Server(uint16_t port)
 {
     _port = port;
@@ -85,7 +85,19 @@ RF24Client RF24Server::available()
 
     uint32_t data = 1;
 
+    if (millis() - timeoutTimer > RF24Client::serverConnectionTimeout) {
+        connectionActive = false;
+        if (RF24Client::_socket >= 0) {
+            zsock_close(RF24Client::_socket);
+            RF24Client::_socket = -1;
+        }
+        timeoutTimer = millis();
+    }
+
     if (!Ethernet.isInitialized || !serverListening || connectionActive || RF24Client::g_rf24client_instance->_socket > 0) {
+        if (RF24Client(data)) {
+            timeoutTimer = millis();
+        }
         return RF24Client(data);
     }
 
@@ -99,12 +111,17 @@ RF24Client RF24Server::available()
         // Check if the "error" is just the expected non-blocking silence
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             // Absolutely normal. No one is connecting right now.
+            if (RF24Client(data)) {
+                timeoutTimer = millis();
+            }
             return RF24Client(data);
         }
 
         // This is a REAL error (e.g., socket closed, invalid descriptor, stack crash)
         printk("CRITICAL Accept error: %d\n", errno);
-
+        if (RF24Client(data)) {
+            timeoutTimer = millis();
+        }
         return RF24Client(data);
     }
 
@@ -114,7 +131,7 @@ RF24Client RF24Server::available()
 
     serverClient._socket = client_sock;
     RF24Client::g_rf24client_instance = &serverClient;
-
+    timeoutTimer = millis();
     return serverClient;
 
 #endif
@@ -159,7 +176,6 @@ void RF24Server::begin()
     RF24Client::gState[1]->stateActiveID = 1;
 
     if (serverState != nullptr) {
-        serverState->finished = false;
         serverState->connected = false;
         serverState->result = 0;
         serverState->waiting_for_ack = false;

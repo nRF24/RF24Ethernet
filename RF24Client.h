@@ -202,10 +202,6 @@ protected:
      */
     struct ConnectState
     {
-        volatile bool finished = false;
-        volatile bool connected = false;
-        volatile bool waiting_for_ack = false;
-        volatile bool backlogWasClosed = false;
 
         volatile bool backlogWasAccepted = false;
         volatile bool clientPollingSetup = 0;
@@ -219,6 +215,11 @@ protected:
         volatile uint32_t clientTimer = millis();
         volatile uint32_t closeTimer = millis();
         volatile uint32_t identifier = 0;
+        volatile uint32_t dataSentSize = 0;
+
+        volatile bool connected = false;
+        volatile bool waiting_for_ack = false;
+
     } __attribute__((packed));
 
     /** Connection states */
