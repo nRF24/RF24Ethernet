@@ -215,7 +215,7 @@ protected:
         volatile uint32_t clientTimer = millis();
         volatile uint32_t closeTimer = millis();
         volatile uint32_t identifier = 0;
-        volatile uint32_t dataSentSize = 0;
+        volatile uint16_t dataSentSize = 0;
 
         volatile bool connected = false;
         volatile bool waiting_for_ack = false;

@@ -92,6 +92,7 @@ RF24Client RF24Server::available()
             RF24Client::_socket = -1;
         }
         timeoutTimer = millis();
+        return RF24Client(data);
     }
 
     if (!Ethernet.isInitialized || !serverListening || connectionActive || RF24Client::g_rf24client_instance->_socket > 0) {

@@ -198,6 +198,7 @@ void RF24Client::error_callback(void* arg, err_t err)
         state->result = err;
         state->connected = false;
         state->waiting_for_ack = false;
+        state->dataSentSize = 0;
         dataSize[state->stateActiveID] = 0;
         if (state->stateActiveID == activeState) {
             myPcb = nullptr;
@@ -515,6 +516,7 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
     gState[actState]->sConnectionTimeout = serverConnectionTimeout;
     gState[actState]->connectTimestamp = millis();
     gState[actState]->serverTimer = millis();
+    gState[actState]->dataSentSize = 0;
 
     tcp_arg(tpcb, RF24Client::gState[actState]);
     tcp_recv(tpcb, srecv_callback);
@@ -708,7 +710,7 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
 
     dataSize[activeState] = 0;
     memset(incomingData[activeState], 0, INCOMING_DATA_SIZE);
-
+    gState[activeState]->dataSentSize = 0;
     gState[activeState]->connected = false;
     gState[activeState]->result = 0;
     tcp_arg(myPcb, gState[activeState]);
@@ -1659,6 +1661,8 @@ void RF24Client::flush()
     dataSize[activeState] = 0;
     gState[activeState]->dataSentSize = 0;
 #elif USE_LWIP == 2
-
+    while (available()) {
+        read();
+    }
 #endif
 }
