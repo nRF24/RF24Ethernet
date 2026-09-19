@@ -104,4 +104,3 @@ jobs:
       # needed to post/update comment on PR threads
       pull-requests: write
     uses: nRF24/.github/.github/workflows/arduino_size_deltas.yaml@main
-
