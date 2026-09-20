@@ -64,7 +64,7 @@ private:
 #elif USE_LWIP == 2
     static uint16_t _port;
     static bool serverListening;
-
+    static uint32_t timeoutTimer;
     static RF24Client serverClient;
 #endif
 };

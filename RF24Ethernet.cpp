@@ -449,6 +449,7 @@ void RF24EthernetClass::configure(IPAddress ip, IPAddress dns, IPAddress gateway
     //printk("%s\n",localIP().toString().c_str());
     _dnsServerAddress = dns;
     isInitialized = true;
+    RF24Client::serverConnectionTimeout = 30000;
 
 #endif
 }
@@ -510,7 +511,6 @@ void RF24EthernetClass::listen(uint16_t port)
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: Unable to bind to port"););
     }
 
-    RF24Client::gState[0]->finished = false;
     RF24Client::gState[0]->connected = false;
     RF24Client::gState[0]->result = 0;
     RF24Client::gState[0]->waiting_for_ack = false;
@@ -919,7 +919,6 @@ int RF24EthernetClass::sendFrame(const uint8_t* data, size_t len)
     RF24NetworkHeader headerOut(nodeAddress, EXTERNAL_DATA_TYPE);
     bool ok = RF24Ethernet.network.write(headerOut, outputBuffer, len);
     IF_RF24ETHERNET_DEBUG_CLIENT(printk("Net out ok:%d len=%zu\n", ok, len));
-
     return 0; //ok ? 0 : -EIO;
 }
 #endif

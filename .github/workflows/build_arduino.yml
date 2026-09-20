@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   build:
-    uses: nRF24/.github/.github/workflows/build_arduino.yaml@main
+    uses: nRF24/.github/.github/workflows/build_arduino.yaml@f8a930d58e246a4e7fbbbe0516da60cf5704b74d
     with:
       sketch-paths: |
         - examples/Getting_Started_SimpleClient_Mesh
@@ -49,6 +49,7 @@ jobs:
         - source-url: https://github.com/nRF24/RF24Network.git
         - source-url: https://github.com/nRF24/RF24Mesh.git
         - name: MQTT
+        - name: lwIP
         - source-path: ./
       fqbn: ${{ matrix.fqbn }}
       enable-deltas-report: ${{ matrix.enable-deltas-report }}
