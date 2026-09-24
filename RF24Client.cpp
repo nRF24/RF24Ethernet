@@ -615,23 +615,40 @@ uint8_t RF24Client::connected()
     return 0;
 #elif USE_LWIP == 2
 
-    if (_socket < 0)
+    if (_socket < 0) {
         return 0;
+    }
+
+    RF24Ethernet.update();
 
     struct zsock_pollfd pfd
     {
     };
     pfd.fd = _socket;
-    pfd.events = ZSOCK_POLLIN | ZSOCK_POLLOUT; // Also check if writable
-    int rc = zsock_poll(&pfd, 1, 0);
-    if (rc < 0)
-        return 1;
+    pfd.events = ZSOCK_POLLIN;
 
-    // Just check the poll flags, don't peek
-    if (pfd.revents & (ZSOCK_POLLHUP | ZSOCK_POLLERR | ZSOCK_POLLNVAL)) {
-        return 0; // Closed
+    int rc = zsock_poll(&pfd, 1, 0);
+
+    if (rc < 0) {
+        return 0;
     }
 
+    if (rc > 0) {
+        if (pfd.revents & (ZSOCK_POLLHUP | ZSOCK_POLLERR | ZSOCK_POLLNVAL)) {
+            return 0;
+        }
+
+        if (pfd.revents & ZSOCK_POLLIN) {
+            uint8_t dummy;
+            int n = zsock_recv(_socket, &dummy, 1, ZSOCK_MSG_PEEK | ZSOCK_MSG_DONTWAIT);
+            if (n == 0) {
+                return 0;
+            }
+            if (n < 0 && (errno != EAGAIN && errno != EWOULDBLOCK)) {
+                return 0;
+            }
+        }
+    }
     return 1;
 #endif
 }
