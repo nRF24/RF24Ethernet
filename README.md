@@ -7,11 +7,13 @@
 
 ### Updated 2026:
 
-RF24Ethernet now supports the lwIP stack!
+RF24Ethernet now supports the lwIP stack and native Zephyr networking!
 
 Faster devices (>50mHz) will automatically use the lwIP stack instead of the uIP stack, providing a better, faster and more reliable way to connect.
 
-To define manually, define USE_LWIP 1 or edit the RF24Ethernet.h file and add define USE_LWIP 1
+To define manually, define USE_LWIP 1 & define RF24ETHERNET_USE_UDP 1 or edit the RF24Ethernet.h file and add define USE_LWIP 1, define RF24ETHERNET_USE_UDP 1
+
+To use native Zephyr networking, define USE_LWIP 2 and define RF24ETHERNET_USE_UDP 1
 
 RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries
 
@@ -48,7 +50,7 @@ This table illustrates how the RF24 ecosystem aligns with the standard OSI (Open
 
 ## Licenses
 --------------
-IF USING the lwIP STACK:
+IF USING the lwIP STACK or native Zephyr networking:
 --------------
 
 RF24Ethernet.h, RF24Ethernet.cpp, RF24Server.h, RF24Server.cpp, RF24Client.h, RF24Client.cpp, RF24Udp.h, RF24Udp.cpp
