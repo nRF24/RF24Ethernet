@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.2.1] - 2026-09-26
+
+### <!-- 3 --> 🗑️ Removed
+
+- Zephyr Networking  & lwIP Fixes by \@TMRh20 in [#85](https://github.com/nRF24/RF24Ethernet/pull/85)
+- Zephyr patch3 by \@TMRh20 in [#87](https://github.com/nRF24/RF24Ethernet/pull/87)
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Fix connected() function (Zephyr) by \@TMRh20 in [#89](https://github.com/nRF24/RF24Ethernet/pull/89)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Changes for UnoQ by \@TMRh20 in [#82](https://github.com/nRF24/RF24Ethernet/pull/82)
+- Lower MIN_FRAME_SIZE by \@TMRh20 in [#83](https://github.com/nRF24/RF24Ethernet/pull/83)
+
+[2.2.1]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.0...v2.2.1
+
+Full commit diff: [`v2.2.0...v2.2.1`][2.2.1]
+
 ## [2.2.0] - 2026-08-14
 
 ### <!-- 1 --> 🚀 Added
@@ -15,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### <!-- 4 --> 🛠️ Fixed
 
 - Fix hangs when using server by \@TMRh20 in [#81](https://github.com/nRF24/RF24Ethernet/pull/81)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Bump version to v2.2.0 by \@TMRh20 in [`c81094e`](https://github.com/nRF24/RF24Ethernet/commit/c81094ea910a7318cf882fc0e4e1ab5fd8db7d60)
 
 [2.2.0]: https://github.com/nRF24/RF24Ethernet/compare/v2.1.4...v2.2.0
 
