@@ -623,9 +623,7 @@ uint8_t RF24Client::connected()
 
     // 1. If we already established the connection before, track via standard POLLIN/errors
     if (connectionEstablished) {
-        struct zsock_pollfd pfd
-        {
-        };
+        struct zsock_pollfd pfd {};
         pfd.fd = _socket;
         pfd.events = ZSOCK_POLLIN;
 
