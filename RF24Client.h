@@ -296,6 +296,7 @@ private:
     int _lastError;
     static RF24Client* g_rf24client_instance;
     static uint8_t peekBuffer[64];
+    bool connectionEstablished;
 
 #endif
 
