@@ -621,35 +621,92 @@ uint8_t RF24Client::connected()
 
     RF24Ethernet.update();
 
-    struct zsock_pollfd pfd
-    {
-    };
+    // 1. If we already established the connection before, track via standard POLLIN/errors
+    if (connectionEstablished) {
+        struct zsock_pollfd pfd
+        {
+        };
+        pfd.fd = _socket;
+        pfd.events = ZSOCK_POLLIN;
+
+        int rc = zsock_poll(&pfd, 1, 0);
+        if (rc < 0)
+            return 0;
+
+        if (rc > 0) {
+            if (pfd.revents & (ZSOCK_POLLHUP | ZSOCK_POLLERR | ZSOCK_POLLNVAL)) {
+                connectionEstablished = false;
+                if (_socket >= 0) {
+                    zsock_close(_socket);
+                    _socket = -1;
+                }
+                return 0;
+            }
+            if (pfd.revents & ZSOCK_POLLIN) {
+                uint8_t dummy;
+                int n = zsock_recv(_socket, &dummy, 1, ZSOCK_MSG_PEEK | ZSOCK_MSG_DONTWAIT);
+                if (n == 0) { // Remote peer closed connection (FIN)
+                    connectionEstablished = false;
+                    if (_socket >= 0) {
+                        zsock_close(_socket);
+                        _socket = -1;
+                    }
+                    return 0;
+                }
+            }
+        }
+        return 1;
+    }
+
+    // 2. Handshake Phase: Check if the background connect has finished
+    struct zsock_pollfd pfd {};
     pfd.fd = _socket;
-    pfd.events = ZSOCK_POLLIN;
+    pfd.events = ZSOCK_POLLOUT; // A successful non-blocking connect makes the socket writable
 
     int rc = zsock_poll(&pfd, 1, 0);
-
     if (rc < 0) {
+        return 0; // Poll failed
+    }
+
+    // If poll returns 0, the handshake is still actively processing in the background (EINPROGRESS)
+    if (rc == 0) {
         return 0;
     }
 
-    if (rc > 0) {
-        if (pfd.revents & (ZSOCK_POLLHUP | ZSOCK_POLLERR | ZSOCK_POLLNVAL)) {
-            return 0;
+    // The socket state changed. Let's see if it's an error or a success.
+    if (pfd.revents & (ZSOCK_POLLERR | ZSOCK_POLLHUP)) {
+        if (_socket >= 0) {
+            zsock_close(_socket);
+            _socket = -1;
+        }
+        return 0; // Failed to connect
+    }
+
+    if (pfd.revents & ZSOCK_POLLOUT) {
+        // Double-check the socket's internal error state to confirm success
+        int error = 0;
+        socklen_t len = sizeof(error);
+
+        int ret = zsock_getsockopt(_socket, SOL_SOCKET, SO_ERROR, &error, &len);
+        if (ret < 0 || error != 0) {
+            if (_socket >= 0) {
+                zsock_close(_socket);
+                _socket = -1;
+            }
+            return 0; // The handshake failed behind the scenes (e.g. Connection Refused)
         }
 
-        if (pfd.revents & ZSOCK_POLLIN) {
-            uint8_t dummy;
-            int n = zsock_recv(_socket, &dummy, 1, ZSOCK_MSG_PEEK | ZSOCK_MSG_DONTWAIT);
-            if (n == 0) {
-                return 0;
-            }
-            if (n < 0 && (errno != EAGAIN && errno != EWOULDBLOCK)) {
-                return 0;
-            }
-        }
+        // Connection successfully established!
+        connectionEstablished = true;
+        return 1;
     }
-    return 1;
+
+    if (_socket >= 0) {
+        zsock_close(_socket);
+        _socket = -1;
+    }
+    return 0;
+
 #endif
 }
 
@@ -778,8 +835,9 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
         return -EINVAL;
 
     int sock = zsock_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (sock < 0)
+    if (sock < 0) {
         return -errno;
+    }
 
     // --- CRITICAL FIX 1: Set the socket to non-blocking BEFORE connecting ---
     int flags = zsock_fcntl(sock, F_GETFL, 0);
