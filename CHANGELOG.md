@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.2.2] - 2026-10-19
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Fix for \#90 by \@TMRh20 in [#91](https://github.com/nRF24/RF24Ethernet/pull/91)
+
+[2.2.2]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.1...v2.2.2
+
+Full commit diff: [`v2.2.1...v2.2.2`][2.2.2]
+
 ## [2.2.1] - 2026-09-26
 
 ### <!-- 3 --> 🗑️ Removed
@@ -21,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changes for UnoQ by \@TMRh20 in [#82](https://github.com/nRF24/RF24Ethernet/pull/82)
 - Lower MIN_FRAME_SIZE by \@TMRh20 in [#83](https://github.com/nRF24/RF24Ethernet/pull/83)
+- Bump version to v2.2.1 by \@TMRh20 in [`591d847`](https://github.com/nRF24/RF24Ethernet/commit/591d847344ca41b6b6782b4a8c99ee51342facaf)
 
 [2.2.1]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.0...v2.2.1
 
