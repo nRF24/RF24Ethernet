@@ -224,17 +224,17 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
         }
         if (tpcb != nullptr) {
             if (tcp_close(tpcb) != ERR_OK) {
-                tcp_abort(tpcb);
-                tpcb = nullptr;
-                if (state->stateActiveID == activeState) {
+                if (myPcb == tpcb) {
                     myPcb = nullptr;
                 }
+                tcp_abort(tpcb);
+                tpcb = nullptr;
                 return ERR_ABRT;
             }
-            tpcb = nullptr;
-            if (state->stateActiveID == activeState) {
+            if (myPcb == tpcb) {
                 myPcb = nullptr;
             }
+            tpcb = nullptr;
         }
         return ERR_OK;
     }
@@ -248,6 +248,7 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
     IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Server: Copy data to "); Serial.println(state->stateActiveID););
 
     struct pbuf* q = p;
+    uint16_t acked = 0;
 
     uint32_t timeout = millis();
     while (q != nullptr) {
@@ -258,6 +259,7 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
         if (dataSize[id] + q->len < INCOMING_DATA_SIZE) {
             memcpy(&incomingData[id][dataSize[id]], data, q->len);
             dataSize[id] += q->len;
+            acked += q->len;
         }
         else {
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: srecv - Out of incoming buffer space"););
@@ -265,8 +267,8 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
         q = q->next;
     }
 
-    if (tpcb != nullptr) {
-        tcp_recved(tpcb, p->tot_len);
+    if (tpcb != nullptr && acked > 0) {
+        tcp_recved(tpcb, acked);
     }
     if (p) {
         pbuf_free(p);
@@ -288,17 +290,17 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
         }
         if (tpcb != nullptr) {
             if (tcp_close(tpcb) != ERR_OK) {
-                tcp_abort(tpcb);
-                tpcb = nullptr;
-                if (state->stateActiveID == activeState) {
+                if (myPcb == tpcb) {
                     myPcb = nullptr;
                 }
+                tcp_abort(tpcb);
+                tpcb = nullptr;
                 return ERR_ABRT;
             }
-            tpcb = nullptr;
-            if (state->stateActiveID == activeState) {
+            if (myPcb == tpcb) {
                 myPcb = nullptr;
             }
+            tpcb = nullptr;
         }
         return err;
     }
@@ -315,6 +317,7 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
 
     bool id = state->stateActiveID;
     struct pbuf* q = p;
+    uint16_t acked = 0;
     uint32_t timeout = millis();
     while (q != nullptr) {
         if (millis() - timeout > 3000) {
@@ -324,6 +327,7 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
         if (dataSize[id] + q->len < INCOMING_DATA_SIZE) {
             memcpy(&incomingData[id][dataSize[id]], data, q->len);
             dataSize[id] += q->len;
+            acked += q->len;
         }
         else {
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: recv - Out of incoming buffer space"););
@@ -331,8 +335,8 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
         q = q->next;
     }
 
-    if (tpcb != nullptr) {
-        tcp_recved(tpcb, p->tot_len);
+    if (tpcb != nullptr && acked > 0) {
+        tcp_recved(tpcb, acked);
     }
     if (p) {
         pbuf_free(p);
@@ -389,11 +393,13 @@ err_t RF24Client::serverTimeouts(void* arg, struct tcp_pcb* tpcb)
             dataSize[activeState] = 0;
             state->connected = false;
             if (state->result != ERR_OK) {
+                if (myPcb == tpcb) {
+                    tcp_arg(myPcb, nullptr);
+                    myPcb = nullptr;
+                }
                 tcp_arg(tpcb, nullptr);
                 tcp_abort(tpcb);
                 tpcb = nullptr;
-                tcp_arg(myPcb, nullptr);
-                myPcb = nullptr;
                 return ERR_ABRT;
             }
             myPcb = nullptr;
