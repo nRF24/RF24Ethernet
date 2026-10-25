@@ -1640,17 +1640,17 @@ int RF24Client::read(uint8_t* buf, size_t size)
 
     if (available()) {
 
+        const uint16_t avail = dataSize[activeState];
+
         if (size >= dataSize[activeState]) {
-            memcpy(&buf[0], &incomingData[activeState][0], dataSize[activeState]);
-            memmove(&incomingData[activeState][0], &incomingData[activeState][dataSize[activeState]], dataSize[activeState]);
-            size = dataSize[activeState];
+            memcpy(&buf[0], &incomingData[activeState][0], avail);
             dataSize[activeState] = 0;
-            return size;
+            return avail;
         }
         else {
             memcpy(&buf[0], &incomingData[activeState][0], size);
-            memmove(&incomingData[activeState][0], &incomingData[activeState][size], dataSize[activeState] - size);
-            dataSize[activeState] -= size;
+            memmove(&incomingData[activeState][0], &incomingData[activeState][size], avail - size);
+            dataSize[activeState] = avail - size;
             return size;
         }
     }
