@@ -34,6 +34,8 @@ cheap nodes, and no WiFi credentials on every device. Use RF24 software to exten
 
 4. Use the Arduino Library Manager to install RF24Ethernet and its dependencies.
 
+Documentation & Setup Info: http://nRF24.github.io/RF24Ethernet
+
 ### RF24 communication stack general usage
 
 ![docs/images/EthernetMermaidDiagram.svg](docs/images/EthernetMermaidDiagram.svg){width=70% height=70%}
@@ -63,8 +65,6 @@ This table illustrates how the RF24 ecosystem aligns with the standard OSI (Open
 RF24Ethernet now supports the lwIP stack and native Zephyr networking!
 
 RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries
-
-Documentation & Setup Info: http://nRF24.github.io/RF24Ethernet
 
 Downloads: http://tmrh20.github.io/
 
