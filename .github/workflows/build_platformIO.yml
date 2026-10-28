@@ -41,7 +41,9 @@ jobs:
     with:
       example-path: ${{ matrix.example }}
       board-id: ${{ matrix.board }}
-      lib-deps: -l 256dpi/MQTT
+      lib-deps: >-
+        -l 256dpi/MQTT
+        -l vchavezb/lwIP
     strategy:
       fail-fast: false
       matrix:
