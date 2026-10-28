@@ -24,12 +24,15 @@ cheap nodes, and no WiFi credentials on every device. Use RF24 software to exten
 **B: With a Gateway**
 
 1. Download and run the installer on RPi:
+
 `wget https://raw.githubusercontent.com/nRF24/.github/main/installer/install.sh`
 
 2. Make it executable:
+
 `chmod +x install.sh`
 
 3. Run it!
+
 `./install.sh`
 
 4. Use the Arduino Library Manager to install RF24Ethernet and its dependencies.
