@@ -487,6 +487,14 @@ int RF24UDP::read(unsigned char* buffer, size_t len)
         #ifndef RF24ETHERNET_USE_UDP
     if (appdata.packet_in != 0)
     {
+        // Never return more than the packet actually holds, or in_pos walks off
+        // myData and packet_in_size (an int) underflows to a large positive value
+        if (appdata.packet_in_size < 0) {
+            appdata.packet_in_size = 0;
+        }
+        if (len > (size_t)appdata.packet_in_size) {
+            len = (size_t)appdata.packet_in_size;
+        }
         memcpy(buffer, RF24Client::all_data[0].myData + appdata.in_pos, len);
         appdata.in_pos += len;
         appdata.packet_in_size -= len;
@@ -613,8 +621,13 @@ void uipudp_appcall(void)
                 uip_ipaddr_copy(uip_udp_conn->ripaddr, UDPBUF->srcipaddr);
 
                 // discard Linklevel and IP and udp-header and any trailing bytes:
-                memcpy(RF24Client::all_data[0].myData, uip_appdata, uip_len);
-                data->packet_in_size += uip_len;
+                // uip_len is the UDP payload length here; myData is only OUTPUT_BUFFER_SIZE bytes
+                uint16_t udpLen = uip_len;
+                if (udpLen > OUTPUT_BUFFER_SIZE) {
+                    udpLen = OUTPUT_BUFFER_SIZE;
+                }
+                memcpy(RF24Client::all_data[0].myData, uip_appdata, udpLen);
+                data->packet_in_size += udpLen;
                 data->packet_in = 1;
 
                 IF_RF24ETHERNET_DEBUG_UDP(Serial.print(F("RF24UDP udp, uip_newdata received packet: ")); Serial.print(data->packet_next); Serial.print(F(", size: ")); Serial.println(data->packet_in_size); for (int i = 0; i < data->packet_in_size; i++) {  Serial.print(RF24Client::all_data[0].myData[i],HEX); Serial.print(F(" : ")); } Serial.println(););
@@ -640,8 +653,14 @@ void RF24UDP::receiveUdp(void* arg, struct udp_pcb* pcb, struct pbuf* p, const i
 {
 
     if (p != NULL) {
-        memcpy(&udpDataIn[0], p->payload, p->len);
-        dataInPos += p->len;
+        // p->len is attacker/peer controlled; udpDataIn is a fixed static buffer.
+        // Buffer a single datagram's worth, clamped to the buffer size.
+        uint16_t copyLen = p->len;
+        if (copyLen > sizeof(udpDataIn)) {
+            copyLen = sizeof(udpDataIn);
+        }
+        memcpy(&udpDataIn[0], p->payload, copyLen);
+        dataInPos = copyLen;
         pbuf_free(p);
         if (udpState != nullptr) {
             udpState->dataReceived = true;
