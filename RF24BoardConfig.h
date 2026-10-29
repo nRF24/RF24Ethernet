@@ -15,7 +15,7 @@
     #define RF24ETHERNET_USE_UDP 0
 
 // Initial detection for devices w/CPU >=50MHz
-#elif (!defined F_CPU || F_CPU >= 45000000) || defined ARDUINO_ARCH_STM32
+#elif ((!defined F_CPU || F_CPU >= 45000000) || defined ARDUINO_ARCH_STM32) && !defined STM32F1xx
     // Attempt to use internal stack with non-mbed core for RP2040 or RP2350
     #if (defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_MBED) || (defined ARDUINO_ARCH_RP2350 && !defined ARDUINO_ARCH_MBED)
         #ifndef USE_LWIP
