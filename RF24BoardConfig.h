@@ -4,8 +4,18 @@
 
 /*******************************************************************/
 
+// Temporary for nRF52x devices until core changes are in on GitHub: force uIP (no lwIP) and no UDP
+#if defined ARDUINO_ARCH_NRF52 || defined ARDUINO_ARCH_NRF52840 || defined ARDUINO_ARCH_NRF52833 || defined ARDUINO_ARCH_NRF5 \
+    || defined NRF52 || defined NRF52_SERIES                                                                                  \
+    || defined NRF52805_XXAA || defined NRF52810_XXAA || defined NRF52811_XXAA || defined NRF52820_XXAA                       \
+    || defined NRF52832_XXAA || defined NRF52832_XXAB || defined NRF52833_XXAA || defined NRF52840_XXAA
+    #undef USE_LWIP
+    #define USE_LWIP 0
+    #undef RF24ETHERNET_USE_UDP
+    #define RF24ETHERNET_USE_UDP 0
+
 // Initial detection for devices w/CPU >=50MHz
-#if (!defined F_CPU || F_CPU >= 45000000)
+#elif ((!defined F_CPU || F_CPU >= 45000000) || defined ARDUINO_ARCH_STM32) && !defined STM32F1xx
     // Attempt to use internal stack with non-mbed core for RP2040 or RP2350
     #if (defined ARDUINO_ARCH_RP2040 && !defined ARDUINO_ARCH_MBED) || (defined ARDUINO_ARCH_RP2350 && !defined ARDUINO_ARCH_MBED)
         #ifndef USE_LWIP
