@@ -4,25 +4,40 @@
 [![PlatformIO build](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_platformIO.yml/badge.svg)](https://github.com/nRF24/RF24Ethernet/actions/workflows/build_platformIO.yml)
 
 ## Easily create home automation scenarios and sensor networks
+Give $2 Arduino radio nodes a real IP address. Ping them, browse them, and use MQTT, HTTP and SSH
+from your network, with no WiFi or ESP32 needed. A Raspberry Pi/Linux box running RF24Gateway is the
+bridge.
 
-### Updated 2026:
+Why not just use an ESP32?
 
-RF24Ethernet now supports the lwIP stack and native Zephyr networking!
+The RF24 Comm stack uses very little power, and provides a self-healing mesh with range beyond WiFi,
+cheap nodes, and no WiFi credentials on every device. Use RF24 software to extend your ESP32 networks!
 
-Faster devices (>50mHz) will automatically use the lwIP stack instead of the uIP stack, providing a better, faster and more reliable way to connect.
+## Quick Start:
 
-To define manually, define USE_LWIP 1 & define RF24ETHERNET_USE_UDP 1 or edit the RF24Ethernet.h file and add define USE_LWIP 1, define RF24ETHERNET_USE_UDP 1
+**A: No Gateway**
 
-To use native Zephyr networking, define USE_LWIP 2 and define RF24ETHERNET_USE_UDP 1
+1. Install RF24Ethernet from the Arduino Library Manager
 
-RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries
+2. Run the Headless examples on two RF24Ethernet nodes
+
+**B: With a Gateway**
+
+1. Download and run the installer on RPi:
+
+`wget https://raw.githubusercontent.com/nRF24/.github/main/installer/install.sh`
+
+2. Make it executable:
+
+`chmod +x install.sh`
+
+3. Run it!
+
+`./install.sh`
+
+4. Use the Arduino Library Manager to install RF24Ethernet and its dependencies.
 
 Documentation & Setup Info: http://nRF24.github.io/RF24Ethernet
-
-Downloads: http://tmrh20.github.io/
-
-Note: Recent changes to support NRF5x boards prevent usage of RF24 devices with NRF5x boards. Users must use the internal radio with RF24Ethernet.
-See the [nrf_to_nrf Arduino library](https://github.com/TMRh20/nrf_to_nrf).
 
 ### RF24 communication stack general usage
 
@@ -47,6 +62,17 @@ This table illustrates how the RF24 ecosystem aligns with the standard OSI (Open
 *   **Secure Lower Layers:** When using **nrf_to_nrf**, the stack can utilize the nRF52 hardware **CCM module** to provide **Authenticated Encryption (AES-CCM)**. This ensures data privacy (Layer 6) and packet integrity (Layer 2) with near-zero CPU overhead.
 *   **The IP Bridge:** **RF24Ethernet** acts as the "Network Interface Card" (NIC) driver, allowing standard IP stacks (**uIP** for memory-constrained AVR or **lwIP** for high-performance ARM/ESP32) to run over the radio mesh.
 *   **Modernization:** **nrf_to_nrf** serves as a modernized, high-efficiency replacement for the legacy RF24 core library, specifically optimized for integrated nRF52 radio hardware.
+
+### Updated 2026:
+
+RF24Ethernet now supports the lwIP stack and native Zephyr networking!
+
+RF24Ethernet requires the RF24, RF24Network and RF24Mesh libraries
+
+Downloads: http://tmrh20.github.io/
+
+Note: Recent changes to support NRF5x boards prevent usage of RF24 devices with NRF5x boards. Users must use the internal radio with RF24Ethernet.
+See the [nrf_to_nrf Arduino library](https://github.com/TMRh20/nrf_to_nrf).
 
 ## Licenses
 --------------
