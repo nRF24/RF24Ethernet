@@ -6,11 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.2.3] - 2026-10-30
+
+### <!-- 9 --> 🗨️ Changed
+
+- Update readme by \@TMRh20 in [#94](https://github.com/nRF24/RF24Ethernet/pull/94)
+- Disable lwIP for nRF52x by \@TMRh20 in [#95](https://github.com/nRF24/RF24Ethernet/pull/95)
+- Potential Fix for Hardware WDT resets on ESP8266 by \@TMRh20 in [#93](https://github.com/nRF24/RF24Ethernet/pull/93)
+- Update RF24Udp.cpp by \@TMRh20 in [#96](https://github.com/nRF24/RF24Ethernet/pull/96)
+
+[2.2.3]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.2...v2.2.3
+
+Full commit diff: [`v2.2.2...v2.2.3`][2.2.3]
+
 ## [2.2.2] - 2026-10-19
 
 ### <!-- 4 --> 🛠️ Fixed
 
 - Fix for \#90 by \@TMRh20 in [#91](https://github.com/nRF24/RF24Ethernet/pull/91)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Bump version to v2.2.2 by \@TMRh20 in [`800e5a7`](https://github.com/nRF24/RF24Ethernet/commit/800e5a7fdf2865d44ac111469e0c8d3af76ac249)
 
 [2.2.2]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.1...v2.2.2
 
