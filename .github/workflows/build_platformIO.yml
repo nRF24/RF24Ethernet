@@ -75,7 +75,7 @@ jobs:
     needs: [validate_lib_json]
     uses: nRF24/.github/.github/workflows/build_platformio.yaml@main
     with:
-      example-path: "examples/MQTT/mqtt_basic_tls/mqtt_basic_tls.ino"
+      example-path: "examples/MQTT/mqtt_basic_tls"
       board-id: ${{ matrix.board }}
       lib-deps: >-
         -l 256dpi/MQTT
