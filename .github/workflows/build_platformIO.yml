@@ -71,6 +71,21 @@ jobs:
           - "nodemcuv2"
           - "bluepill_f103c8"
 
+  build-tls:
+    needs: [validate_lib_json]
+    uses: nRF24/.github/.github/workflows/build_platformio.yaml@main
+    with:
+      example-path: "examples/MQTT/mqtt_basic_tls/mqtt_basic_tls.ino"
+      board-id: ${{ matrix.board }}
+      lib-deps: >-
+        -l 256dpi/MQTT
+        -l digitaldragon/SSLClient
+    strategy:
+      fail-fast: false
+      matrix:
+        board:
+          - "tinypico"
+
   deploy:
     name: deploy release asset
     if: startsWith(github.ref, 'refs/tags/')
