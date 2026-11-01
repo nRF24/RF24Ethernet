@@ -62,7 +62,6 @@
 #include <MQTT.h>
 #include "printf.h"
 #include "secrets.h"
-#include "temporaryWrapper.h"
 
 RF24 radio(17, 5);  // CE, CSN
 RF24Network network(radio);
@@ -123,9 +122,8 @@ bool connectWiFi() {
 }
 
 EthernetClient ethClient;
-TemporaryClientWrapper tlsTransport(ethClient);
 // TLS layer on top of the RF24Ethernet TCP client
-SSLClient sslClient(&tlsTransport);
+SSLClient sslClient(&ethClient);
 MQTTClient client;
 
 void connect() {
