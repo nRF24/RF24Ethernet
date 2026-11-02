@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.2.4] - 2026-11-02
+
+### <!-- 1 --> 🚀 Added
+
+- Add TLS example to RF24Ethernet for ESP32 by \@TMRh20 in [#97](https://github.com/nRF24/RF24Ethernet/pull/97)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Revert temp wrapper for TLS MQTT client by \@TMRh20 in [#98](https://github.com/nRF24/RF24Ethernet/pull/98)
+
+[2.2.4]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.3...v2.2.4
+
+Full commit diff: [`v2.2.3...v2.2.4`][2.2.4]
+
 ## [2.2.3] - 2026-10-30
 
 ### <!-- 9 --> 🗨️ Changed
@@ -14,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disable lwIP for nRF52x by \@TMRh20 in [#95](https://github.com/nRF24/RF24Ethernet/pull/95)
 - Potential Fix for Hardware WDT resets on ESP8266 by \@TMRh20 in [#93](https://github.com/nRF24/RF24Ethernet/pull/93)
 - Update RF24Udp.cpp by \@TMRh20 in [#96](https://github.com/nRF24/RF24Ethernet/pull/96)
+- Bump version to v2.2.3 by \@TMRh20 in [`408367a`](https://github.com/nRF24/RF24Ethernet/commit/408367a9868d620514b2fad82bc756bbb5be14f3)
 
 [2.2.3]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.2...v2.2.3
 
