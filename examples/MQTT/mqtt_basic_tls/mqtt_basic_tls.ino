@@ -142,6 +142,7 @@ void connect() {
     // Make sure a half-open TLS session is torn down before retrying
     sslClient.stop();
     if (millis() - clTimeoutStart > 30001) {
+      mesh.renewAddress();
       Serial.println();
       return;
     }
