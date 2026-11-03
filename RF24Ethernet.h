@@ -269,7 +269,6 @@ public:
         uint16_t len[MAX_RX_QUEUE];
     };
     static EthQueue RXQueue;
-    
     static constexpr unsigned MAX_TX_QUEUE = 2;
 
     // nRead and nWrite count frames and wrap naturally; the slot is the count % MAX_TX_QUEUE
