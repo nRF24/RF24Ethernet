@@ -74,6 +74,12 @@
         #define ETHERNET_REMOVE_LOCK() ets_intr_unlock()
     #endif
 
+    #if defined ARDUINO_ARCH_ESP8266
+        #define ETHERNET_TX_BARRIER() __asm__ __volatile__("" ::: "memory")
+    #else
+        #define ETHERNET_TX_BARRIER() __sync_synchronize()
+    #endif
+
     #include "ethernet_comp.h"
     #include "RF24Client.h"
     #include "RF24Server.h"

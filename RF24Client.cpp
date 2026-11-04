@@ -84,19 +84,6 @@ err_t RF24Client::sent_callback(void* arg, struct tcp_pcb* tpcb, u16_t len)
         state->clientTimer = millis();
         IF_ETH_DEBUG_L1(Serial.println("Client: Sent cb"););
 
-        if (state->dataSentSize >= len) {
-            state->dataSentSize -= len;
-        }
-        else {
-            state->dataSentSize = 0;
-        }
-
-        if (state->dataSentSize == 0) {
-            state->waiting_for_ack = false;
-        }
-        else {
-            state->waiting_for_ack = true;
-        }
         state->result = ERR_OK;
     }
 
@@ -132,11 +119,13 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
             ETHERNET_REMOVE_LOCK();
         }
     #endif
-        fstate->waiting_for_ack = true;
     }
 
     while (len > tcp_sndbuf(fpcb)) {
         Ethernet.update();
+        if (!fstate->connected || myPcb != fpcb) {
+            return ERR_CLSD;
+        }
         if (millis() - timeoutStart > serverConnectionTimeout) {
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send Buffer full"););
             return ERR_BUF;
@@ -171,20 +160,7 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
     }
     #endif
 
-    const uint32_t timerStart = millis();
-    while (fstate != nullptr && fstate->waiting_for_ack) {
-        if (!fstate->connected) {
-            return ERR_CLSD;
-        }
-        if (millis() - timerStart > 5000) {
-            if (fstate != nullptr) {
-                return ERR_CLSD;
-            }
-            break;
-        }
-        Ethernet.update();
-    }
-
+    Ethernet.update();
     return ERR_OK;
 }
 
@@ -197,8 +173,6 @@ void RF24Client::error_callback(void* arg, err_t err)
     if (state != nullptr) {
         state->result = err;
         state->connected = false;
-        state->waiting_for_ack = false;
-        state->dataSentSize = 0;
         dataSize[state->stateActiveID] = 0;
         if (state->stateActiveID == activeState) {
             myPcb = nullptr;
@@ -250,20 +224,15 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
     struct pbuf* q = p;
     uint16_t acked = 0;
 
-    uint32_t timeout = millis();
+    if (dataSize[id] + p->tot_len > INCOMING_DATA_SIZE) {
+        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: recv - Out of incoming buffer space"););
+        return ERR_MEM;
+    }
+
     while (q != nullptr) {
-        if (millis() - timeout > 3000) {
-            break;
-        }
-        const uint8_t* data = static_cast<const uint8_t*>(q->payload);
-        if (dataSize[id] + q->len < INCOMING_DATA_SIZE) {
-            memcpy(&incomingData[id][dataSize[id]], data, q->len);
-            dataSize[id] += q->len;
-            acked += q->len;
-        }
-        else {
-            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: srecv - Out of incoming buffer space"););
-        }
+        memcpy(&incomingData[id][dataSize[id]], q->payload, q->len);
+        dataSize[id] += q->len;
+        acked += q->len;
         q = q->next;
     }
 
@@ -318,20 +287,16 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
     bool id = state->stateActiveID;
     struct pbuf* q = p;
     uint16_t acked = 0;
-    uint32_t timeout = millis();
+
+    if (dataSize[id] + p->tot_len > INCOMING_DATA_SIZE) {
+        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: recv - Out of incoming buffer space"););
+        return ERR_MEM;
+    }
+
     while (q != nullptr) {
-        if (millis() - timeout > 3000) {
-            break;
-        }
-        const uint8_t* data = static_cast<const uint8_t*>(q->payload);
-        if (dataSize[id] + q->len < INCOMING_DATA_SIZE) {
-            memcpy(&incomingData[id][dataSize[id]], data, q->len);
-            dataSize[id] += q->len;
-            acked += q->len;
-        }
-        else {
-            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: recv - Out of incoming buffer space"););
-        }
+        memcpy(&incomingData[id][dataSize[id]], q->payload, q->len);
+        dataSize[id] += q->len;
+        acked += q->len;
         q = q->next;
     }
 
@@ -522,7 +487,6 @@ err_t RF24Client::accept(void* arg, struct tcp_pcb* tpcb, err_t err)
     gState[actState]->sConnectionTimeout = serverConnectionTimeout;
     gState[actState]->connectTimestamp = millis();
     gState[actState]->serverTimer = millis();
-    gState[actState]->dataSentSize = 0;
 
     tcp_arg(tpcb, RF24Client::gState[actState]);
     tcp_recv(tpcb, srecv_callback);
@@ -788,7 +752,6 @@ int RF24Client::connect(IPAddress ip, uint16_t port)
 
     dataSize[activeState] = 0;
     memset(incomingData[activeState], 0, INCOMING_DATA_SIZE);
-    gState[activeState]->dataSentSize = 0;
     gState[activeState]->connected = false;
     gState[activeState]->result = 0;
     tcp_arg(myPcb, gState[activeState]);
@@ -1048,6 +1011,26 @@ void RF24Client::stop()
 #if USE_LWIP == 1
 void RF24Client::_stop()
 {
+
+    const uint32_t drainStart = millis();
+    while (myPcb != nullptr && gState[activeState]->connected && (myPcb->unsent != nullptr || myPcb->unacked != nullptr)) {
+        if (millis() - drainStart > 5000) {
+            break;
+        }
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+        if (Ethernet.useCoreLocking) {
+            ETHERNET_APPLY_LOCK();
+        }
+    #endif
+        tcp_output(myPcb);
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+        if (Ethernet.useCoreLocking) {
+            ETHERNET_REMOVE_LOCK();
+        }
+    #endif
+        Ethernet.update();
+    }
+
     tcp_pcb* pcb = myPcb;
     myPcb = nullptr;
 
@@ -1076,7 +1059,6 @@ void RF24Client::_stop()
     }
 
     gState[activeState]->connected = false;
-    gState[activeState]->dataSentSize = 0;
 }
 #endif
 /*************************************************************/
@@ -1194,10 +1176,9 @@ test2:
 #elif USE_LWIP == 1
 
     bool initialActiveState = activeState;
-    size_t chunk = MAX_PAYLOAD_SIZE - 14; // 14 = Ethernet/link-layer header bytes reserved per frame
+    size_t chunk = (MAX_PAYLOAD_SIZE - 14) < TCP_SND_BUF ? (MAX_PAYLOAD_SIZE - 14) : TCP_SND_BUF; // Max chunk size is equal to RF24Network MAX_PAYLOAD_SIZE capped by TCP_SND_BUF size
     size_t position = 0;
 
-    gState[initialActiveState]->waiting_for_ack = false;
     uint32_t timeout = millis();
     while (size > chunk) {
         if (millis() - timeout > 3000) {
@@ -1206,7 +1187,6 @@ test2:
         if (myPcb == nullptr)
             return 0;
 
-        gState[initialActiveState]->dataSentSize += chunk;
         err_t write_err = blocking_write(myPcb, gState[initialActiveState], reinterpret_cast<const char*>(&buf[position]), chunk);
 
         if (write_err != ERR_OK) {
@@ -1217,13 +1197,13 @@ test2:
         }
         position += chunk;
         size -= chunk;
+        timeout = millis();
         Ethernet.update();
     }
 
     if (myPcb == nullptr)
         return 0;
 
-    gState[initialActiveState]->dataSentSize += chunk;
     err_t write_err = blocking_write(myPcb, gState[initialActiveState], reinterpret_cast<const char*>(&buf[position]), size);
 
     if (write_err != ERR_OK) {
@@ -1739,7 +1719,6 @@ void RF24Client::flush()
     }
 #elif USE_LWIP == 1
     dataSize[activeState] = 0;
-    gState[activeState]->dataSentSize = 0;
 #elif USE_LWIP == 2
     while (available()) {
         read();

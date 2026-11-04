@@ -269,6 +269,19 @@ public:
         uint16_t len[MAX_RX_QUEUE];
     };
     static EthQueue RXQueue;
+    static constexpr unsigned MAX_TX_QUEUE = 2;
+
+    // nRead and nWrite count frames and wrap naturally; the slot is the count % MAX_TX_QUEUE
+    // lwIP only writes nWrite and tick() only writes nRead
+    struct alignas(4) EthTxQueue
+    {
+        volatile uint32_t nRead;
+        volatile uint32_t nWrite;
+        uint8_t data[MAX_TX_QUEUE][MAX_FRAME_SIZE] __attribute__((aligned(4)));
+        uint16_t len[MAX_TX_QUEUE];
+    };
+    static EthTxQueue TXQueue;
+    static void sendQueuedFrame();
 
     static bool isUnicast(const uint8_t frame);
     /** Used internally to initialize incoming data queue */

@@ -179,7 +179,6 @@ void RF24Server::begin()
     if (serverState != nullptr) {
         serverState->connected = false;
         serverState->result = 0;
-        serverState->waiting_for_ack = false;
     }
     sPcb = tcp_listen_with_backlog(sPcb, 1);
 

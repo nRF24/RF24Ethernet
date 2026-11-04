@@ -45,6 +45,7 @@ extern "C" int rf24_cpp_tx_frame(const uint8_t* data, size_t len)
 
 #if USE_LWIP == 1
 RF24EthernetClass::EthQueue RF24EthernetClass::RXQueue;
+RF24EthernetClass::EthTxQueue RF24EthernetClass::TXQueue;
 netif RF24EthernetClass::myNetif;
 bool RF24EthernetClass::useCoreLocking;
 uint8_t RF24EthernetClass::networkBuffer[MAX_PAYLOAD_SIZE];
@@ -67,10 +68,16 @@ void RF24EthernetClass::writeRXQueue(EthQueue* RXQueue, const uint8_t* ethFrame,
     {
         lenEthFrame = MAX_FRAME_SIZE;
     }
+
+    const uint32_t next = (RXQueue->nWrite + 1) % MAX_RX_QUEUE;
+    if (next == RXQueue->nRead)
+    {
+        return; // Queue is full, keep the unread frame and drop this one
+    }
+
     memcpy(&RXQueue->data[RXQueue->nWrite], ethFrame, lenEthFrame);
     RXQueue->len[RXQueue->nWrite] = lenEthFrame;
-    RXQueue->nWrite++;
-    RXQueue->nWrite %= MAX_RX_QUEUE;
+    RXQueue->nWrite = next;
 }
 
 /*************************************************************/
@@ -109,37 +116,15 @@ bool RF24EthernetClass::isUnicast(const uint8_t frame)
 
 /*************************************************************/
 
-err_t netif_output(struct netif* netif, struct pbuf* p)
+static void sendFrameToRadio(const char* buf, uint16_t total_len)
 {
-    void* context = netif->state;
-    uint16_t total_len = 0;
-    alignas(4) char buf[Ethernet.MAX_FRAME_SIZE]; /* max packet size including VLAN excluding FCS */
-
-    if (p->tot_len > sizeof(buf))
-    {
-        MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
-        return ERR_IF;
-    }
-    pbuf_copy_partial(p, buf, p->tot_len, 0);
-    LINK_STATS_INC(link.xmit);
-    MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p->tot_len);
-
-    if (p->tot_len < Ethernet.MIN_FRAME_SIZE) // Pad to minimum ETH size
-    {
-        total_len = Ethernet.MIN_FRAME_SIZE;
-    }
-    else
-    {
-        total_len = p->tot_len;
-    }
-
     if (Ethernet.isUnicast(buf[0]))
     {
-        MIB2_STATS_NETIF_INC(netif, ifoutucastpkts);
+        MIB2_STATS_NETIF_INC(&Ethernet.myNetif, ifoutucastpkts);
     }
     else
     {
-        MIB2_STATS_NETIF_INC(netif, ifoutnucastpkts);
+        MIB2_STATS_NETIF_INC(&Ethernet.myNetif, ifoutnucastpkts);
     }
 
     IPAddress gwIP = Ethernet.gatewayIP();
@@ -163,7 +148,7 @@ err_t netif_output(struct netif* netif, struct pbuf* p)
         if (local_ip[0] == buf[16] && local_ip[1] == buf[17]) { // If within the nRF24 radio network, do a lookup, else send to self (00)
             nodeAddress = Ethernet.mesh.getAddress((char)buf[19]);
             if (nodeAddress < 0) {
-                return ERR_OK;
+                return;
             }
         }
     }
@@ -173,12 +158,63 @@ err_t netif_output(struct netif* netif, struct pbuf* p)
     RF24NetworkHeader headerOut(nodeAddress, EXTERNAL_DATA_TYPE);
 
     if (total_len && total_len <= MAX_PAYLOAD_SIZE) {
-
-        if (!RF24Ethernet.network.write(headerOut, buf, total_len)) {
-            return ERR_OK;
-        }
+        RF24Ethernet.network.write(headerOut, buf, total_len);
     }
+}
+
+/*************************************************************/
+
+err_t netif_output(struct netif* netif, struct pbuf* p)
+{
+    void* context = netif->state;
+    uint16_t total_len = p->tot_len;
+
+    if (p->tot_len > Ethernet.MAX_FRAME_SIZE)
+    {
+        MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
+        return ERR_IF;
+    }
+    if (p->tot_len < Ethernet.MIN_FRAME_SIZE) // Pad to minimum ETH size
+    {
+        total_len = Ethernet.MIN_FRAME_SIZE;
+    }
+
+    RF24EthernetClass::EthTxQueue& queue = RF24EthernetClass::TXQueue;
+
+    // TCP keeps the segment and tries again later when it gets ERR_MEM
+    if (queue.nWrite - queue.nRead >= RF24EthernetClass::MAX_TX_QUEUE)
+    {
+        MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
+        return ERR_MEM;
+    }
+
+    const uint32_t slot = queue.nWrite % RF24EthernetClass::MAX_TX_QUEUE;
+    pbuf_copy_partial(p, queue.data[slot], p->tot_len, 0);
+    memset(&queue.data[slot][p->tot_len], 0, total_len - p->tot_len);
+    queue.len[slot] = total_len;
+    ETHERNET_TX_BARRIER();
+    queue.nWrite = queue.nWrite + 1;
+
+    LINK_STATS_INC(link.xmit);
+    MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p->tot_len);
+
     return ERR_OK;
+}
+
+/*************************************************************/
+
+void RF24EthernetClass::sendQueuedFrame()
+{
+    if (TXQueue.nRead == TXQueue.nWrite)
+    {
+        return;
+    }
+    ETHERNET_TX_BARRIER(); // See the complete frame that nWrite published
+
+    const uint32_t slot = TXQueue.nRead % MAX_TX_QUEUE;
+    sendFrameToRadio(reinterpret_cast<const char*>(TXQueue.data[slot]), TXQueue.len[slot]);
+    ETHERNET_TX_BARRIER();
+    TXQueue.nRead = TXQueue.nRead + 1;
 }
 
 /*************************************************************/
@@ -206,6 +242,8 @@ err_t netif_init(struct netif* myNetif)
     //SMEMCPY(myNetif->hwaddr, &Ethernet.MacAddr, sizeof(myNetif->hwaddr));
     myNetif->hwaddr_len = 0; //sizeof(netif->hwaddr);
     Ethernet.initRXQueue(&Ethernet.RXQueue);
+    Ethernet.TXQueue.nRead = 0;
+    Ethernet.TXQueue.nWrite = 0;
     netif_set_link_up(myNetif);
     return ERR_OK;
 }
@@ -513,7 +551,6 @@ void RF24EthernetClass::listen(uint16_t port)
 
     RF24Client::gState[0]->connected = false;
     RF24Client::gState[0]->result = 0;
-    RF24Client::gState[0]->waiting_for_ack = false;
 
     RF24Client::myPcb = tcp_listen(RF24Client::myPcb);
 
@@ -800,6 +837,7 @@ void RF24EthernetClass::tick()
         }
     #endif
     }
+    sendQueuedFrame();
 
 #elif USE_LWIP == 2
 
