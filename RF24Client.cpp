@@ -1214,7 +1214,7 @@ test2:
     if (myPcb == nullptr)
         return 0;
 
-    gState[initialActiveState]->dataSentSize += chunk;
+    gState[initialActiveState]->dataSentSize += size;
     err_t write_err = blocking_write(myPcb, gState[initialActiveState], reinterpret_cast<const char*>(&buf[position]), size);
 
     if (write_err != ERR_OK) {
