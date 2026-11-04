@@ -551,7 +551,6 @@ void RF24EthernetClass::listen(uint16_t port)
 
     RF24Client::gState[0]->connected = false;
     RF24Client::gState[0]->result = 0;
-    RF24Client::gState[0]->waiting_for_ack = false;
 
     RF24Client::myPcb = tcp_listen(RF24Client::myPcb);
 
