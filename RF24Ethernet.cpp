@@ -68,10 +68,16 @@ void RF24EthernetClass::writeRXQueue(EthQueue* RXQueue, const uint8_t* ethFrame,
     {
         lenEthFrame = MAX_FRAME_SIZE;
     }
+
+    const uint32_t next = (RXQueue->nWrite + 1) % MAX_RX_QUEUE;
+    if (next == RXQueue->nRead)
+    {
+        return; // Queue is full, keep the unread frame and drop this one
+    }
+
     memcpy(&RXQueue->data[RXQueue->nWrite], ethFrame, lenEthFrame);
     RXQueue->len[RXQueue->nWrite] = lenEthFrame;
-    RXQueue->nWrite++;
-    RXQueue->nWrite %= MAX_RX_QUEUE;
+    RXQueue->nWrite = next;
 }
 
 /*************************************************************/
