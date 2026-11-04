@@ -123,6 +123,9 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
 
     while (len > tcp_sndbuf(fpcb)) {
         Ethernet.update();
+        if (!fstate->connected || myPcb != fpcb) {
+            return ERR_CLSD;
+        }
         if (millis() - timeoutStart > serverConnectionTimeout) {
             IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send Buffer full"););
             return ERR_BUF;
@@ -1194,6 +1197,7 @@ test2:
         }
         position += chunk;
         size -= chunk;
+        timeout = millis();
         Ethernet.update();
     }
 

@@ -82,7 +82,7 @@ typedef struct __attribute__((__packed__))
 } uip_userdata_t;
 #elif USE_LWIP == 1
     #include "RF24Network_config.h"
-    #define INCOMING_DATA_SIZE MAX_PAYLOAD_SIZE * 2
+    #define INCOMING_DATA_SIZE ((MAX_PAYLOAD_SIZE * 2) > TCP_WND ? (MAX_PAYLOAD_SIZE * 2) : TCP_WND) //Set incoming data size to 2 * the RF24Network MAX_PAYLOAD_SIZE or TCP Window size, whichever is bigger
 
     // ESP32 and ESP8266 use internal IP stack
     #ifndef ETHERNET_USING_LWIP_ARDUINO
