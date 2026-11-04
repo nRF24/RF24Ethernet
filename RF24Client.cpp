@@ -250,20 +250,15 @@ err_t RF24Client::srecv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p
     struct pbuf* q = p;
     uint16_t acked = 0;
 
-    uint32_t timeout = millis();
+    if (dataSize[id] + p->tot_len > INCOMING_DATA_SIZE) {
+        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: recv - Out of incoming buffer space"););
+        return ERR_MEM;
+    }
+
     while (q != nullptr) {
-        if (millis() - timeout > 3000) {
-            break;
-        }
-        const uint8_t* data = static_cast<const uint8_t*>(q->payload);
-        if (dataSize[id] + q->len <= INCOMING_DATA_SIZE) {
-            memcpy(&incomingData[id][dataSize[id]], data, q->len);
-            dataSize[id] += q->len;
-            acked += q->len;
-        }
-        else {
-            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Server: srecv - Out of incoming buffer space"););
-        }
+        memcpy(&incomingData[id][dataSize[id]], q->payload, q->len);
+        dataSize[id] += q->len;
+        acked += q->len;
         q = q->next;
     }
 
@@ -318,7 +313,6 @@ err_t RF24Client::recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p,
     bool id = state->stateActiveID;
     struct pbuf* q = p;
     uint16_t acked = 0;
-    uint32_t timeout = millis();
 
     if (dataSize[id] + p->tot_len > INCOMING_DATA_SIZE) {
         IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: recv - Out of incoming buffer space"););
