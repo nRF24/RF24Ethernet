@@ -1173,7 +1173,7 @@ test2:
 #elif USE_LWIP == 1
 
     bool initialActiveState = activeState;
-    size_t chunk = (MAX_PAYLOAD_SIZE - 14) < TCP_SND_BUF ? (MAX_PAYLOAD_SIZE - 14) : TCP_SND_BUF;  // Max chunk size is equal to RF24Network MAX_PAYLOAD_SIZE capped by TCP_SND_BUF size
+    size_t chunk = (MAX_PAYLOAD_SIZE - 14) < TCP_SND_BUF ? (MAX_PAYLOAD_SIZE - 14) : TCP_SND_BUF; // Max chunk size is equal to RF24Network MAX_PAYLOAD_SIZE capped by TCP_SND_BUF size
     size_t position = 0;
 
     uint32_t timeout = millis();
