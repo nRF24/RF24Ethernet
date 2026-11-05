@@ -1058,6 +1058,7 @@ void RF24Client::_stop()
     #endif
     }
 
+    dataSize[activeState] = 0;
     gState[activeState]->connected = false;
 }
 #endif
