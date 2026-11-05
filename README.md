@@ -41,7 +41,7 @@ Documentation & Setup Info: http://nRF24.github.io/RF24Ethernet
 
 ### RF24 communication stack general usage
 
-![docs/images/EthernetMermaidDiagram.svg](docs/images/EthernetMermaidDiagram.svg){width=70% height=70%}
+![docs/images/RF24Gateway-network.svg](docs/images/RF24Gateway-network.svg){width=70% height=70%}
 
 ### RF24 communication stack vs. OSI Model Mapping
 
