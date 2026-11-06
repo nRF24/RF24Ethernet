@@ -580,7 +580,7 @@ uint8_t RF24Client::connected()
     return (data && (data->packets_in != 0 || (data->state & UIP_CLIENT_CONNECTED))) ? 1 : 0;
 #elif USE_LWIP == 1
     if (gState[activeState] != nullptr) {
-        return gState[activeState]->connected;
+        return gState[activeState]->connected || dataSize[activeState] > 0;
     }
     return 0;
 #elif USE_LWIP == 2
