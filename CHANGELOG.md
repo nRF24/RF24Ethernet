@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [2.2.5] - 2026-11-07
+
+### <!-- 3 --> 🗑️ Removed
+
+- Buffer outgoing packets by \@TMRh20 in [#100](https://github.com/nRF24/RF24Ethernet/pull/100)
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Bug Fix: Need to clear all data on stop() by \@TMRh20 in [#101](https://github.com/nRF24/RF24Ethernet/pull/101)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Modify network image in README by \@TMRh20 in [#102](https://github.com/nRF24/RF24Ethernet/pull/102)
+- Use lwIP with Arduino Uno Q by \@TMRh20 in [#103](https://github.com/nRF24/RF24Ethernet/pull/103)
+- Bug Fix: missing data at end of reception by \@TMRh20 in [#104](https://github.com/nRF24/RF24Ethernet/pull/104)
+
+[2.2.5]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.4...v2.2.5
+
+Full commit diff: [`v2.2.4...v2.2.5`][2.2.5]
+
 ## [2.2.4] - 2026-11-02
 
 ### <!-- 1 --> 🚀 Added
@@ -15,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### <!-- 9 --> 🗨️ Changed
 
 - Revert temp wrapper for TLS MQTT client by \@TMRh20 in [#98](https://github.com/nRF24/RF24Ethernet/pull/98)
+- Bump version to v2.2.4 by \@TMRh20 in [`d8b6022`](https://github.com/nRF24/RF24Ethernet/commit/d8b6022cce1d8ed455561c6bf6d7a966ec736afb)
 
 [2.2.4]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.3...v2.2.4
 
