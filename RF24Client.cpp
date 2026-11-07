@@ -1167,7 +1167,7 @@ test2:
         }
 
         u->hold = false;
-        return u->out_pos;
+        return total_written;
     }
 
     if (u) {
