@@ -28,24 +28,88 @@ If you only want node-to-node demos, start with the `Headless` examples first. I
 
 ---
 
-## Install RF24* libraries and build RF24Gateway (Raspberry Pi)
+## Install RF24* libraries and RF24Gateway (Raspberry Pi)
 
-1. Download and run the installer script (builds/installs the required RF24* libraries):
+Download and run the installer script (builds/installs the required RF24* libraries):
 
-   ```bash
-   wget https://raw.githubusercontent.com/nRF24/.github/main/installer/install.sh
-   chmod +x install.sh
-   ./install.sh
-   ```
+```bash
+wget https://raw.githubusercontent.com/nRF24/.github/main/installer/install.sh
+chmod +x install.sh
+./install.sh
+```
 
-2. Build and run the RF24Gateway ncurses example:
+Choose the **SPIDEV** driver. Near the end, the installer asks whether to install RF24Gateway as a service. There are two ways to run the gateway:
 
-   ```bash
-   cd rf24libs/RF24Gateway/examples/build
-   make
-   cd ncurses
-   ./RF24Gateway_ncurses
-   ```
+| | Option 1: systemd service (recommended) | Option 2: run an example manually |
+|---|---|---|
+| Starts at boot | Yes, restarts itself if it exits | No |
+| Runs as | Unprivileged user (`rf24gateway`) with only `CAP_NET_ADMIN` | Your user, usually with `sudo` |
+| Settings | `/etc/rf24gateway/rf24gateway.conf`, no rebuild | Edit the example source and rebuild |
+| Best for | A permanent gateway | Quick tests and development |
+
+> [!important]
+> Only one program can use the radio. Stop the service (`sudo systemctl stop rf24gateway`) before running an example manually, and vice versa.
+
+### Option 1: Run RF24Gateway as a service (recommended)
+
+Answer **y** to *"Do you want to install RF24Gateway as a service that starts at boot"* and choose a mode:
+
+1. **Headless**: no interface, output goes to the system log (journald)
+2. **GUI-noInterrupts**: the ncurses interface in a `screen` session, polling the radio (default)
+3. **GUI-Interrupts**: the ncurses interface, using the radio's IRQ pin
+
+The installer then asks for the service user, the `tun_nrf24` IP address and netmask, the radio channel, an optional list of allowed nodeIDs, and (if the libraries were built with CCM) an AES-CCM encryption key. It builds `rf24gatewayd`, installs and enables `rf24gateway.service`, and offers to start it.
+
+What gets installed:
+
+| Path | Purpose |
+|---|---|
+| `/etc/rf24gateway/rf24gateway.conf` | Settings (CE/CSN/IRQ pins, node ID, channel, data rate, IP, `allowed_nodes`, encryption). Kept on reinstall |
+| `/etc/rf24gateway/rf24gateway.key` | AES-CCM key, if encryption is enabled (mode 640, `root:rf24gateway`) |
+| `/var/lib/rf24gateway/` | `dhcplist.txt`, `routing.txt`, `failLog.txt` |
+| `/usr/local/bin/rf24gatewayd` | The gateway program |
+| `/usr/local/bin/rf24gateway-ui` | Attaches to the ncurses UI (GUI modes only) |
+| `/etc/systemd/system/rf24gateway.service` | The systemd unit |
+
+Managing the service:
+
+```bash
+sudo systemctl status rf24gateway     # is it running?
+sudo systemctl restart rf24gateway    # apply changes to rf24gateway.conf
+sudo systemctl stop rf24gateway       # free the radio, e.g. to run an example
+sudo systemctl disable rf24gateway    # don't start at boot
+journalctl -u rf24gateway -f          # log output (headless mode, startup errors, released nodes)
+rf24gateway-ui                        # GUI modes: view the UI. Detach with Ctrl-A then D
+```
+
+> [!note]
+> In the GUI modes, pressing `x` in the UI exits the program, but systemd restarts it after 5 seconds. Use `systemctl stop` to stop it.
+
+To build the service without the installer (the libraries must already be installed):
+
+```bash
+cd rf24libs/RF24Gateway/service
+mkdir build && cd build
+cmake .. -DRF24GATEWAY_SERVICE_MODE=ncurses   # or headless / ncursesint; add -DRF24NETWORK_CCM=ON for encryption
+make
+sudo make install
+sudo nano /etc/rf24gateway/rf24gateway.conf
+sudo systemctl daemon-reload
+sudo systemctl enable --now rf24gateway
+```
+
+`-DRF24GATEWAY_USER=<name>` changes the service user. The GUI modes need `libncurses-dev` and `screen`. The pigpio driver needs root, so the service requires SPIDEV.
+
+### Option 2: Run the ncurses example manually
+
+```bash
+cd rf24libs/RF24Gateway/examples/build
+make
+cd ncurses
+./RF24Gateway_ncurses
+```
+
+The examples keep `dhcplist.txt` in the current directory, separate from the service's `/var/lib/rf24gateway/dhcplist.txt`, so nodes may be given different addresses when switching between the two.
 
 ---
 
@@ -53,7 +117,7 @@ If you only want node-to-node demos, start with the `Headless` examples first. I
 
 Before configuring routing, make sure:
 
-1. The radio is detected and can communicate (gateway logs show packets / node activity)
+1. The radio is detected and can communicate (gateway UI/logs show packets / node activity; for the service, `sudo systemctl status rf24gateway` and `journalctl -u rf24gateway`)
 2. The TUN/TAP interface exists and is **UP**
 3. Linux has a route for the RF24 subnet via that interface
 
@@ -61,11 +125,13 @@ Before configuring routing, make sure:
 
 ## Step 1: Create/enable a TUN interface
 
-RF24Gateway can create the interface automatically when running as `root`. If running unprivileged, you may need to create the TUN interface manually:
+The **service creates `tun_nrf24` and sets its address automatically** from `ip` and `netmask` in `/etc/rf24gateway/rf24gateway.conf` (it has `CAP_NET_ADMIN` for this), so skip to the verify commands below.
+
+When running an example, RF24Gateway creates the interface automatically if run as `root`. If running it unprivileged, create the TUN interface manually:
 
 ```bash
-# Create a persistent TUN device named tun_nrf24, owned by user "pi"
-sudo ip tuntap add dev tun_nrf24 mode tun user pi multi_queue
+# Create a persistent TUN device named tun_nrf24, owned by the current user
+sudo ip tuntap add dev tun_nrf24 mode tun user $USER multi_queue
 
 # Assign the gateway-side IP for the RF24 subnet
 sudo ip addr add 10.10.2.2/24 dev tun_nrf24
@@ -185,7 +251,16 @@ You should see ICMP/TCP/UDP packets when nodes communicate.
 
 **Checks**
 - `tcpdump -ni tun_nrf24` (do packets appear at all?)
-- RF24Gateway output/logs (do nodes join mesh / show activity?)
+- RF24Gateway output/logs (do nodes join mesh / show activity?): `rf24gateway-ui` or `journalctl -u rf24gateway -f`
+- Service: `channel` and `data_rate` in `/etc/rf24gateway/rf24gateway.conf` match the nodes
+- Service: if `allowed_nodes` is set, the node's ID is listed. Unlisted nodes are released and logged in `journalctl -u rf24gateway` (see RF24Gateway's `docs/securing_the_network.md`)
+- Service with `encryption = 1`: every node must use the same key, and nRF24L01 nodes without encryption can't join
+
+### The service won't start or keeps restarting
+- `journalctl -u rf24gateway -b` shows the reason (an invalid config line, a missing key file, radio not found)
+- Another gateway program is using the radio: stop it (`pgrep -af RF24Gateway`)
+- The service user must be in the `spi` and `gpio` groups: `id rf24gateway`. Fix with `sudo usermod -aG spi,gpio rf24gateway`
+- `encryption = 1` but the service was built without CCM: rebuild with `-DRF24NETWORK_CCM=ON` or set `encryption = 0`
 
 ### Nodes can talk to gateway but LAN cannot reach nodes
 - Missing route on router (Option A) or missing NAT rule (Option B)
@@ -208,6 +283,6 @@ You should see ICMP/TCP/UDP packets when nodes communicate.
 
 ## Notes
 
-- Keep RF24 subnets small and simple at first (one /24).
+- Keep RF24 subnets small and simple at first (one /24). The service defaults (`10.10.2.2`, `255.255.255.0`) match the examples in this guide.
 - Once you have stable ping, then add TCP services (HTTP/MQTT) to reduce variables.
 - If you have performance issues, prefer lwIP on faster MCUs (configured via `RF24BoardConfig.h`).
