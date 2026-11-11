@@ -138,13 +138,42 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
     }
     #endif
 
-    err_t err = ERR_CLSD;
-    if (fpcb != nullptr) {
-        err = tcp_write(fpcb, data, len, TCP_WRITE_FLAG_COPY);
-    }
+    size_t written = 0;
+    while (written < len) {
+        size_t segment = fpcb->snd_wnd_max / 2 < fpcb->mss ? fpcb->snd_wnd_max / 2 : fpcb->mss;
+        if (segment < 1) {
+            segment = 1;
+        }
+        const size_t piece = (len - written) < segment ? (len - written) : segment;
 
-    if (err != ERR_OK) {
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Client: BLK Write fail 2: "); Serial.println((int)err););
+        err_t err = tcp_write(fpcb, data + written, piece, TCP_WRITE_FLAG_COPY);
+        if (err == ERR_OK) {
+            written += piece;
+            continue;
+        }
+        if (err != ERR_MEM) {
+            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Client: BLK Write fail 2: "); Serial.println((int)err););
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+            if (Ethernet.useCoreLocking) {
+                ETHERNET_REMOVE_LOCK();
+            }
+    #endif
+            Ethernet.update();
+            if (!fstate->connected || myPcb != fpcb) {
+                return ERR_CLSD;
+            }
+            if (millis() - timeoutStart > serverConnectionTimeout) {
+                IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send queue full"););
+                return ERR_BUF;
+            }
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+            if (Ethernet.useCoreLocking) {
+                ETHERNET_APPLY_LOCK();
+            }
+    #endif
+        }
+
+        tcp_output(fpcb);
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
         if (Ethernet.useCoreLocking) {
@@ -411,7 +440,7 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
 
     if (tpcb != nullptr) {
         if (state != nullptr) {
-            if (millis() - state->connectTimestamp > state->sConnectionTimeout) {
+            if (millis() - state->connectTimestamp > state->sConnectionTimeout * 2) {
 
                 if ((tpcb->state == ESTABLISHED || tpcb->state == SYN_SENT || tpcb->state == SYN_RCVD)) {
 
