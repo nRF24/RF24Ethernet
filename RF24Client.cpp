@@ -1679,6 +1679,11 @@ int RF24Client::read(uint8_t* buf, size_t size)
 
     int n = zsock_recv(_socket, buf, size, ZSOCK_MSG_DONTWAIT);
 
+    if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        Ethernet.update();
+        n = zsock_recv(_socket, buf, size, ZSOCK_MSG_DONTWAIT);
+    }
+
     if (n > 0) {
         return n; // got bytes
     }
@@ -1714,7 +1719,7 @@ int RF24Client::read(uint8_t* buf, size_t size)
 int RF24Client::read()
 {
     uint8_t c;
-    if (read(&c, 1) < 0)
+    if (read(&c, 1) <= 0)
         return -1;
     return c;
 }
@@ -1730,7 +1735,7 @@ int RF24Client::peek()
 #elif USE_LWIP == 1
         return incomingData[activeState][0];
 #elif USE_LWIP == 2
-        return 0;
+        return (uint8_t)peekBuffer[0];
 #endif
     }
     return -1;
