@@ -1599,10 +1599,13 @@ int RF24Client::read(uint8_t* buf, size_t size)
 #if USE_LWIP < 1
     if (*this)
     {
-        if (!data->packets_in)
-        {
-            return -1;
+        if (!data->packets_in) {
+            Ethernet.update();
+            if (!*this || !data->packets_in) {
+                return -1;
+            }
         }
+
         if (data->in_pos > OUTPUT_BUFFER_SIZE || data->dataCnt > OUTPUT_BUFFER_SIZE || (data->in_pos + data->dataCnt) > OUTPUT_BUFFER_SIZE)
         {
             data->state |= UIP_CLIENT_CLOSE;
