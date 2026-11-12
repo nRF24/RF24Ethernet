@@ -96,9 +96,9 @@ jobs:
         # Generate size deltas data for this board
         include:
           - fqbn: arduino:avr:nano
-            enable-deltas-report: ${{ github.event_name == 'pull_request' }}
+            enable-deltas-report: false # TODO: restore ${{ github.event_name == 'pull_request' }} once the examples move is merged
           - fqbn: arduino:samd:mkrzero
-            enable-deltas-report: ${{ github.event_name == 'pull_request' }}
+            enable-deltas-report: false # TODO: restore ${{ github.event_name == 'pull_request' }} once the examples move is merged
 
   # When using a matrix to compile for multiple boards, it's necessary to use a separate job for the deltas report
   report:
