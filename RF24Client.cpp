@@ -158,21 +158,10 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
                 ETHERNET_REMOVE_LOCK();
             }
     #endif
-            Ethernet.update();
-            if (!fstate->connected || myPcb != fpcb) {
-                return ERR_CLSD;
-            }
-            if (millis() - timeoutStart > serverConnectionTimeout) {
-                IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send queue full"););
-                return ERR_BUF;
-            }
-    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
-            if (Ethernet.useCoreLocking) {
-                ETHERNET_APPLY_LOCK();
-            }
-    #endif
+            return err;
         }
 
+        // ERR_MEM: lwIP's send queue is full. That is not an error: send what is queued and wait
         tcp_output(fpcb);
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
@@ -180,7 +169,19 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
             ETHERNET_REMOVE_LOCK();
         }
     #endif
-        return err;
+        Ethernet.update();
+        if (!fstate->connected || myPcb != fpcb) {
+            return ERR_CLSD;
+        }
+        if (millis() - timeoutStart > serverConnectionTimeout) {
+            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send queue full"););
+            return ERR_BUF;
+        }
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+        if (Ethernet.useCoreLocking) {
+            ETHERNET_APPLY_LOCK();
+        }
+    #endif
     }
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
