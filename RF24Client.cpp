@@ -138,13 +138,42 @@ err_t RF24Client::blocking_write(struct tcp_pcb* fpcb, ConnectState* fstate, con
     }
     #endif
 
-    err_t err = ERR_CLSD;
-    if (fpcb != nullptr) {
-        err = tcp_write(fpcb, data, len, TCP_WRITE_FLAG_COPY);
-    }
+    size_t written = 0;
+    while (written < len) {
+        size_t segment = fpcb->snd_wnd_max / 2 < fpcb->mss ? fpcb->snd_wnd_max / 2 : fpcb->mss;
+        if (segment < 1) {
+            segment = 1;
+        }
+        const size_t piece = (len - written) < segment ? (len - written) : segment;
 
-    if (err != ERR_OK) {
-        IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Client: BLK Write fail 2: "); Serial.println((int)err););
+        err_t err = tcp_write(fpcb, data + written, piece, TCP_WRITE_FLAG_COPY);
+        if (err == ERR_OK) {
+            written += piece;
+            continue;
+        }
+        if (err != ERR_MEM) {
+            IF_RF24ETHERNET_DEBUG_CLIENT(Serial.print("Client: BLK Write fail 2: "); Serial.println((int)err););
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+            if (Ethernet.useCoreLocking) {
+                ETHERNET_REMOVE_LOCK();
+            }
+    #endif
+            Ethernet.update();
+            if (!fstate->connected || myPcb != fpcb) {
+                return ERR_CLSD;
+            }
+            if (millis() - timeoutStart > serverConnectionTimeout) {
+                IF_RF24ETHERNET_DEBUG_CLIENT(Serial.println("Client: TCP Send queue full"););
+                return ERR_BUF;
+            }
+    #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
+            if (Ethernet.useCoreLocking) {
+                ETHERNET_APPLY_LOCK();
+            }
+    #endif
+        }
+
+        tcp_output(fpcb);
 
     #if defined RF24ETHERNET_CORE_REQUIRES_LOCKING
         if (Ethernet.useCoreLocking) {
@@ -411,7 +440,7 @@ err_t RF24Client::closed_port(void* arg, struct tcp_pcb* tpcb)
 
     if (tpcb != nullptr) {
         if (state != nullptr) {
-            if (millis() - state->connectTimestamp > state->sConnectionTimeout) {
+            if (millis() - state->connectTimestamp > state->sConnectionTimeout * 2) {
 
                 if ((tpcb->state == ESTABLISHED || tpcb->state == SYN_SENT || tpcb->state == SYN_RCVD)) {
 
@@ -1570,10 +1599,13 @@ int RF24Client::read(uint8_t* buf, size_t size)
 #if USE_LWIP < 1
     if (*this)
     {
-        if (!data->packets_in)
-        {
-            return -1;
+        if (!data->packets_in) {
+            Ethernet.update();
+            if (!*this || !data->packets_in) {
+                return -1;
+            }
         }
+
         if (data->in_pos > OUTPUT_BUFFER_SIZE || data->dataCnt > OUTPUT_BUFFER_SIZE || (data->in_pos + data->dataCnt) > OUTPUT_BUFFER_SIZE)
         {
             data->state |= UIP_CLIENT_CLOSE;
@@ -1647,6 +1679,11 @@ int RF24Client::read(uint8_t* buf, size_t size)
 
     int n = zsock_recv(_socket, buf, size, ZSOCK_MSG_DONTWAIT);
 
+    if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        Ethernet.update();
+        n = zsock_recv(_socket, buf, size, ZSOCK_MSG_DONTWAIT);
+    }
+
     if (n > 0) {
         return n; // got bytes
     }
@@ -1682,7 +1719,7 @@ int RF24Client::read(uint8_t* buf, size_t size)
 int RF24Client::read()
 {
     uint8_t c;
-    if (read(&c, 1) < 0)
+    if (read(&c, 1) <= 0)
         return -1;
     return c;
 }
@@ -1698,7 +1735,7 @@ int RF24Client::peek()
 #elif USE_LWIP == 1
         return incomingData[activeState][0];
 #elif USE_LWIP == 2
-        return 0;
+        return (uint8_t)peekBuffer[0];
 #endif
     }
     return -1;
