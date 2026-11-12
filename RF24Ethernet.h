@@ -378,6 +378,13 @@ typedef RF24EthernetClass RF52EthernetClass;
  */
 
 /**
+ * @example InteractiveServer_Mesh_aWOT.ino
+ *
+ * The InteractiveServer_Mesh example, adapted to use the aWOT web server library (https://awot.net)
+ * instead of parsing the HTTP request by hand.
+ */
+
+/**
  * @example mqtt_basic.ino
  *
  * This is the example taken from the MQTT library https://github.com/256dpi/arduino-mqtt/ & slightly modified to include RF24Ethernet/RF24Mesh.
@@ -392,6 +399,20 @@ typedef RF24EthernetClass RF52EthernetClass;
  * @example mqtt_basic_2.ino
  *
  * A copy of the initial MQTT example using MQTT library https://github.com/256dpi/arduino-mqtt/ slightly modified to include RF24Ethernet/RF24Mesh.
+ */
+
+/**
+ * @example mqtt_basic_tls.ino
+ *
+ * The TLS version of the mqtt_basic example for ESP32, connecting to an MQTT server on port 8883.
+ * Uses the MQTT library https://github.com/256dpi/arduino-mqtt/ and SSLClient (mbedTLS) https://github.com/govorox/SSLClient
+ */
+
+/**
+ * @example MQTT_BearSSL.ino
+ *
+ * The TLS version of the mqtt_basic example using BearSSL, connecting to an MQTT server on port 8883.
+ * Uses the MQTT library https://github.com/256dpi/arduino-mqtt/ and ArduinoBearSSL https://github.com/arduino-libraries/ArduinoBearSSL
  */
 
 /**

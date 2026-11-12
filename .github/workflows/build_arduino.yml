@@ -24,31 +24,33 @@ jobs:
     uses: nRF24/.github/.github/workflows/build_arduino.yaml@main
     with:
       sketch-paths: |
-        - examples/Getting_Started_SimpleClient_Mesh
-        - examples/Getting_Started_SimpleServer_Mesh
-        - examples/InteractiveServer_Mesh
+        - examples/HTTP_Clients/Getting_Started_SimpleClient_Mesh
+        - examples/HTTP_Servers/Getting_Started_SimpleServer_Mesh
+        - examples/HTTP_Servers/InteractiveServer_Mesh
+        - examples/HTTP_Servers/InteractiveServer_Mesh_aWOT
         - examples/MQTT/mqtt_basic
         - examples/MQTT/mqtt_basic_2
         - examples/MQTT/mqtt_basic_no_blk
-        - examples/SimpleClient_Mesh
+        - examples/HTTP_Clients/SimpleClient_Mesh
 
       # these need RF24_TAP defined
-      # - examples/SLIP_InteractiveServer  # also requires EEPROM.h
-      # - examples/TAP/Getting_Started_InteractiveServer
-      # - examples/TAP/Getting_Started_SimpleClient
-      # - examples/TAP/Getting_Started_SimpleClient_DNS
-      # - examples/TAP/Getting_Started_SimpleServer
-      # - examples/TAP/Getting_Started_SimpleServer_Minimal
+      # - examples/Outdated/SLIP_InteractiveServer  # also requires EEPROM.h
+      # - examples/Outdated/TAP/Getting_Started_InteractiveServer
+      # - examples/Outdated/TAP/Getting_Started_SimpleClient
+      # - examples/Outdated/TAP/Getting_Started_SimpleClient_DNS
+      # - examples/Outdated/TAP/Getting_Started_SimpleServer
+      # - examples/Outdated/TAP/Getting_Started_SimpleServer_Minimal
 
       # other reasons we exclude the following examples
-      # - examples/SLIP_Gateway  # hardcoded to use HardwareSerial
-      # - examples/TAP/InteractiveServer  # specific to AVR boards
-      # - examples/InteractiveServer_Mesh_ESPWifi  # needs ESP8266WiFi.h
+      # - examples/Outdated/SLIP_Gateway  # hardcoded to use HardwareSerial
+      # - examples/Outdated/TAP/InteractiveServer  # specific to AVR boards
+      # - examples/Outdated/InteractiveServer_Mesh_ESPWifi  # needs ESP8266WiFi.h
       libraries: |
         - source-url: https://github.com/nRF24/RF24.git
         - source-url: https://github.com/nRF24/RF24Network.git
         - source-url: https://github.com/nRF24/RF24Mesh.git
         - name: MQTT
+        - name: aWOT
         - name: lwIP
         - source-path: ./
       fqbn: ${{ matrix.fqbn }}

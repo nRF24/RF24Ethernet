@@ -1,0 +1,19 @@
+profiles:
+  default:
+    fqbn: arduino:zephyr:unoq
+    platforms:
+      - platform: arduino:zephyr
+    libraries:
+      - MsgPack (0.4.2)
+      - DebugLog (0.8.4)
+      - ArxContainer (0.7.0)
+      - ArxTypeTraits (0.3.1)
+      - RF24 (1.6.2)
+      - RF24Network (2.3.0)
+      - RF24Mesh (2.1.1)
+      - RF24Ethernet (2.2.5)
+      - lwIP (1.0.0)
+      - ArduinoBearSSL (1.8.0)
+      - MQTT (2.5.3)
+
+default_profile: default
