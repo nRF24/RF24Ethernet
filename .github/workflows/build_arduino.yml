@@ -103,7 +103,8 @@ jobs:
   # When using a matrix to compile for multiple boards, it's necessary to use a separate job for the deltas report
   report:
     needs: build
-    if: github.event_name == 'pull_request'
+    # TODO: restore `if: github.event_name == 'pull_request'` once the examples move is merged
+    if: false
     permissions:
       # needed to post/update comment on PR threads
       pull-requests: write
