@@ -27,11 +27,12 @@ jobs:
         - examples/HTTP_Clients/Getting_Started_SimpleClient_Mesh
         - examples/HTTP_Servers/Getting_Started_SimpleServer_Mesh
         - examples/HTTP_Servers/InteractiveServer_Mesh
-        - examples/HTTP_Servers/InteractiveServer_Mesh_aWOT
         - examples/MQTT/mqtt_basic
         - examples/MQTT/mqtt_basic_2
         - examples/MQTT/mqtt_basic_no_blk
         - examples/HTTP_Clients/SimpleClient_Mesh
+        # aWOT is too large for the AVR boards, so only build it for SAMD
+        ${{ startsWith(matrix.fqbn, 'arduino:samd:') && '- examples/HTTP_Servers/InteractiveServer_Mesh_aWOT' || '' }}
 
       # these need RF24_TAP defined
       # - examples/Outdated/SLIP_InteractiveServer  # also requires EEPROM.h

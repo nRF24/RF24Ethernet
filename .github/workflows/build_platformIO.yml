@@ -97,6 +97,7 @@ jobs:
             lib-deps: >-
               -l 256dpi/MQTT
               -l arduino-libraries/ArduinoBearSSL
+              -l vchavezb/lwIP
 
         # not built here
         # - "examples/TLS/MQTT_BearSSL_UnoQ"  # Arduino App Lab project for the Uno Q
