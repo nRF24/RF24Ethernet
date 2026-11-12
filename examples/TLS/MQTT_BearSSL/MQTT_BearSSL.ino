@@ -88,6 +88,7 @@ public:
     _net.stop();
     BearSSLClient::stop();
   }
+
 private:
   Client& _net;
 };

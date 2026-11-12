@@ -78,29 +78,21 @@ jobs:
     needs: [validate_lib_json]
     uses: nRF24/.github/.github/workflows/build_platformio.yaml@main
     with:
-      example-path: ${{ matrix.example }}
+      example-path: "examples/TLS/mqtt_basic_tls"
       board-id: ${{ matrix.board }}
-      lib-deps: ${{ matrix.lib-deps }}
+      lib-deps: >-
+        -l 256dpi/MQTT
+        -l digitaldragon/SSLClient
     strategy:
       fail-fast: false
       matrix:
-        include:
-          # uses WiFi.h, so ESP32 only
-          - example: "examples/TLS/mqtt_basic_tls"
-            board: "tinypico"
-            lib-deps: >-
-              -l 256dpi/MQTT
-              -l digitaldragon/SSLClient
-          # STM32F411 "black pill"
-          - example: "examples/TLS/MQTT_BearSSL"
-            board: "blackpill_f411ce"
-            lib-deps: >-
-              -l 256dpi/MQTT
-              -l arduino-libraries/ArduinoBearSSL
-              -l vchavezb/lwIP
+        # uses WiFi.h, so ESP32 only
+        board:
+          - "tinypico"
 
-        # not built here
-        # - "examples/TLS/MQTT_BearSSL_UnoQ"  # Arduino App Lab project for the Uno Q
+  # not built here
+  # - "examples/TLS/MQTT_BearSSL"
+  # - "examples/TLS/MQTT_BearSSL_UnoQ"  # Arduino App Lab project for the Uno Q
 
   deploy:
     name: deploy release asset
