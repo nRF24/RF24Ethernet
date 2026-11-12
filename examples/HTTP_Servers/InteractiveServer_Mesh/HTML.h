@@ -1,5 +1,5 @@
 /**
- * @file examples/InteractiveServer_Mesh/HTML.h
+ * @file examples/HTTP_Servers/InteractiveServer_Mesh/HTML.h
  * This file is used for html code in the
  * [InteractiveServer_Mesh example](InteractiveServer_Mesh_8ino-example.html)
  */

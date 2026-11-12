@@ -373,7 +373,7 @@ typedef RF24EthernetClass RF52EthernetClass;
  * @example InteractiveServer_Mesh.ino
  *
  * This is an example of how to create a more advanced interactive web server.<br>
- * This example uses [HTML.h](InteractiveServer__Mesh_2HTML_8h.html) from the
+ * This example uses [HTML.h](HTML_8h.html) from the
  * example's directory.
  */
 
