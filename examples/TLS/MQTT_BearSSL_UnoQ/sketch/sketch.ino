@@ -59,22 +59,21 @@
 // Re-read the time from the MPU this often, to correct millis() drift
 #define TIME_RESYNC_MS 3600000UL
 
-RF24 radio(7, 8); // CE = D7, CSN = D8
+RF24 radio(7, 8);  // CE = D7, CSN = D8
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 RF24EthernetClass RF24Ethernet(radio, network, mesh);
 
 IPAddress ip(10, 10, 2, 4);
-IPAddress gateway(10, 10, 2, 2); // Specify the gateway in case different from the server
-IPAddress server(10, 10, 2, 2);  // The ip of the MQTT server
+IPAddress gateway(10, 10, 2, 2);  // Specify the gateway in case different from the server
+IPAddress server(10, 10, 2, 2);   // The ip of the MQTT server
 char clientID[20];
 
-void messageReceived(MQTTClient* client, char topic[], char payload[], int length)
-{
-    Monitor.println("incoming: ");
-    Monitor.print(topic);
-    Monitor.print(" - ");
-    Monitor.println(payload);
+void messageReceived(MQTTClient* client, char topic[], char payload[], int length) {
+  Monitor.println("incoming: ");
+  Monitor.print(topic);
+  Monitor.print(" - ");
+  Monitor.println(payload);
 }
 
 EthernetClient ethClient;
@@ -82,19 +81,17 @@ EthernetClient ethClient;
 // BearSSLClient::stop() sends a TLS close_notify and then waits for the
 // broker to send one back. Closing the TCP connection first makes it
 // return immediately.
-class BearSSLClientQuickStop : public BearSSLClient
-{
+class BearSSLClientQuickStop : public BearSSLClient {
 public:
-    BearSSLClientQuickStop(Client& net, const br_x509_trust_anchor* tas, int numTAs)
-        : BearSSLClient(net, tas, numTAs), _net(net) {}
-    void stop() override
-    {
-        _net.stop();
-        BearSSLClient::stop();
-    }
+  BearSSLClientQuickStop(Client& net, const br_x509_trust_anchor* tas, int numTAs)
+    : BearSSLClient(net, tas, numTAs), _net(net) {}
+  void stop() override {
+    _net.stop();
+    BearSSLClient::stop();
+  }
 
 private:
-    Client& _net;
+  Client& _net;
 };
 
 // TLS layer on top of the RF24Ethernet TCP client, verified against TAs from certificates.h
@@ -106,162 +103,152 @@ MQTTClient client;
 static uint32_t epochAtSync = 0;
 static uint32_t millisAtSync = 0;
 
-unsigned long getTime()
-{
-    return epochAtSync + (millis() - millisAtSync) / 1000;
+unsigned long getTime() {
+  return epochAtSync + (millis() - millisAtSync) / 1000;
 }
 
 // Zephyr core 1.1.0 wraps gettimeofday() but leaves __real_gettimeofday
 // undefined, so time() fails to link. Supply it from the MPU time.
 // Remove this if a newer core reports a multiple definition.
-extern "C" int __real_gettimeofday(struct timeval* tv, void* tz)
-{
-    (void)tz;
-    if (tv) {
-        uint32_t ms = millis() - millisAtSync;
-        tv->tv_sec = epochAtSync + ms / 1000;
-        tv->tv_usec = (ms % 1000) * 1000;
-    }
-    return 0;
+extern "C" int __real_gettimeofday(struct timeval* tv, void* tz) {
+  (void)tz;
+  if (tv) {
+    uint32_t ms = millis() - millisAtSync;
+    tv->tv_sec = epochAtSync + ms / 1000;
+    tv->tv_usec = (ms % 1000) * 1000;
+  }
+  return 0;
 }
 
 // Ask the MPU for the time. Retry, because Linux boots slower than the MCU.
-static bool syncTimeFromMPU(uint32_t timeoutMs)
-{
-    const uint32_t start = millis();
-    do {
-        uint32_t t = 0;
-        if (Bridge.call("get_time").result(t) && t > 1700000000UL) { // Sanity check: after 2023
-            epochAtSync = t;
-            millisAtSync = millis();
-            return true;
-        }
-        delay(1000);
-    } while (millis() - start < timeoutMs);
-    return false;
+static bool syncTimeFromMPU(uint32_t timeoutMs) {
+  const uint32_t start = millis();
+  do {
+    uint32_t t = 0;
+    if (Bridge.call("get_time").result(t) && t > 1700000000UL) {  // Sanity check: after 2023
+      epochAtSync = t;
+      millisAtSync = millis();
+      return true;
+    }
+    delay(1000);
+  } while (millis() - start < timeoutMs);
+  return false;
 }
 
 /**** Randomness ****/
 // ArduinoBearSSL seeds TLS from random() when no crypto chip is present.
 // Seed random() from the Linux kernel CSPRNG so the session keys differ every boot.
-static void seedRandom()
-{
-    uint32_t seed = 0;
-    if (!Bridge.call("get_random").result(seed)) {
-        Monitor.println("get_random failed, seeding from micros()");
-        seed = micros();
-    }
-    randomSeed(seed);
+static void seedRandom() {
+  uint32_t seed = 0;
+  if (!Bridge.call("get_random").result(seed)) {
+    Monitor.println("get_random failed, seeding from micros()");
+    seed = micros();
+  }
+  randomSeed(seed);
 }
 
 // Add 256 bits from the Linux kernel CSPRNG on every connection.
-static void tlsProfile(br_ssl_client_context* sc, br_x509_minimal_context* xc, const br_x509_trust_anchor* tas, size_t numTAs)
-{
-    br_ssl_client_init_full(sc, xc, tas, numTAs); // Must be first: it clears sc
-    uint32_t r[8] = {0};
-    for (auto& v : r) {
-        if (!Bridge.call("get_random").result(v)) {
-            Monitor.println("WARNING: get_random failed, weak TLS keys");
-        }
+static void tlsProfile(br_ssl_client_context* sc, br_x509_minimal_context* xc, const br_x509_trust_anchor* tas, size_t numTAs) {
+  br_ssl_client_init_full(sc, xc, tas, numTAs);  // Must be first: it clears sc
+  uint32_t r[8] = { 0 };
+  for (auto& v : r) {
+    if (!Bridge.call("get_random").result(v)) {
+      Monitor.println("WARNING: get_random failed, weak TLS keys");
     }
-    br_ssl_engine_inject_entropy(&sc->eng, r, sizeof(r));
-}
-  
-void connect()
-{
-    Monitor.print("connecting (TLS)...");
-    const uint32_t clTimeoutStart = millis();
-    while (!client.connect(clientID, MQTT_USERNAME, MQTT_PASSWORD)) {
-        Monitor.print(".");
-        if (millis() - clTimeoutStart > 5001) {
-            Monitor.println();
-            mesh.renewAddress();
-            return;
-        }
-        const uint32_t timerStart = millis();
-        // Instead of delay, keep the RF24 stack updating
-        while (millis() - timerStart < 1000) {
-            Ethernet.update();
-        }
-    }
-
-    Monitor.println("\nconnected!");
-    client.publish("outTopic", "hello world");
-    client.subscribe("inTopic", 2);
+  }
+  br_ssl_engine_inject_entropy(&sc->eng, r, sizeof(r));
 }
 
-void setup()
-{
-    Bridge.begin();
-    Monitor.begin();
-
-    if (syncTimeFromMPU(60000)) {
-        String dateTime;
-        Bridge.call("get_datetime").result(dateTime);
-        Monitor.print("Time from MPU (UTC): ");
-        Monitor.println(dateTime);
+void connect() {
+  Monitor.print("connecting (TLS)...");
+  const uint32_t clTimeoutStart = millis();
+  while (!client.connect(clientID, MQTT_USERNAME, MQTT_PASSWORD)) {
+    Monitor.print(".");
+    if (millis() - clTimeoutStart > 5001) {
+      Monitor.println();
+      mesh.renewAddress();
+      return;
     }
-    else {
-        Monitor.println("Time sync failed - TLS certificate checks will fail");
+    const uint32_t timerStart = millis();
+    // Instead of delay, keep the RF24 stack updating
+    while (millis() - timerStart < 1000) {
+      Ethernet.update();
     }
+  }
 
-    seedRandom();
-    ArduinoBearSSL.onGetTime(getTime);
+  Monitor.println("\nconnected!");
+  client.publish("outTopic", "hello world");
+  client.subscribe("inTopic", 2);
+}
 
-    Ethernet.begin(ip, gateway);
+void setup() {
+  Bridge.begin();
+  Monitor.begin();
 
-    if (mesh.begin()) {
-        Monitor.println(" OK");
-    }
-    else {
-        Monitor.println(" Failed");
-    }
+  if (syncTimeFromMPU(60000)) {
+    String dateTime;
+    Bridge.call("get_datetime").result(dateTime);
+    Monitor.print("Time from MPU (UTC): ");
+    Monitor.println(dateTime);
+  } else {
+    Monitor.println("Time sync failed - TLS certificate checks will fail");
+  }
 
-    // Convert the last octet of the IP address to an identifier used
-    snprintf(clientID, sizeof(clientID), "arduinoClient%u", (uint8_t)ip[3]);
-    Monitor.println(clientID);
+  seedRandom();
+  ArduinoBearSSL.onGetTime(getTime);
 
-    sslClient.setProfile(tlsProfile);
-    client.begin(server, MQTT_TLS_PORT, sslClient);
-    client.setTimeout(30000); // ms to wait for broker responses. The TLS handshake over RF24 is slow
-    client.setKeepAlive(30);  // seconds
-    client.onMessageAdvanced(messageReceived);
+  Ethernet.begin(ip, gateway);
+
+  if (mesh.begin()) {
+    Monitor.println(" OK");
+  } else {
+    Monitor.println(" Failed");
+  }
+
+  // Convert the last octet of the IP address to an identifier used
+  snprintf(clientID, sizeof(clientID), "arduinoClient%u", (uint8_t)ip[3]);
+  Monitor.println(clientID);
+
+  sslClient.setProfile(tlsProfile);
+  client.begin(server, MQTT_TLS_PORT, sslClient);
+  client.setTimeout(30000);  // ms to wait for broker responses. The TLS handshake over RF24 is slow
+  client.setKeepAlive(30);   // seconds
+  client.onMessageAdvanced(messageReceived);
 }
 
 uint32_t mesh_timer = 0;
 uint32_t pub_timer = 0;
 uint32_t time_timer = 0;
 
-void loop()
-{
-    Ethernet.update();
+void loop() {
+  Ethernet.update();
 
-    if (millis() - mesh_timer > 30000) { // Every 30 seconds, test mesh connectivity
-        mesh_timer = millis();
-        if (!mesh.checkConnection()) {
-            if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
-                mesh.begin();
-            }
-        }
-        Monitor.println();
+  if (millis() - mesh_timer > 30000) {  // Every 30 seconds, test mesh connectivity
+    mesh_timer = millis();
+    if (!mesh.checkConnection()) {
+      if (mesh.renewAddress() == MESH_DEFAULT_ADDRESS) {
+        mesh.begin();
+      }
     }
+    Monitor.println();
+  }
 
-    if (millis() - time_timer > TIME_RESYNC_MS) { // Every hour, correct the clock from the MPU
-        time_timer = millis();
-        syncTimeFromMPU(0);
-    }
+  if (millis() - time_timer > TIME_RESYNC_MS) {  // Every hour, correct the clock from the MPU
+    time_timer = millis();
+    syncTimeFromMPU(0);
+  }
 
-    if (!client.connected() && mesh.mesh_address != MESH_DEFAULT_ADDRESS) {
-        connect();
-    }
+  if (!client.connected() && mesh.mesh_address != MESH_DEFAULT_ADDRESS) {
+    connect();
+  }
 
-    client.loop();
+  client.loop();
 
-    // Every 3 seconds, report to the MQTT server the Node ID of this node
-    if (client.connected() && millis() - pub_timer > 3000) {
-        pub_timer = millis();
-        char msg[32];
-        snprintf(msg, sizeof(msg), "Node %u\r\n", (uint8_t)ip[3]);
-        client.publish("outTopic", msg);
-    }
+  // Every 3 seconds, report to the MQTT server the Node ID of this node
+  if (client.connected() && millis() - pub_timer > 3000) {
+    pub_timer = millis();
+    char msg[32];
+    snprintf(msg, sizeof(msg), "Node %u\r\n", (uint8_t)ip[3]);
+    client.publish("outTopic", msg);
+  }
 }
