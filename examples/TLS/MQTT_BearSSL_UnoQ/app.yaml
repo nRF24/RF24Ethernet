@@ -1,0 +1,18 @@
+# app.yaml: The main configuration file for your Arduino App.
+# This file describes the application's metadata and properties.
+
+# The user-visible name of the application.
+name: RF24Ethernet MQTT BearSSL
+
+# A brief description of what the application does.
+description: "MQTT over TLS on an RF24 mesh, with date/time and random seed from the MPU"
+
+# The icon for the application, can be an emoji or a short string.
+icon: 🔒
+
+# A list of network ports that the application exposes.
+# Example: [80, 443]
+ports: []
+
+# A list of bricks used by this application.
+bricks: []
