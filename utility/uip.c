@@ -857,22 +857,21 @@ uip_process(u8_t flag)
      the packet has been padded and we set uip_len to the correct
      value.. */
 
-  if(( (uint8_t)(BUF->len[0] << 8) + BUF->len[1]) <= uip_len) {
-    uip_len = (BUF->len[0] << 8) + BUF->len[1];
+  {
+    /* Use the full 16-bit length field                */
+    /* (the old check cast away the high byte and only  */
+    /* validated len[1], allowing lengths up to 65535). */
+    u16_t iplen = ((u16_t)BUF->len[0] << 8) | BUF->len[1];
 #if UIP_CONF_IPV6
-    uip_len += 40; /* The length reported in the IPv6 header is the
-		      length of the payload that follows the
-		      header. However, uIP uses the uip_len variable
-		      for holding the size of the entire packet,
-		      including the IP header. For IPv4 this is not a
-		      problem as the length field in the IPv4 header
-		      contains the length of the entire packet. But
-		      for IPv6 we need to add the size of the IPv6
-		      header (40 bytes). */
+    /* IPv6 reports the payload length, not the total length. */
+    iplen += 40;
 #endif /* UIP_CONF_IPV6 */
-  } else {
-    UIP_LOG("ip: packet shorter than reported in IP header.");
-    goto drop;
+    if(iplen < UIP_IPH_LEN || iplen > uip_len) {
+      UIP_STAT(++uip_stat.ip.drop);
+      UIP_LOG("ip: invalid packet length.");
+      goto drop;
+    }
+    uip_len = iplen;
   }
 
 #if !UIP_CONF_IPV6
@@ -1403,6 +1402,11 @@ uip_process(u8_t flag)
   /* uip_len will contain the length of the actual TCP data. This is
      calculated by subtracing the length of the TCP header (in
      c) and the length of the IP header (20 bytes). */
+  if(c < UIP_TCPH_LEN || c > uip_len - UIP_IPH_LEN) {
+    UIP_STAT(++uip_stat.tcp.drop);
+    UIP_LOG("tcp: invalid header length.");
+    goto drop;
+  }
   uip_len = uip_len - c - UIP_IPH_LEN;
 
   /* First, check if the sequence number of the incoming packet is
