@@ -6,9 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
-## [2.2.6] - 2026-11-14
+## [2.2.6] - 2026-11-15
 
-- Fix uIP vulnerability
+### <!-- 4 --> 🛠️ Fixed
+
+- Fix truncated pages and refused connections by \@TMRh20 in [#107](https://github.com/nRF24/RF24Ethernet/pull/107)
+- Fix Truncated-Page bug by \@TMRh20 in [#110](https://github.com/nRF24/RF24Ethernet/pull/110)
+
+### <!-- 9 --> 🗨️ Changed
+
+- UiP path by \@TMRh20 in [#105](https://github.com/nRF24/RF24Ethernet/pull/105)
+- Update for "install as service" by \@TMRh20 in [#106](https://github.com/nRF24/RF24Ethernet/pull/106)
+- Merge commit from fork by \@TMRh20 in [`f923c44`](https://github.com/nRF24/RF24Ethernet/commit/f923c4409b1ac3d61ff2b530a53221a412952e35)
+
+[2.2.6]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.5...v2.2.6
+
+Full commit diff: [`v2.2.5...v2.2.6`][2.2.6]
 
 ## [2.2.5] - 2026-11-07
 
@@ -25,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modify network image in README by \@TMRh20 in [#102](https://github.com/nRF24/RF24Ethernet/pull/102)
 - Use lwIP with Arduino Uno Q by \@TMRh20 in [#103](https://github.com/nRF24/RF24Ethernet/pull/103)
 - Bug Fix: missing data at end of reception by \@TMRh20 in [#104](https://github.com/nRF24/RF24Ethernet/pull/104)
+- Bump version to v2.2.5 by \@TMRh20 in [`5c13a4a`](https://github.com/nRF24/RF24Ethernet/commit/5c13a4ae614e6438b918110c9f2e535161ea5724)
 
 [2.2.5]: https://github.com/nRF24/RF24Ethernet/compare/v2.2.4...v2.2.5
 
