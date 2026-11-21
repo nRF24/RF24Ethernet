@@ -1008,7 +1008,7 @@ WARN_LOGFILE           =
 
 INPUT                  = ../ \
                          ../RF24Ethernet_config.h \
-                         ../examples/InteractiveServer_Mesh/HTML.h \
+                         ../examples/HTTP_Servers/InteractiveServer_Mesh/HTML.h \
                          ./
 
 # This tag can be used to specify the character encoding of the source files

@@ -25,8 +25,8 @@ Gateway setup is documented here:
 #### 4a. Running with a Gateway
 
 4. Load one of the included examples:
-   - `RF24Ethernet/examples/Getting_Started_SimpleClient/Getting_Started_SimpleClient.ino`
-   - `RF24Ethernet/examples/Getting_Started_SimpleServer/Getting_Started_SimpleServer.ino`
+   - `RF24Ethernet/examples/HTTP_Clients/Getting_Started_SimpleClient_Mesh/Getting_Started_SimpleClient_Mesh.ino`
+   - `RF24Ethernet/examples/HTTP_Servers/Getting_Started_SimpleServer_Mesh/Getting_Started_SimpleServer_Mesh.ino`
 5. Configure the node’s IP address and set the **last octet** to match its **nodeID**. For example, nodeID `3` should be assigned `10.10.2.3`.  
    - Set the **gateway** to the chosen IP of the RPi running RF24Gateway (for example `10.10.2.2`).
 6. Upload the example sketch to your Arduino and verify connectivity:
