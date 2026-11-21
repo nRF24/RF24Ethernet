@@ -163,6 +163,7 @@ void credits_page(Request& req, Response& res) {
 void setup() {
 
   Serial.begin(115200);
+  delay(3000);
   Serial.println("start");
   pinMode(LED_PIN, OUTPUT);
 
